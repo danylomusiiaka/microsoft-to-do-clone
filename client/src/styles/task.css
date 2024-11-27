@@ -1,0 +1,147 @@
+.task:hover {
+  background-color: var(--secondary-background-color);
+  cursor: pointer;
+}
+
+.task:active {
+  background-color: var(--secondary-text-color);
+}
+
+.circle-btn {
+  width: 20px;
+  height: 20px;
+  border: 2.4px solid var(--secondary-text-color);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.circle-btn:hover .checkmark {
+  display: block;
+}
+
+.block {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.task-input {
+  width: 100%;
+  padding: 7px;
+  padding-left: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: transparent;
+  outline: none;
+  color: var(--primary-text-color);
+  transition: border-color 0.3s ease;
+}
+
+.plus,
+.stroke-svg {
+  stroke: var(--primary-text-color);
+}
+
+.task-input::placeholder {
+  color: var(--primary-text-color);
+}
+
+.scroll-container {
+  height: 430px;
+  overflow-y: scroll;
+}
+.scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary-text-color);
+  border-radius: 10px;
+}
+
+.text-sidebar-input,
+.description-sidebar-input {
+  width: 100%;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 24px;
+  background-color: var(--sidebar-block-color);
+  outline: none;
+  color: var(--primary-text-color);
+  overflow: hidden;
+  resize: none;
+}
+
+.menu {
+  background-color: var(--sidebar-block-color);
+  width: 250px;
+  height: 250px;
+}
+
+.description-sidebar-input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+select option {
+  background-color: var(--secondary-background-color);
+}
+
+select {
+  outline: none;
+  background: transparent;
+}
+
+.date-mobile {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .todo-list {
+    padding-top: 1.5rem;
+    height: 100%;
+  }
+  .date {
+    display: none;
+  }
+  .date-mobile {
+    display: flex;
+  }
+}
+
+.truncated-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 250px;
+}
+
+.truncated-input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .truncated-text {
+    max-width: 200px;
+  }
+  .truncated-input {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-field {
+    display: none;
+  }
+}

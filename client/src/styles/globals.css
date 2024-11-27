@@ -1,0 +1,58 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import "./sidebar.css";
+@import "./task.css";
+@import "./themes.css";
+@import "./loading.css";
+
+body {
+  color: var(--primary-text-color);
+  background: var(--primary-background-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+  transition: background-color 0.7s ease;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.stroke-svg {
+  stroke: var(--primary-text-color);
+}
+
+.fill-svg {
+  fill: var(--primary-text-color);
+}
+
+canvas {
+  max-width: 100%;
+  max-height: 300px;
+  height: auto;
+}
+
+.user-details ~ input:focus {
+  outline-style: solid;
+  outline-color: white;
+  outline-width: 2px;
+  border-radius: 0.375rem;
+}
+
+::-ms-reveal {
+  filter: invert(var(--invert-value));
+}
+
+.profile-name::-webkit-scrollbar {
+  width: 2px;
+}
+
+.profile-name::-webkit-scrollbar-thumb {
+  background-color: var(--primary-text-color);
+  border-radius: 10px;
+}
