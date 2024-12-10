@@ -57,7 +57,7 @@ export default function Favorite() {
   return (
     <>
       <div className='flex justify-between'>
-        <NavSidebar />
+        <NavSidebar userData={null} />
 
         <div className='md:hidden'>
           <p>Показати діаграму</p>

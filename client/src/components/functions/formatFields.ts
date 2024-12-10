@@ -11,9 +11,11 @@ export const formatDate = (dateString: string) => {
 };
 
 export const formatText = (text: string, howShort: number) => {
-  if (text.length > howShort) {
-    return text.substring(0, howShort) + "...";
-  } else {
-    return text;
+  if (text) {
+    if (text.length >= howShort) {
+      return text.substring(0, howShort) + "...";
+    } else {
+      return text;
+    }
   }
 };

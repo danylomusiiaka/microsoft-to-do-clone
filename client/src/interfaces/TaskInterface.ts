@@ -1,7 +1,8 @@
 export interface Task {
-  id: number;
+  _id?: string;
+  author: string;
   text: string;
-  completed: boolean;
+  isCompleted: boolean;
   status: string;
   date: string;
   description: string;

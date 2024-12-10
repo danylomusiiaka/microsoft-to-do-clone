@@ -9,29 +9,41 @@ import Loading from "../loading";
 import NavSidebar from "@/components/structure/NavSidebar";
 import { useTodoFunctions } from "@/components/functions/todosFunctions";
 import Axios from "axios";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+
 
 export default function CategoryPage() {
   const { todoChoosed, setTodos, categories } = useTodos();
+  const { profileDetails } = useUserDetails();
   const { formatStarTodos } = useTodoFunctions();
 
   const { category } = useParams();
-  const listName = decodeURIComponent(category);
+  const listName = decodeURIComponent(Array.isArray(category) ? category[0] : category);
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Axios.get("http://localhost:5101/api/tasks");
-        setTodos(formatStarTodos(response.data));
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (profileDetails) {
+      const fetchData = async () => {
+        try {
+          const response = await Axios.get(`${webUrl}/task/all`, {
+            withCredentials: true,
+            params: { author: profileDetails.email },
+          });
 
-    fetchData();
-  }, []);
+          console.log(response.data);
+
+          setTodos(formatStarTodos(response.data));
+        } catch (error) {
+          console.error("Failed to fetch tasks:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [profileDetails]);
 
   if (loading) return <Loading />;
 
@@ -46,8 +58,8 @@ export default function CategoryPage() {
 
   return (
     <>
-      <NavSidebar />
-      <TodoList listName={listName} />
+      <NavSidebar userData={null} />
+      <TodoList listName={listName} allTodos={[]} />
       {todoChoosed && <ToDoSidebar todo={todoChoosed} />}
     </>
   );

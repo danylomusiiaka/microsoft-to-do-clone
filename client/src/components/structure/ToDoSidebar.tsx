@@ -11,17 +11,17 @@ import Star from "../../../public/star";
 import Calendar from "../Calendar";
 import { useTodoFunctions } from "../functions/todosFunctions";
 import Delete from "../../../public/delete";
-import Axios from "axios";
 
 export default function ToDoSidebar({ todo }: { todo: Task }) {
-  const { todos, setTodoChoosed } = useTodos();
+  const { todos, setTodoChoosed, error } = useTodos();
+
   const { updateField, todoOnFirstPos, deleteTodo } = useTodoFunctions();
 
   const [taskText, setTaskText] = useState(todo.text);
   const [taskDescription, setTaskDescription] = useState(todo.description);
   const [isImportant, setIsImportant] = useState(todo.isImportant);
 
-  const currentTodo = todos.find((t) => t.id === todo.id);
+  const currentTodo = todos.find((t) => t._id === todo._id);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -40,16 +40,15 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
     adjustHeight(descriptionRef);
   }, [taskDescription]);
 
- 
-
   return (
-    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md scroll-container'>
-      <main className='space-y-3 '>
+    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
+      <main className='space-y-3 scroll-container'>
         <div className='flex justify-end items-center'>
           <button onClick={() => setTodoChoosed(null)}>
             <Cross />
           </button>
         </div>
+        <p className='text-red-500'>{error}</p>
         <div className='flex text-sidebar-input items-center justify-between profile'>
           <textarea
             ref={textareaRef}
@@ -62,10 +61,11 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           <button
             className='self-start mt-2'
             onClick={() => {
-              setIsImportant(!isImportant);
               if (currentTodo) {
-                updateField(currentTodo, { isImportant: !isImportant });
-                todoOnFirstPos(todo, !isImportant);
+                const newIsImportant = !isImportant;
+                setIsImportant(newIsImportant);
+                updateField(currentTodo, { isImportant: newIsImportant });
+                todoOnFirstPos(currentTodo, newIsImportant);
               }
             }}
           >
@@ -73,29 +73,27 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           </button>
         </div>
         <StatusDropdown {...(currentTodo || todo)} />
-
         <textarea
           ref={descriptionRef}
+          value={taskDescription}
           onBlur={() => currentTodo && updateField(currentTodo, { description: taskDescription })}
           onChange={(e) => setTaskDescription(e.target.value)}
           className='description-sidebar-input button'
           placeholder='Введіть опис...'
         />
-
-        <Calendar />
+        <Calendar currentTodo={currentTodo!} />
       </main>
-      <div className='flex justify-between'>
-        <button
-          className='flex button items-center space-x-2 pl-0 p-2 rounded-md'
-          onClick={() => {
-            deleteTodo(todo.id);
-            setTodoChoosed(null);
-          }}
-        >
-          <Delete color='#b91c1c' width='30px' />
-          <p className='text-red-700'>Видалити завдання</p>
-        </button>
-      </div>
+
+      <button
+        className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
+        onClick={() => {
+          deleteTodo(todo._id!);
+          setTodoChoosed(null);
+        }}
+      >
+        <Delete color='#b91c1c' width='30px' />
+        <p className='text-red-700'>Видалити завдання</p>
+      </button>
     </section>
   );
 }

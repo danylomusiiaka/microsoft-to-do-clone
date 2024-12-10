@@ -1,5 +1,8 @@
 import "@/styles/globals.css";
-import { TodosProvider } from "../contexts/TodosContext";
+import { TodosProvider } from "@/contexts/TodosContext";
+import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
+import { AlertProvider } from "@/contexts/AlertContext";
+import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Next.js",
@@ -7,12 +10,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = cookies();
+  const result = cookieStore.get("theme")?.value || "dark";
+
   return (
     <html lang='en'>
-      <body className='m-2 flex flex-col lg:flex-row' data-theme='dark'>
-        <TodosProvider>
-          {children}
-        </TodosProvider>
+      <body className='m-2 flex flex-col lg:flex-row' data-theme={result}>
+        <AlertProvider>
+          <UserDetailsProvider>
+            <TodosProvider>{children}</TodosProvider>
+          </UserDetailsProvider>
+        </AlertProvider>
       </body>
     </html>
   );

@@ -1,18 +1,8 @@
 import { useState } from "react";
 import Axios from "axios";
-
-interface InputActiveState {
-  signUpName: boolean;
-  signUpEmail: boolean;
-  signUpPassword: boolean;
-}
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function Register() {
-  const [isInputActive, setInputActive] = useState({
-    signUpName: false,
-    signUpEmail: false,
-    signUpPassword: false,
-  });
   const [registerForm, setRegisterForm] = useState({
     name: "",
     email: "",
@@ -26,7 +16,7 @@ export default function Register() {
 
   const verifyEmail = async () => {
     try {
-      const response = await Axios.post(`http://localhost:3001/user/verify-email`, {
+      const response = await Axios.post(`${webUrl}/user/verify-email`, {
         email: registerForm.email,
       });
       if (response.status === 200) {
@@ -45,7 +35,7 @@ export default function Register() {
   const registerUser = async () => {
     try {
       const response = await Axios.post(
-        `http://localhost:3001/user/register`,
+        `${webUrl}/user/register`,
         {
           name: registerForm.name,
           email: registerForm.email,
@@ -64,18 +54,7 @@ export default function Register() {
       if (error.response) {
         setErrorMessage(error.response.data);
       }
-    } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleFocus = (field: keyof InputActiveState) => {
-    setInputActive((prev) => ({ ...prev, [field]: true }));
-  };
-
-  const handleBlur = (field: keyof InputActiveState, event: React.FocusEvent<HTMLInputElement>) => {
-    if (!event.target.value) {
-      setInputActive((prev) => ({ ...prev, [field]: false }));
     }
   };
 
@@ -104,35 +83,34 @@ export default function Register() {
       <div className='input-wrap'>
         <input
           type='text'
-          className={`input-field ${isInputActive.signUpName ? "active" : ""}`}
-          onFocus={() => handleFocus("signUpName")}
-          onBlur={(e) => handleBlur("signUpName", e)}
+          id='name'
+          value={registerForm.name}
           onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
+          placeholder=' '
         />
-        <label>Ім'я користувача</label>
+        <label htmlFor='name'>Ім'я користувача</label>
       </div>
 
       <div className='input-wrap'>
         <input
           type='email'
-          className={`input-field ${isInputActive.signUpEmail ? "active" : ""}`}
-          onFocus={() => handleFocus("signUpEmail")}
-          onBlur={(e) => handleBlur("signUpEmail", e)}
+          id='email'
           onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
-          autoComplete='email'
+          value={registerForm.email}
+          placeholder=' '
         />
-        <label>Пошта</label>
+        <label htmlFor='email'>Пошта</label>
       </div>
 
       <div className='input-wrap'>
         <input
           type='password'
-          className={`input-field ${isInputActive.signUpPassword ? "active" : ""}`}
-          onFocus={() => handleFocus("signUpPassword")}
-          onBlur={(e) => handleBlur("signUpPassword", e)}
+          id='password'
           onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+          value={registerForm.password}
+          placeholder=' '
         />
-        <label>Пароль</label>
+        <label htmlFor='password'>Пароль</label>
       </div>
 
       <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
@@ -145,13 +123,12 @@ export default function Register() {
       <div>
         <div className='input-wrap'>
           <input
-            type='password'
-            className={`input-field ${isInputActive.signUpPassword ? "active" : ""}`}
-            onFocus={() => handleFocus("signUpPassword")}
-            onBlur={(e) => handleBlur("signUpPassword", e)}
+              type='password'
+              id='verification'
             onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })}
+            placeholder=' '
           />
-          <label>Верифікаційний код</label>
+          <label htmlFor="verification">Верифікаційний код</label>
         </div>
         <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
           {isLoading ? <span className='spinner'></span> : "Підтвердити"}

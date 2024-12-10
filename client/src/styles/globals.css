@@ -31,6 +31,10 @@ input[type="color"]::-webkit-color-swatch {
   fill: var(--primary-text-color);
 }
 
+label {
+  cursor: text;
+}
+
 canvas {
   max-width: 100%;
   max-height: 300px;
@@ -48,8 +52,12 @@ canvas {
   filter: invert(var(--invert-value));
 }
 
+.profile-name {
+  overflow-x: visible;
+  overflow-y: hidden;
+}
 .profile-name::-webkit-scrollbar {
-  width: 2px;
+  height: 2px;
 }
 
 .profile-name::-webkit-scrollbar-thumb {

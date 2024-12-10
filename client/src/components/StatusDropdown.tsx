@@ -42,7 +42,7 @@ export default function StatusDropdown(todo: Task) {
 
   const handleOptionClick = (option: string) => {
     setSelectedStatus(option);
-    updateField(todo, { status: option, completed: option === "done" });
+    updateField(todo, { status: option, isCompleted: option === "done" });
     setIsOpenStatuses(false);
   };
 

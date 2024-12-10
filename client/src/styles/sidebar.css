@@ -96,6 +96,7 @@
   padding: 3px 8px;
   border-radius: 5px;
   transition: 0.2s;
+  width: 30px;
 }
 
 .hamburger div {
@@ -104,7 +105,6 @@
   margin: 6px 0;
   background: var(--primary-text-color);
 }
-
 
 @media (max-width: 1024px) {
   .sidebar-hamburg {
@@ -119,6 +119,16 @@
     transition: left 0.4s ease;
     box-shadow: 2px 0 20px 0 rgba(0, 0, 0, 0.42);
   }
+
+  .hamburger {
+    display: block;
+  }
+  #nav_check:checked ~ .sidebar-hamburg {
+    left: 0;
+  }
+}
+
+@media (max-width: 800px) {
   .todo-sidebar-hamburg {
     display: flex;
     position: absolute;
@@ -131,11 +141,5 @@
     box-shadow: 2px 0 20px 0 rgba(0, 0, 0, 0.42);
     transition: right 0.4s ease;
     padding-bottom: 2rem;
-  }
-  .hamburger {
-    display: block;
-  }
-  #nav_check:checked ~ .sidebar-hamburg {
-    left: 0;
   }
 }

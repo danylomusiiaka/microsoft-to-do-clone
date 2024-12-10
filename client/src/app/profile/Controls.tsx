@@ -2,10 +2,12 @@
 import Axios from "axios";
 import Link from "next/link";
 import React from "react";
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+
 
 export default function Controls() {
   const handleLogOut = async () => {
-    await Axios.post("http://localhost:3001/user/logout", {}, { withCredentials: true });
+    await Axios.post(`${webUrl}/user/logout`, {}, { withCredentials: true });
   };
 
   return (

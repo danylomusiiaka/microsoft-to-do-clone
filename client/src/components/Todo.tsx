@@ -10,8 +10,6 @@ import { useTodoFunctions } from "./functions/todosFunctions";
 
 interface TodoProps {
   todo: Task;
-  onDragStart: () => void;
-  onDrop: () => void;
   sortName: string;
 }
 
@@ -21,7 +19,7 @@ const PRIORITY_OPTIONS = [
   { name: "high", color: "bg-red-500" },
 ];
 
-export default function Todo({ todo, onDragStart, onDrop, sortName }: TodoProps) {
+export default function Todo({ todo, sortName }: TodoProps) {
   const { setTodoChoosed, todoChoosed } = useTodos();
   const { updateField } = useTodoFunctions();
 
@@ -29,12 +27,12 @@ export default function Todo({ todo, onDragStart, onDrop, sortName }: TodoProps)
     e.stopPropagation();
     updateField(todo, {
       status: todo.status === "done" ? "to do" : "done",
-      completed: !todo.completed,
+      isCompleted: !todo.isCompleted,
     });
   };
 
   const toggleToDoSidebar = () => {
-    if (todoChoosed?.id === todo.id) {
+    if (todoChoosed?._id === todo._id) {
       setTodoChoosed(null);
     } else {
       setTodoChoosed(todo);
@@ -42,42 +40,45 @@ export default function Todo({ todo, onDragStart, onDrop, sortName }: TodoProps)
   };
 
   return (
-    <tr
-      key={todo.id}
-      draggable
-      onDragStart={onDragStart}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={onDrop}
-      className='task'
-      onClick={toggleToDoSidebar}
-    >
-      <td className='p-3 flex items-center'>
-        <button className='circle-btn mr-5' onClick={toggleCompletion}>
-          <Checkmark status={todo.status} />
-        </button>
-        <p>{formatText(todo.text, 40)}</p>
+    <>
+      <td className='p-3 pl-0 md:hidden'>
+        <span
+          className={`${
+            STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+          } rounded-xl text-sm text-nowrap px-3 pb-0.5 `}
+        >
+          {todo.status}
+        </span>
       </td>
-      <td className='md:p-3 align-text-top table-field'>
-        {sortName == "За пріорітетністю" ? (
-          <span
-            className={`${
-              PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || ""
-            } rounded-xl text-sm text-nowrap px-3`}
-          >
-            {todo.priority}
-          </span>
-        ) : (
-          <span
-            className={`${
-              STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
-            } rounded-xl text-sm text-nowrap px-3 `}
-          >
-            {todo.status}
-          </span>
-        )}
-      </td>
-      <td className='md:p-3 table-field'>{formatDate(todo.date)}</td>
-      <td>{todo.isImportant && <Star isImportant={todo.isImportant} />}</td>
-    </tr>
+      <tr key={todo._id} className='task' onClick={toggleToDoSidebar}>
+        <td className='p-3 flex items-center'>
+          <button className='circle-btn mr-5' onClick={toggleCompletion}>
+            <Checkmark status={todo.status} />
+          </button>
+          <p>{formatText(todo.text, 40)}</p>
+        </td>
+        <td className='md:p-3 align-text-top table-field'>
+          {sortName == "За пріорітетністю" ? (
+            <span
+              className={`${
+                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || ""
+              } rounded-xl text-sm text-nowrap px-3`}
+            >
+              {todo.priority}
+            </span>
+          ) : (
+            <span
+              className={`${
+                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+              } rounded-xl text-sm text-nowrap px-3 `}
+            >
+              {todo.status}
+            </span>
+          )}
+        </td>
+        <td className='md:p-3 table-field'>{formatDate(todo.date)}</td>
+        <td>{todo.isImportant && <Star isImportant={todo.isImportant} />}</td>
+      </tr>
+    </>
   );
 }

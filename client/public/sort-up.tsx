@@ -5,8 +5,8 @@ export default function SortAsc() {
         d='M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10'
         className='stroke-svg'
         stroke-width='2'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

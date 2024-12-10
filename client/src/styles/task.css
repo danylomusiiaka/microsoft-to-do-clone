@@ -55,14 +55,23 @@
 }
 
 .scroll-container {
-  height: 430px;
+  height: 100%;
   overflow-y: scroll;
 }
-.scroll-container::-webkit-scrollbar {
+
+.scroll-container-todos {
+  height: 450px;
+  overflow-y: scroll;
+
+}
+
+.scroll-container::-webkit-scrollbar,
+.scroll-container-todos::-webkit-scrollbar {
   width: 4px;
 }
 
-.scroll-container::-webkit-scrollbar-thumb {
+.scroll-container::-webkit-scrollbar-thumb,
+.scroll-container-todos::-webkit-scrollbar-thumb  {
   background-color: var(--primary-text-color);
   border-radius: 10px;
 }

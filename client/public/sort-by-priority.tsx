@@ -8,9 +8,9 @@ export default function SortByPriorityIcon() {
           id='Vector'
           d='M4 17H16M4 12H13M4 7H10M18 13V5M18 5L21 8M18 5L15 8'
           className='stroke-svg'
-          stroke-width='2'
-          stroke-linecap='round'
-          stroke-linejoin='round'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         />
       </g>
     </svg>

@@ -1,41 +1,55 @@
-"use client";
-import { useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import Loading from "./loading";
-import { useTodos } from "../contexts/TodosContext";
-import TodoList from "../components/structure/TodoList";
-import ToDoSidebar from "../components/structure/ToDoSidebar";
-import NavSidebar from "@/components/structure/NavSidebar";
-import { useTodoFunctions } from "@/components/functions/todosFunctions";
-import Axios from "axios";
+const TodoList = React.lazy(() => import("@/components/structure/TodoList"));
+const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
+import axios from "axios";
+import { cookies } from "next/headers";
 
-export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const { todos, setTodos, todoChoosed } = useTodos();
-  const { formatStarTodos } = useTodoFunctions();
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Axios.get("http://localhost:5101/api/tasks");
-        setTodos(formatStarTodos(response.data));
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      } finally {
-        setLoading(false); 
-      }
-    };
+async function fetchUserData(token: string) {
+  try {
+    const userResponse = await axios.get(`${webUrl}/user/details`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    fetchData();
-  }, []);
+    return userResponse.data;
+  } catch (error: any) {
+    console.error("Error fetching todos:", error.response?.data || error.message);
+    return {};
+  }
+}
 
-  if (loading) return <Loading />;
+async function fetchTodos(token: string) {
+  try {
+    const { team, email } = await fetchUserData(token);
+
+    const todosResponse = await axios.get(`${webUrl}/task/all`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { author: team || email },
+    });
+
+    return todosResponse.data;
+  } catch (error: any) {
+    console.error("Error fetching todos:", error.response?.data || error.message);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token")?.value;
+
+  const allTodos = token ? await fetchTodos(token) : [];
+
+  const userData = token ? await fetchUserData(token) : {};
 
   return (
     <section className='md:flex w-full'>
-      <NavSidebar />
-
-      <TodoList />
-      {todoChoosed && <ToDoSidebar todo={todoChoosed} />}
+      <Suspense fallback={<Loading />}>
+        <NavSidebar userData={userData} />
+        <TodoList listName='Завдання' allTodos={allTodos} />
+      </Suspense>
     </section>
   );
 }

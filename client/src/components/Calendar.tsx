@@ -4,18 +4,18 @@ import ArrowUp from "../../public/arrow-up";
 import { formatDate } from "@/components/functions/formatFields";
 import { useEffect, useState } from "react";
 import { useTodoFunctions } from "./functions/todosFunctions";
+import { Task } from "@/interfaces/TaskInterface";
 
-export default function Calendar() {
+export default function Calendar({ currentTodo }: { currentTodo: Task }) {
   const [showDateEdit, setDateEdit] = useState(false);
-  const { todoChoosed } = useTodos();
   const { updateField } = useTodoFunctions();
 
-  const [taskDate, setTaskDate] = useState(todoChoosed.date);
+  const [taskDate, setTaskDate] = useState(currentTodo.date);
 
   useEffect(() => {
-    setTaskDate(todoChoosed.date);
+    setTaskDate(currentTodo.date);
     setDateEdit(false);
-  }, [todoChoosed]);
+  }, [currentTodo]);
 
   return (
     <>
@@ -26,7 +26,7 @@ export default function Calendar() {
           }}
           className='flex space-x-2 items-center cursor-default '
         >
-          <p >Зробити до: {formatDate(taskDate)}</p>
+          <p>Зробити до: {formatDate(taskDate)}</p>
           {showDateEdit ? <ArrowUp /> : <ArrowDown />}
         </button>
       </div>
@@ -38,7 +38,7 @@ export default function Calendar() {
             value={taskDate}
             onChange={(e) => {
               setTaskDate(e.target.value);
-              updateField(todoChoosed, { date: e.target.value });
+              updateField(currentTodo, { date: e.target.value });
             }}
             className='p-2 rounded-md bg-transparent border ml-2'
           />
