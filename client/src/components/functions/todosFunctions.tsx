@@ -6,7 +6,7 @@ import Axios from "axios";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useTodoFunctions = () => {
-  const { todos, setTodos, error, setError } = useTodos();
+  const { todos, setTodos } = useTodos();
   const { profileDetails } = useUserDetails();
   const { showAlert } = useAlert();
 
@@ -34,7 +34,6 @@ export const useTodoFunctions = () => {
   };
 
   const addToDo = async (newTodoText: string, listName: string) => {
-    setError("");
     if (newTodoText.trim() === "") return;
     if (newTodoText.length >= 200) {
       showAlert("Назва завдання не може перевищувати 200 символів", "error");
@@ -56,20 +55,25 @@ export const useTodoFunctions = () => {
       const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
         withCredentials: true,
       });
-      newTodo._id = response.data.id;
-    } catch (error) {
-      console.log("Помилка додання таску");
-      return;
-    }
-    const updatedTodos = [newTodo, ...todos];
-    setTodos(updatedTodos);
+      if (response.status === 200) {
+        newTodo._id = response.data.id;
+        const updatedTodos = [newTodo, ...todos];
+        setTodos(updatedTodos);
 
-    const sortSettings = sessionStorage.getItem("sortSettings");
+        const sortSettings = sessionStorage.getItem("sortSettings");
 
-    if (sortSettings) {
-      const { name, desc } = JSON.parse(sortSettings);
-      if (name) {
-        sortBy(name, desc, updatedTodos);
+        if (sortSettings) {
+          const { name, desc } = JSON.parse(sortSettings);
+          if (name) {
+            sortBy(name, desc, updatedTodos);
+          }
+        }
+      }
+    } catch (error: any) {
+      if (error.status === 401) {
+        window.location.href = "/auth";
+      } else {
+        showAlert(error.response.data, "error");
       }
     }
   };
@@ -102,27 +106,29 @@ export const useTodoFunctions = () => {
       return;
     }
 
-    const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
-
     try {
-      await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
+      const response = await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
         withCredentials: true,
       });
-    } catch (error) {
-      showAlert("Помилка змінення завдання", "error");
-      return;
-    }
-
-    setTodos(updatedTodos);
-    const sortSettings = sessionStorage.getItem("sortSettings");
-    if (sortSettings) {
-      const { name, desc } = JSON.parse(sortSettings);
-      if (name) {
-        sortBy(name, desc, updatedTodos);
+      if (response.status === 200) {
+        const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
+        setTodos(updatedTodos);
+        const sortSettings = sessionStorage.getItem("sortSettings");
+        if (sortSettings) {
+          const { name, desc } = JSON.parse(sortSettings);
+          if (name) {
+            sortBy(name, desc, updatedTodos);
+          }
+        }
+        return updatedTodo;
+      }
+    } catch (error: any) {
+      if (error.status === 401) {
+        window.location.href = "/auth";
+      } else {
+        showAlert(error.response.data, "error");
       }
     }
-
-    return updatedTodo;
   };
 
   const deleteTodo = async (id: string) => {
@@ -131,13 +137,16 @@ export const useTodoFunctions = () => {
         withCredentials: true,
       });
       if (response.status === 200) {
+        setTodos(todos.filter((o: any) => o._id !== id));
         showAlert(`Завдання було успішно видалено`);
       }
-    } catch (error) {
-      showAlert("Помилка видалення завдання", "error");
-      return;
+    } catch (error: any) {
+      if (error.status === 401) {
+        window.location.href = "/auth";
+      } else {
+        showAlert(error.response.data, "error");
+      }
     }
-    setTodos(todos.filter((o: any) => o._id !== id));
   };
 
   const sortBy = (name: string, desc: boolean, todosList: Task[]) => {

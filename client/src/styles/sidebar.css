@@ -39,6 +39,7 @@
 .scroll-container-nav {
   max-height: 290px;
   overflow-y: scroll;
+  overflow-x: hidden;
   outline: none;
 }
 
@@ -142,4 +143,12 @@
     transition: right 0.4s ease;
     padding-bottom: 2rem;
   }
+}
+
+.nav-delete {
+  visibility: hidden;
+}
+
+.listname-link:hover .nav-delete {
+  visibility: visible;
 }

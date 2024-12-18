@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTodoFunctions } from "./functions/todosFunctions";
 import Options from "./Options";
 import { formatText } from "./functions/formatFields";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 
 export const STATUS_OPTIONS = [
   { name: "to do", color: "bg-yellow-700" },
@@ -14,7 +15,7 @@ export const STATUS_OPTIONS = [
 const PRIORITY_OPTIONS = [
   { name: "low", color: "bg-blue-500" },
   { name: "medium", color: "bg-yellow-500" },
-  { name: "high", color: "bg-red-500"},
+  { name: "high", color: "bg-red-500" },
 ];
 
 export default function StatusDropdown(todo: Task) {
@@ -22,8 +23,9 @@ export default function StatusDropdown(todo: Task) {
   const [isOpenCategories, setIsOpenCategories] = useState(false);
   const [isOpenPriority, setIsOpenPriority] = useState(false);
 
+  const { profileDetails } = useUserDetails();
+
   const { updateField } = useTodoFunctions();
-  const { categories } = useTodos();
 
   const [selectedStatus, setSelectedStatus] = useState(todo.status);
   const [selectedCategory, setSelectedCategory] = useState(todo.category);
@@ -87,7 +89,7 @@ export default function StatusDropdown(todo: Task) {
           title='До якого списку належить завдання'
         >
           <div className='flex items-center justify-center text-sm bg-stone-400 rounded-xl h-5 space-x-2'>
-            {formatText(selectedCategory, 8)}
+            {formatText(selectedCategory, 11)}
           </div>
         </button>
 
@@ -109,7 +111,9 @@ export default function StatusDropdown(todo: Task) {
 
       {isOpenStatuses && <Options options={STATUS_OPTIONS} handleClick={handleOptionClick} />}
 
-      {isOpenCategories && <Options options={categories} handleClick={handleCategoryClick} />}
+      {isOpenCategories && (
+        <Options options={profileDetails.categories} handleClick={handleCategoryClick} />
+      )}
 
       {isOpenPriority && <Options options={PRIORITY_OPTIONS} handleClick={handlePriorityClick} />}
     </main>

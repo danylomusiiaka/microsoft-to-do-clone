@@ -3,4 +3,5 @@ export interface User {
   name: string;
   picture: string;
   team: string;
+  categories: string[];
 }

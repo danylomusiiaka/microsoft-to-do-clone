@@ -13,7 +13,7 @@ import { useTodoFunctions } from "../functions/todosFunctions";
 import Delete from "../../../public/delete";
 
 export default function ToDoSidebar({ todo }: { todo: Task }) {
-  const { todos, setTodoChoosed, error } = useTodos();
+  const { todos, setTodoChoosed } = useTodos();
 
   const { updateField, todoOnFirstPos, deleteTodo } = useTodoFunctions();
 
@@ -48,7 +48,6 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             <Cross />
           </button>
         </div>
-        <p className='text-red-500'>{error}</p>
         <div className='flex text-sidebar-input items-center justify-between profile'>
           <textarea
             ref={textareaRef}

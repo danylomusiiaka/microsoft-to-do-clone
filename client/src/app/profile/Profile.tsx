@@ -10,11 +10,12 @@ import StatusEditor from "../profile/StatusEditor";
 import ThemeOption from "@/components/ThemeOption";
 import { User } from "@/interfaces/UserInterface";
 import { useAlert } from "@/contexts/AlertContext";
+import TeamAdd from "../../../public/team-add";
 const themes = ["dark", "light", "purple"];
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function Profile({ userData }: { userData: User }) {
-  const { updateField } = useProfileFunctions();
+  const { updateField, joinTeam, exitTeam, createTeam } = useProfileFunctions();
   const { showAlert } = useAlert();
   const [name, setName] = useState(userData.name);
   const [isJoin, setIsJoin] = useState(false);
@@ -23,35 +24,20 @@ export default function Profile({ userData }: { userData: User }) {
   const [codeInput, setCodeInput] = useState("");
 
   useEffect(() => {
-    setProfileDetails(profileInfo);
+    setProfileDetails(userData);
   }, []);
 
   useEffect(() => {
     setName(profileDetails.name);
+    setProfileInfo(profileDetails);
   }, [profileDetails]);
 
-  const createTeam = async () => {
-    const response = await Axios.post(`${webUrl}/user/create-team`, {}, { withCredentials: true });
-    setProfileInfo((prev) => ({ ...prev, team: response.data }));
-  };
-
-  const exitTeam = async () => {
-    const response = await Axios.post(`${webUrl}/user/exit-team`, {}, { withCredentials: true });
-    setProfileInfo((prev) => ({ ...prev, team: response.data }));
-  };
-
-  const joinTeam = async () => {
-    try {
-      const response = await Axios.post(
-        `${webUrl}/user/join-team`,
-        { teamCode: codeInput },
-        { withCredentials: true }
-      );
-      if (response.status === 200) {
-        setProfileInfo({ ...profileInfo, team: codeInput });
-      }
-    } catch (error: any) {
-      showAlert(error.response.data, "error");
+  const updateName = () => {
+    if (name.trim() === "" || name.trim() === profileDetails.name.trim()) {
+      setName(userData.name);
+      return;
+    } else {
+      updateField("name", name.trim());
     }
   };
 
@@ -65,12 +51,7 @@ export default function Profile({ userData }: { userData: User }) {
               className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onBlur={() => {
-                if (name.trim() !== profileDetails.name.trim()) {
-                  updateField("name", name.trim());
-                  showAlert("Ваше ім'я було успішно оновлене", "success");
-                }
-              }}
+              onBlur={updateName}
             />
             <p className='md:text-2xl pl-1 '>{formatText(profileInfo.email, 30)}</p>
           </div>
@@ -98,7 +79,7 @@ export default function Profile({ userData }: { userData: User }) {
             </button>
           </div>
         ) : (
-          <div className='md:space-x-3 md:space-y-0 space-y-3'>
+          <div className='md:flex md:space-x-3 md:space-y-0 space-y-3'>
             <button
               className='w-fit rounded-md p-1 px-6'
               style={{ backgroundColor: "var(--sidebar-block-color)" }}
@@ -108,15 +89,17 @@ export default function Profile({ userData }: { userData: User }) {
             </button>
 
             {isJoin ? (
-              <>
+              <div className='flex items-center'>
                 <input
                   className='bg-transparent border rounded-md text-sm p-1 pl-2 mr-3'
                   placeholder='Введіть код команди'
                   autoFocus
                   onChange={(e) => setCodeInput(e.target.value)}
                 />
-                <button onClick={joinTeam}>Submit</button>
-              </>
+                <button onClick={() => joinTeam(codeInput)}>
+                  <TeamAdd />
+                </button>
+              </div>
             ) : (
               <button
                 className='w-fit rounded-md p-1 px-6'

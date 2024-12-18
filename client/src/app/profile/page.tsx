@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
-const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
 import Axios from "axios";
 import Loading from "../loading";
 import { cookies } from "next/headers";
-import Profile from "./Profile";
+const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
+const Profile = React.lazy(() => import("./Profile"));
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 async function fetchUserData(token: string) {

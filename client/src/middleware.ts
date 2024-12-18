@@ -1,27 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
-  const token = req.cookies.get("token");
-
-  try {
-    const result = await fetch(`${webUrl}/user/details`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (result.ok) {
-      url.pathname = "/";
-      return NextResponse.redirect(url);
-    }
-  } catch (error) {
-    if (url.pathname === "/server-error") {
-      return NextResponse.next();
-    }
-    url.pathname = "/server-error";
-    return NextResponse.redirect(url);
-  }
+  const token = req.cookies.get("token")?.value;
 
   const staticFileExtensions = [".png", ".jpg", ".jpeg", ".gif", ".css", ".js", ".svg", ".ico"];
   if (staticFileExtensions.some((ext) => url.pathname.endsWith(ext))) {
@@ -31,6 +15,31 @@ export async function middleware(req: NextRequest) {
   if (!token && url.pathname !== "/auth") {
     url.pathname = "/auth";
     return NextResponse.redirect(url);
+  }
+
+  if (token) {
+    try {
+      const result = await fetch(`${webUrl}/user/details`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (result.status !== 200) {
+        const response = NextResponse.redirect(new URL("/auth", req.url));
+        response.cookies.delete("token");
+        response.cookies.set("session-expired", "true", { path: "/auth", httpOnly: false });
+        return response;
+      }
+
+      if (url.pathname === "/auth" || url.pathname === "/server-error") {
+        url.pathname = "/";
+        return NextResponse.redirect(url);
+      }
+    } catch (error) {
+      if (url.pathname !== "/server-error") {
+        url.pathname = "/server-error";
+        return NextResponse.redirect(url);
+      }
+    }
   }
 
   return NextResponse.next();

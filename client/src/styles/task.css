@@ -62,7 +62,6 @@
 .scroll-container-todos {
   height: 450px;
   overflow-y: scroll;
-
 }
 
 .scroll-container::-webkit-scrollbar,
@@ -71,7 +70,7 @@
 }
 
 .scroll-container::-webkit-scrollbar-thumb,
-.scroll-container-todos::-webkit-scrollbar-thumb  {
+.scroll-container-todos::-webkit-scrollbar-thumb {
   background-color: var(--primary-text-color);
   border-radius: 10px;
 }
@@ -130,7 +129,15 @@ select {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 250px;
+  max-width: 180px;
+}
+
+.truncated-text-todo {
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 30rem;
+  white-space: normal;
 }
 
 .truncated-input {

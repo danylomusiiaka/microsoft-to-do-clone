@@ -1,38 +1,95 @@
 "use client";
 import NavigationButton from "../NavigationButton";
-import Plus from "../../../public/plus";
+import Plus from "@/../public/plus";
+import Delete from "@/../public/delete";
 import { useState, useRef, useEffect } from "react";
 import { useTodos } from "@/contexts/TodosContext";
-import { Category } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
 import Link from "next/link";
 import { formatText } from "../functions/formatFields";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import Axios from "axios";
+import { useProfileFunctions } from "../functions/userFunctions";
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
-export default function NavSidebar({ userData }: { userData: User | null }) {
+export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
-  const { categories, setCategories, setSearch } = useTodos();
+  const { setSearch, setTodos } = useTodos();
   const { profileDetails, setProfileDetails } = useUserDetails();
+  const { addCategory, deleteCategory } = useProfileFunctions();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [profileData, setProfileData] = useState(userData);
 
   useEffect(() => {
-    setProfileData(userData);
+    setProfileDetails(userData);
   }, []);
 
   useEffect(() => {
     setProfileData(profileDetails);
   }, [profileDetails]);
 
-  const addCategory = (category: string) => {
-    if (category.trim() === "") return;
-    setCategories([...categories, { name: category, color: "bg-stone-600" }]);
-    setCategory("");
-  };
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:3001");
+
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          type: "init",
+          profileDetails: { team: profileDetails.team },
+        })
+      );
+    };
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.event === "categoryCreated") {
+        setProfileDetails((prevDetails) => {
+          return {
+            ...prevDetails,
+            categories: message.categories,
+          };
+        });
+      } else if (message.event === "categoryDeleted") {
+        setProfileDetails((prevDetails) => {
+          return {
+            ...prevDetails,
+            categories: message.remainingCategories,
+          };
+        });
+
+        if (
+          message.remainingCategories.some(
+            (cat: string) => window.location.pathname === `/${encodeURIComponent(cat)}`
+          )
+        ) {
+          window.location.href = "/";
+        }
+
+        setTodos(message.remainingTasks);
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [profileDetails]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await Axios.get(`${webUrl}/category/all`, {
+        withCredentials: true,
+      });
+      setProfileDetails((prevDetails) => ({
+        ...prevDetails,
+        categories: response.data,
+      }));
+    };
+    fetchCategories();
+  }, [profileDetails.team]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       addCategory(category);
+      setCategory("");
     }
   };
 
@@ -72,13 +129,13 @@ export default function NavSidebar({ userData }: { userData: User | null }) {
             onClick={handleItemClick}
           >
             <img
-              src={profileData!.picture || `default-picture.svg`}
+              src={profileData.picture || `/default-picture.svg`}
               alt='photo'
               className='w-12 h-12 object-cover rounded-full'
             />
             <div>
-              <h1 className='font-bold'>{formatText(profileData!.name, 30)}</h1>
-              <p className='text-sm'>{formatText(profileData!.email, 30)}</p>
+              <h1 className='font-bold'>{formatText(profileData.name, 30)}</h1>
+              <p className='text-sm'>{formatText(profileData.email, 30)}</p>
             </div>
           </Link>
           <div className='search-container'>
@@ -90,19 +147,33 @@ export default function NavSidebar({ userData }: { userData: User | null }) {
             />
           </div>
           <a href='/' className='flex items-center space-x-3 w-full p-3 rounded-md button'>
-            <img src='home.svg' className='w-6' />
+            <img src='/home.svg' className='w-6' />
             <p>Завдання</p>
           </a>
-          <NavigationButton icon='star.svg' href='/dashboard' text='Статистика' />
+          <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
           <hr className='divider' />
           <div className='scroll-container-nav'>
-            {categories.map((category: Category) => (
-              <NavigationButton
-                icon='list.svg'
-                href={`/${category.name}`}
-                text={category.name}
-                key={category.name}
-              />
+            {profileData.categories?.map((category) => (
+              <div
+                className='flex justify-between p-3 rounded-md button listname-link'
+                key={category}
+              >
+                <a
+                  href={`/list/${encodeURIComponent(category)}`}
+                  className='flex items-center space-x-3 w-full '
+                >
+                  <img src='/list.svg' className='w-6' />
+                  <p className='truncated-text'>{category}</p>
+                </a>
+                <button
+                  className='nav-delete'
+                  onClick={() => {
+                    deleteCategory(category);
+                  }}
+                >
+                  <Delete color='#6b7280' width='25px' />
+                </button>
+              </div>
             ))}
           </div>
         </div>
@@ -112,6 +183,7 @@ export default function NavSidebar({ userData }: { userData: User | null }) {
             <button
               onClick={() => {
                 addCategory(category);
+                setCategory("");
               }}
             >
               <Plus name='plus-2' />

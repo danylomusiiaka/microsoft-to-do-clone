@@ -7,6 +7,7 @@ import Slide from "@mui/material/Slide";
 import { SlideProps } from "@mui/material/Slide";
 
 interface AlertState {
+  key: number;
   message: string;
   severity: "success" | "error" | "warning" | "info";
   variant: "filled" | "outlined" | "standard";
@@ -39,19 +40,22 @@ export function AlertProvider({ children }: AlertProviderProps) {
     severity: AlertState["severity"] = "success",
     variant: AlertState["variant"] = "filled"
   ) => {
-    setAlert({ message, severity, variant });
+    setAlert({ key: Date.now(), message, severity, variant });
     setOpenSnackbar(true);
-    setTimeout(() => {
-      setOpenSnackbar(false);
-    }, 4000);
   };
 
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") return;
+    setOpenSnackbar(false);
+  };
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
       <Snackbar
+        key={alert?.key}
         open={openSnackbar}
         autoHideDuration={4000}
+        onClose={handleClose}
         TransitionComponent={SlideTransition}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >

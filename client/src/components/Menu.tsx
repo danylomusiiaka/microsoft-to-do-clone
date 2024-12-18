@@ -8,6 +8,11 @@ import CloseCircle from "../../public/close-circle";
 import SortAsc from "../../public/sort-up";
 import SortDesc from "../../public/sort-down";
 import { useTodos } from "@/contexts/TodosContext";
+import Delete from "../../public/delete";
+import Axios from "axios";
+import { useAlert } from "@/contexts/AlertContext";
+import { useProfileFunctions } from "./functions/userFunctions";
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 interface MenuProps {
   listName: string;
@@ -16,11 +21,13 @@ interface MenuProps {
 }
 
 export default function Menu({ listName, sortOptions, setSortOptions }: MenuProps) {
-  const { todos } = useTodos();
+  const { todos, setTodos, setTodoChoosed } = useTodos();
   const { sortBy } = useTodoFunctions();
   const [desc, setDesc] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [name, setName] = useState(listName);
+  const { showAlert } = useAlert();
+  const { updateCategory } = useProfileFunctions();
 
   useEffect(() => {
     const savedSortOptions = sessionStorage.getItem("sortSettings");
@@ -50,6 +57,27 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
     });
   };
 
+  const handleDeleteAll = async () => {
+    try {
+      const response = await Axios.delete(`${webUrl}/task/all`, {
+        params: { category: listName },
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setTodoChoosed(null);
+        setTodos(response.data.remainingTasks || []);
+        showAlert(response.data.message);
+      }
+    } catch (error: any) {
+      if (error.status === 401) {
+        window.location.href = "/auth";
+      } else {
+        showAlert(error.response.data, "error");
+      }
+    }
+    setOpenMenu(false);
+  };
+
   return (
     <>
       <main className='relative flex justify-between items-center'>
@@ -57,6 +85,13 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onBlur={() => {
+              if (name.trim() === "") {
+                setName(listName);
+                return;
+              }
+              updateCategory(listName, name);
+            }}
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
           />
         ) : (
@@ -74,25 +109,32 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
             <section className='absolute right-0 mt-2 menu shadow-lg rounded-md p-3'>
               <p className='p-2 pl-1'>Відсортувати:</p>
               <button
-                className='flex space-x-2 w-full items-center profile p-2 pl-1'
+                className='flex space-x-2 w-full items-center profile p-2'
                 onClick={() => handleSort("За алфавітом")}
               >
                 <SortByAlphabetIcon />
-                <p className='text-sm'>За алфавітом</p>
+                <p>За алфавітом</p>
               </button>
               <button
-                className='flex space-x-2 w-full items-center profile p-2 pl-1'
+                className='flex space-x-2 w-full items-center profile p-2'
                 onClick={() => handleSort("За терміном")}
               >
                 <SortByDateIcon />
-                <p className='text-sm'>За терміном</p>
+                <p>За терміном</p>
               </button>
               <button
-                className='flex space-x-2 w-full items-center profile p-2 pl-1'
+                className='flex space-x-2 w-full items-center profile p-2'
                 onClick={() => handleSort("За пріорітетністю")}
               >
                 <SortByPriorityIcon />
-                <p className='text-sm'>За пріорітетністю</p>
+                <p>За пріорітетністю</p>
+              </button>
+              <button
+                className='flex space-x-2 w-full items-center profile p-2 pl-0'
+                onClick={handleDeleteAll}
+              >
+                <Delete color='#b91c1c' width='25px' />
+                <p className='text-red-600'> Видалити всі завдання</p>
               </button>
             </section>
           )}

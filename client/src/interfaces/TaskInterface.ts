@@ -11,7 +11,4 @@ export interface Task {
   priority: string;
 }
 
-export interface Category {
-  name: string;
-  color: string;
-}
+

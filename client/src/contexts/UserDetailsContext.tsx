@@ -13,32 +13,13 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
-  const [profileDetails, setProfileDetails] = useState({
+  const [profileDetails, setProfileDetails] = useState<User>({
     name: "",
     email: "",
     picture: "",
     team: "",
+    categories: [""],
   });
-
-  
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await Axios.get(`${webUrl}/user/details`, {
-          withCredentials: true,
-        });
-        const { name, email, picture, team } = result.data;
-        setProfileDetails({ name, email, picture, team });
-      } catch (error: any) {
-        console.log(error.response);
-        
-
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <UserContext.Provider

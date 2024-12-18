@@ -36,6 +36,10 @@ const taskRoutes = require("./routes/taskMethods");
 
 app.use("/task", taskRoutes);
 
+const categoryRoutes = require("./routes/categoryMethods");
+
+app.use("/category", categoryRoutes);
+
 server.listen(3001, () => {
   console.log("Server is listening on port 3001");
 });

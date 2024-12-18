@@ -58,12 +58,6 @@ export default function Favorite() {
     <>
       <div className='flex justify-between'>
         <NavSidebar userData={null} />
-
-        <div className='md:hidden'>
-          <p>Показати діаграму</p>
-          <button>Кругову</button>
-          <button>Стовпчикову</button>
-        </div>
       </div>
       <section className='md:p-12 md:mt-0 mt-5'>
         <h1 className='text-5xl font-bold'>Статистика</h1>
@@ -80,11 +74,6 @@ export default function Favorite() {
             inputLabels={chartData.priority.labels}
             backgroundColors={["#eab308", "#ef4444", "#3b82f6"]}
           />
-        </div>
-        <div className='hidden md:visible'>
-          <p>Показати діаграму</p>
-          <button>Кругову</button>
-          <button>Стовпчикову</button>
         </div>
       </section>
     </>

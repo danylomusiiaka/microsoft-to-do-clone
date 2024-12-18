@@ -10,6 +10,7 @@ import Menu from "../Menu";
 import { formatDate } from "../functions/formatFields";
 import ToDoSidebar from "./ToDoSidebar";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { useParams } from "next/navigation";
 
 const PRIORITY_OPTIONS = [
   { name: "low", color: "bg-blue-500" },
@@ -17,11 +18,17 @@ const PRIORITY_OPTIONS = [
   { name: "high", color: "bg-red-500" },
 ];
 
-export default function TodoList({ listName, allTodos }: { listName: string; allTodos: Task[] }) {
-  const { todoChoosed, setTodoChoosed, todos, setTodos, search, error } = useTodos();
-  const [tasks, setTasks] = useState(allTodos);
-  const { addToDo } = useTodoFunctions();
+export default function TodoList({ allTodos }: { allTodos: Task[] }) {
+  const { category } = useParams();
+  const { todoChoosed, setTodoChoosed, todos, setTodos, search } = useTodos();
+  const listName = decodeURIComponent(
+    Array.isArray(category) ? category[0] : category || "Завдання"
+  );
+
   const { profileDetails } = useUserDetails();
+
+  const { addToDo, formatStarTodos } = useTodoFunctions();
+  const [tasks, setTasks] = useState(formatStarTodos(allTodos));
 
   const [newTodoText, setNewTodoText] = useState("");
   const [sortOptions, setSortOptions] = useState({ name: "", desc: false });
@@ -57,15 +64,15 @@ export default function TodoList({ listName, allTodos }: { listName: string; all
     return () => {
       ws.close();
     };
-  }, [profileDetails]);
+  }, [todos]);
 
   useEffect(() => {
     setTodoChoosed(null);
-    setTodos(allTodos);
+    setTodos(formatStarTodos(allTodos));
   }, []);
 
   useEffect(() => {
-    setTasks(todos);
+    setTasks(formatStarTodos(todos));
   }, [todos]);
 
   const handleAddTodo = async () => {
@@ -95,9 +102,11 @@ export default function TodoList({ listName, allTodos }: { listName: string; all
                       : listName === "Завдання" || todo.category === listName
                   )
                   .map((todo: Task) => (
-                    <>
+                    <React.Fragment key={todo._id}>
                       {sortOptions.name === "За терміном" && (
-                        <td className='p-3 pl-0 text-sm md:hidden'>{formatDate(todo.date)}</td>
+                        <tr>
+                          <td className='p-3 pl-0 text-sm md:hidden'>{formatDate(todo.date)}</td>
+                        </tr>
                       )}
                       {sortOptions.name === "За пріорітетністю" && (
                         <div className='p-3 pl-0 md:hidden'>
@@ -113,7 +122,7 @@ export default function TodoList({ listName, allTodos }: { listName: string; all
                       )}
 
                       <Todo todo={todo} sortName={sortOptions.name} />
-                    </>
+                    </React.Fragment>
                   ))}
 
                 {completedTodos.filter(
@@ -137,15 +146,13 @@ export default function TodoList({ listName, allTodos }: { listName: string; all
                   .map(
                     (todo: Task) =>
                       (listName === "Завдання" || todo.category === listName) && (
-                        <Todo todo={todo} sortName={sortOptions.name} />
+                        <Todo key={todo._id} todo={todo} sortName={sortOptions.name} />
                       )
                   )}
               </tbody>
             </table>
           </div>
         </section>
-        {!todoChoosed && <p className='text-red-500'>{error}</p>}
-
         <section className='flex search-input'>
           <button onClick={handleAddTodo}>
             <Plus />
@@ -155,6 +162,7 @@ export default function TodoList({ listName, allTodos }: { listName: string; all
             value={newTodoText}
             placeholder='Додайте завдання'
             className='task-input'
+            autoFocus
             onChange={(e) => setNewTodoText(e.target.value)}
             onKeyDown={handleKeyDown}
           />

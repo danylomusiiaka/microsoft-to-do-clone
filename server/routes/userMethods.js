@@ -45,7 +45,6 @@ router.post("/verify-email", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   const { name, email, password, verificationKey, userInputKey } = req.body;
-  console.log(email);
 
   const isMatch = await bcrypt.compare(userInputKey, verificationKey);
 
@@ -113,10 +112,27 @@ router.get("/details", verifyToken, async (req, res) => {
     if (!user) {
       return res.status(404).send("Користувач не знайдений");
     }
-    const { name, email, picture, team } = user;
-    res.json({ name, email, picture, team });
+
+    const { name, email, picture, team, categories } = user;
+
+    if (team) {
+      const userTeam = await teamModel.findOne({ code: team });
+      if (!userTeam) {
+        user.team = "";
+        await user.save();
+        return res.json({ name, email, picture, team: "", categories });
+      }
+      if (!userTeam.categories) {
+        userTeam.categories = [];
+        await userTeam.save();
+        return res.json({ name, email, picture, team, categories: [] });
+      }
+      return res.json({ name, email, picture, team, categories: userTeam.categories });
+    }
+
+    return res.json({ name, email, picture, team, categories });
   } catch (error) {
-    res.status(500).send("Error retrieving user profile");
+    return res.status(500).send("Error retrieving user profile");
   }
 });
 

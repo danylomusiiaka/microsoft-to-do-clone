@@ -1,12 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "@/styles/auth.css";
 import Register from "./Register";
 import Login from "./Login";
 import Slideshow from "./Slideshow";
+import Cookies from "js-cookie";
+import { useAlert } from "@/contexts/AlertContext";
 
 export default function AuthForms() {
   const [isSignUpMode, setSignUpMode] = useState(false);
+  const { showAlert } = useAlert();
+
+  useEffect(() => {
+    if (Cookies.get("session-expired")) {
+      showAlert("Ваша сесія закінчилась. Увійдіть знову", "warning");
+      Cookies.remove("session-expired", { path: "/auth" });
+    }
+  }, []);
 
   return (
     <main className={isSignUpMode ? "sign-up-mode" : ""}>

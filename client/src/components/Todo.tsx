@@ -41,21 +41,24 @@ export default function Todo({ todo, sortName }: TodoProps) {
 
   return (
     <>
-      <td className='p-3 pl-0 md:hidden'>
-        <span
-          className={`${
-            STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
-          } rounded-xl text-sm text-nowrap px-3 pb-0.5 `}
-        >
-          {todo.status}
-        </span>
-      </td>
-      <tr key={todo._id} className='task' onClick={toggleToDoSidebar}>
+      <tr>
+        <td className='p-3 pl-0 md:hidden'>
+          <span
+            className={`${
+              STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+            } rounded-xl text-sm text-nowrap px-3 pb-0.5 `}
+          >
+            {todo.status}
+          </span>
+        </td>
+      </tr>
+
+      <tr className='task' onClick={toggleToDoSidebar}>
         <td className='p-3 flex items-center'>
           <button className='circle-btn mr-5' onClick={toggleCompletion}>
             <Checkmark status={todo.status} />
           </button>
-          <p>{formatText(todo.text, 40)}</p>
+          <p className="truncated-text-todo">{todo.text}</p>
         </td>
         <td className='md:p-3 align-text-top table-field'>
           {sortName == "За пріорітетністю" ? (

@@ -48,7 +48,7 @@ export default async function Home() {
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
         <NavSidebar userData={userData} />
-        <TodoList listName='Завдання' allTodos={allTodos} />
+        <TodoList allTodos={allTodos} />
       </Suspense>
     </section>
   );
