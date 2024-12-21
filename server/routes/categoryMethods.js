@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const { verifyToken } = require("../config/authMiddleware");
-const { broadcast } = require("../config/websocket");
-const userModel = require("../models/userModel");
-const teamModel = require("../models/teamModel");
-const taskModel = require("../models/taskModel");
+import { Router } from "express";
+const router = Router();
+import { verifyToken } from "../config/authMiddleware.js";
+import { broadcast } from "../config/websocket.js";
+import userModel from "../models/userModel.js";
+import taskModel from "../models/taskModel.js";
+import teamModel from "../models/teamModel.js";
 
 router.post("/create", verifyToken, async (req, res) => {
   try {
@@ -59,6 +59,8 @@ router.get("/all", verifyToken, async (req, res) => {
     }
     return res.json(user.categories);
   } catch (error) {
+    console.log(error);
+
     res.status(500).send("Помилка отримання категорій");
   }
 });
@@ -66,7 +68,6 @@ router.get("/all", verifyToken, async (req, res) => {
 router.put("/:name", verifyToken, async (req, res) => {
   const oldCategory = decodeURIComponent(req.params.name);
   const { newCategory } = req.body;
-  console.log(newCategory);
 
   try {
     const user = await userModel.findById(req.userId);
@@ -137,4 +138,4 @@ router.delete("/:name", verifyToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

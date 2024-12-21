@@ -48,7 +48,7 @@ export default function Register() {
         }
       );
       if (response.status === 200) {
-        window.location.href = "/";
+        window.location.href = "/profile";
       }
     } catch (error: any) {
       if (error.response) {
@@ -123,12 +123,12 @@ export default function Register() {
       <div>
         <div className='input-wrap'>
           <input
-              type='password'
-              id='verification'
+            type='password'
+            id='verification'
             onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })}
             placeholder=' '
           />
-          <label htmlFor="verification">Верифікаційний код</label>
+          <label htmlFor='verification'>Верифікаційний код</label>
         </div>
         <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
           {isLoading ? <span className='spinner'></span> : "Підтвердити"}

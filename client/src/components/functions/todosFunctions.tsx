@@ -3,18 +3,15 @@ import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Task } from "@/interfaces/TaskInterface";
 import Axios from "axios";
+import { PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
+import Cookies from "js-cookie";
+
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useTodoFunctions = () => {
   const { todos, setTodos } = useTodos();
-  const { profileDetails } = useUserDetails();
+  const { profileDetails, setUserQuest } = useUserDetails();
   const { showAlert } = useAlert();
-
-  const PRIORITY_OPTIONS = [
-    { name: "low", number: 3 },
-    { name: "medium", number: 2 },
-    { name: "high", number: 1 },
-  ];
 
   const todoOnFirstPos = (todo: Task, isImportant: boolean) => {
     if (isImportant) {
@@ -51,11 +48,15 @@ export const useTodoFunctions = () => {
       priority: "no priority",
     };
 
+    if (profileDetails.team) {
+      newTodo.assignee = "Нема виконавця";
+    }
+
     try {
       const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
         withCredentials: true,
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         newTodo._id = response.data.id;
         const updatedTodos = [newTodo, ...todos];
         setTodos(updatedTodos);
@@ -101,8 +102,8 @@ export const useTodoFunctions = () => {
       return;
     }
 
-    if (updatedFields.description && updatedFields.description.length >= 500) {
-      showAlert("Опис завдання не може перевищувати 500 символів", "error");
+    if (updatedFields.description && updatedFields.description.length >= 1000) {
+      showAlert("Опис завдання не може перевищувати 1000 символів", "error");
       return;
     }
 
@@ -113,6 +114,17 @@ export const useTodoFunctions = () => {
       if (response.status === 200) {
         const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
         setTodos(updatedTodos);
+        const completedTodos = updatedTodos.filter((todo: Task) => todo.isCompleted);
+
+        const cookiesUserQuest = Cookies.get("newUserQuest");
+        if (cookiesUserQuest) {
+          const userQuest = JSON.parse(cookiesUserQuest);
+          if (completedTodos.length == 3 && userQuest.completedThreeTasks != 75) {
+            userQuest.completedThreeTasks += 75;
+            setUserQuest((prevQuest) => [prevQuest[0] + 75, ...prevQuest.slice(1)]);
+            Cookies.set("newUserQuest", JSON.stringify(userQuest));
+          }
+        }
         const sortSettings = sessionStorage.getItem("sortSettings");
         if (sortSettings) {
           const { name, desc } = JSON.parse(sortSettings);
@@ -163,10 +175,8 @@ export const useTodoFunctions = () => {
       );
     } else if (name === "За пріорітетністю") {
       sortedTodos.sort((a, b) => {
-        const priorityA =
-          PRIORITY_OPTIONS.find((option) => option.name === a.priority)?.number || 4;
-        const priorityB =
-          PRIORITY_OPTIONS.find((option) => option.name === b.priority)?.number || 4;
+        const priorityA = PRIORITY_RATING.find((option) => option.name === a.priority)?.number || 4;
+        const priorityB = PRIORITY_RATING.find((option) => option.name === b.priority)?.number || 4;
         return desc ? priorityB - priorityA : priorityA - priorityB;
       });
     } else {
@@ -175,19 +185,22 @@ export const useTodoFunctions = () => {
     setTodos(sortedTodos);
   };
 
-  function formatForChart(data: any[], field: string) {
-    const fieldCounts = data.reduce((acc, item) => {
-      acc[item[field]] = (acc[item[field]] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+  const formatForChart = (todos: Task[], type: "status" | "priority") => {
+    const options = type === "status" ? STATUS_OPTIONS : PRIORITY_RATING;
 
-    const labels = Object.keys(fieldCounts);
-    console.log(labels);
+    const chartData: { labels: string[]; data: number[] } = {
+      labels: [],
+      data: [],
+    };
 
-    const formattedData = labels.map((label) => fieldCounts[label]);
+    options.forEach((option) => {
+      const count = todos.filter((todo) => todo[type] === option.name).length;
+      chartData.labels.push(option.name);
+      chartData.data.push(count);
+    });
 
-    return { labels, data: formattedData };
-  }
+    return chartData;
+  };
 
   return {
     todoOnFirstPos,

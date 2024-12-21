@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const teamSchema = new mongoose.Schema(
+const teamSchema = new Schema(
   {
     code: { type: String, required: true },
     participants: { type: [String] },
@@ -10,4 +10,4 @@ const teamSchema = new mongoose.Schema(
   { default: [] }
 );
 
-module.exports = mongoose.model("Team", teamSchema);
+export default model("Team", teamSchema);

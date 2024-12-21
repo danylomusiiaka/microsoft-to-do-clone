@@ -51,7 +51,7 @@ export default async function Category({ params }: { params: { category: string 
         <NavSidebar userData={userData} />
         {!userData.categories?.includes(category) ? (
           <div className='md:flex items-center space-x-6 justify-center w-full'>
-            <img src='/not-found.png' alt='cat-not-found' className='w-60 h-48' />
+            <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
             <div className='space-y-4'>
               <h1 className='text-2xl font-semibold'>
                 Ми чесно шукали, але нічого не змогли знайти..
@@ -59,9 +59,9 @@ export default async function Category({ params }: { params: { category: string 
               <p>Зверніть увагу на наступні кроки: </p>
               <ul className='list-disc pl-5 space-y-2'>
                 <li>чи створений список, який ви шукаєте</li>
-                <li>чи в тій Ви команді, в якій створений список</li>
+                <li>чи в тому Ви контексті, в якому створений список</li>
               </ul>
-              <div>
+              <div className='pt-3 w-fit'>
                 <a
                   href='/'
                   className='bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'

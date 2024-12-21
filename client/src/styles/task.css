@@ -60,7 +60,7 @@
 }
 
 .scroll-container-todos {
-  height: 450px;
+  height: 30rem;
   overflow-y: scroll;
 }
 

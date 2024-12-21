@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new Schema({
   text: { type: String, required: true },
   author: { type: String, required: true },
   isCompleted: { type: Boolean, default: false },
@@ -10,6 +10,7 @@ const taskSchema = new mongoose.Schema({
   category: { type: String },
   isImportant: { type: Boolean, default: false },
   priority: { type: String },
+  assignee: { type: String },
 });
 
-module.exports = mongoose.model("Task", taskSchema);
+export default model("Task", taskSchema);

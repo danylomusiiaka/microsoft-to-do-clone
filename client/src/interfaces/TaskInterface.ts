@@ -9,6 +9,7 @@ export interface Task {
   category: string;
   isImportant: boolean;
   priority: string;
+  assignee?: string;
 }
 
 

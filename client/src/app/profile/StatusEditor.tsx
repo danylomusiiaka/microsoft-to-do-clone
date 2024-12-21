@@ -3,7 +3,7 @@ import { useState } from "react";
 import Plus from "../../../public/plus";
 import Delete from "../../../public/delete";
 import Pencil from "../../../public/pencil";
-import { STATUS_OPTIONS } from "../../../public/statuses";
+import { STATUS_OPTIONS } from "../../components/constants/statuses";
 
 export default function StatusEditor() {
   const [isChangingStatuses, setChangingStatuses] = useState(false);

@@ -1,81 +1,49 @@
-"use client";
-
-import NavSidebar from "@/components/structure/NavSidebar";
-import { useTodos } from "@/contexts/TodosContext";
-import DonutChart from "./DonutChart";
-import { useEffect, useState } from "react";
-import { useTodoFunctions } from "@/components/functions/todosFunctions";
-import Loading from "../loading";
 import Axios from "axios";
+import { cookies } from "next/headers";
+import React, { Suspense } from "react";
+import Loading from "../loading";
+import Dashboard from "./Dashboard";
+const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
 
-interface ChartData {
-  labels: string[];
-  data: number[];
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+
+async function fetchUserData(token: string) {
+  try {
+    const userResponse = await Axios.get(`${webUrl}/user/details`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return userResponse.data;
+  } catch (error: any) {
+    console.error("Error fetching user details:", error.response?.data || error.message);
+    return {};
+  }
 }
 
-export default function Favorite() {
-  const { todos, setTodos } = useTodos();
-  const { formatForChart } = useTodoFunctions();
+async function fetchTodos(token: string, teamOrEmail: string) {
+  try {
+    const todosResponse = await Axios.get(`${webUrl}/task/all`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { author: teamOrEmail },
+    });
 
-  const [chartData, setChartData] = useState<{
-    status: ChartData;
-    priority: ChartData;
-  }>({
-    status: { labels: [], data: [] },
-    priority: { labels: [], data: [] },
-  });
+    return todosResponse.data;
+  } catch (error: any) {
+    console.error("Error fetching todos:", error.response?.data || error.message);
+    return [];
+  }
+}
 
-  const [loading, setLoading] = useState(true);
+export default async function DashboardPage() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token")?.value;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Axios.get("http://localhost:5101/api/tasks");
-        const fetchedTodos = response.data;
-
-        setTodos(fetchedTodos);
-
-        const statusChart = formatForChart(fetchedTodos, "status");
-        const priorityChart = formatForChart(fetchedTodos, "priority");
-
-        setChartData({
-          status: statusChart,
-          priority: priorityChart,
-        });
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) return <Loading />;
+  const userData = token ? await fetchUserData(token) : {};
+  const allTodos = token ? await fetchTodos(token, userData.team || userData.email) : [];
 
   return (
-    <>
-      <div className='flex justify-between'>
-        <NavSidebar userData={null} />
-      </div>
-      <section className='md:p-12 md:mt-0 mt-5'>
-        <h1 className='text-5xl font-bold'>Статистика</h1>
-        <p className='mt-3'>для списку Завдання</p>
-        <div className='md:flex items-center md:space-x-10 mt-2'>
-          <DonutChart
-            data={chartData.status.data}
-            inputLabels={chartData.status.labels}
-            backgroundColors={["#a16207", "#22c55e", "#eab308"]}
-          />
-
-          <DonutChart
-            data={chartData.priority.data}
-            inputLabels={chartData.priority.labels}
-            backgroundColors={["#eab308", "#ef4444", "#3b82f6"]}
-          />
-        </div>
-      </section>
-    </>
+    <Suspense fallback={<Loading />}>
+      <NavSidebar userData={userData} />
+      <Dashboard allTodos={allTodos} userData={userData} />
+    </Suspense>
   );
 }

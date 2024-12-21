@@ -14,7 +14,7 @@ export default function AuthForms() {
   useEffect(() => {
     if (Cookies.get("session-expired")) {
       showAlert("Ваша сесія закінчилась. Увійдіть знову", "warning");
-      Cookies.remove("session-expired", { path: "/auth" });
+      Cookies.remove("session-expired");
     }
   }, []);
 

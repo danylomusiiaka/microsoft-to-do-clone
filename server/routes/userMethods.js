@@ -1,12 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const userModel = require("../models/userModel");
-const nodemailer = require("nodemailer");
-const bcrypt = require("bcrypt");
-const { generateToken, verifyToken, generateRandomString } = require("../config/authMiddleware");
-const teamModel = require("../models/teamModel");
-const taskModel = require("../models/taskModel");
-require("dotenv").config({ path: ".env" });
+import { Router } from "express";
+const router = Router();
+import userModel from "../models/userModel.js";
+import teamModel from "../models/teamModel.js";
+import taskModel from "../models/taskModel.js";
+import { createTransport } from "nodemailer";
+import { hash, compare } from "bcrypt";
+import { generateToken, verifyToken, generateRandomString } from "../config/authMiddleware.js";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 
 router.post("/verify-email", async (req, res) => {
   const { email } = req.body;
@@ -18,9 +19,9 @@ router.post("/verify-email", async (req, res) => {
   }
 
   const verificationKey = generateRandomString();
-  const hashedKey = await bcrypt.hash(verificationKey, 10);
+  const hashedKey = await hash(verificationKey, 10);
 
-  const transporter = nodemailer.createTransport({
+  const transporter = createTransport({
     service: "Gmail",
     auth: {
       user: process.env.EMAIL,
@@ -46,12 +47,12 @@ router.post("/verify-email", async (req, res) => {
 router.post("/register", async (req, res) => {
   const { name, email, password, verificationKey, userInputKey } = req.body;
 
-  const isMatch = await bcrypt.compare(userInputKey, verificationKey);
+  const isMatch = await compare(userInputKey, verificationKey);
 
   if (!isMatch) {
     return res.status(400).send("Неправильний ключ верифікації");
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hash(password, 10);
   const user = new userModel({ name, email, password: hashedPassword, picture: "" });
   await user.save();
 
@@ -214,4 +215,17 @@ router.post("/join-team", verifyToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+router.get("/team-members", verifyToken, async (req, res) => {
+  const { teamCode } = req.query;
+  try {
+    const team = await teamModel.findOne({ code: teamCode });
+    const participants = await userModel
+      .find({ email: { $in: team.participants } })
+      .select("email name picture");
+    res.status(200).json(participants);
+  } catch (error) {
+    res.status(500).send("Помилка відображення учасників команди");
+  }
+});
+
+export default router;

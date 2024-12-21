@@ -1,10 +1,10 @@
-const WebSocket = require("ws");
-const User = require("../models/userModel");
+import { WebSocketServer } from "ws";
+import User from "../models/userModel.js";
 
 let wss;
 
 function setupWebSocketServer(server) {
-  wss = new WebSocket.Server({ server });
+  wss = new WebSocketServer({ server });
 
   wss.on("connection", (ws) => {
     let userTeam;
@@ -47,4 +47,4 @@ function broadcast(message, targetTeam) {
   }
 }
 
-module.exports = { setupWebSocketServer, broadcast };
+export { setupWebSocketServer, broadcast };

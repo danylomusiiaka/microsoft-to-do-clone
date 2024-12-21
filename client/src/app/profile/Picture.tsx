@@ -1,10 +1,13 @@
 "use client";
 import { useProfileFunctions } from "@/components/functions/userFunctions";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 
 export default function ProfilePicture({ picture }: { picture: string }) {
   const [profilePicture, setProfilePicture] = useState(picture);
   const { updateField } = useProfileFunctions();
+  const { setUserQuest } = useUserDetails();
 
   useEffect(() => {
     setProfilePicture(picture);
@@ -17,7 +20,20 @@ export default function ProfilePicture({ picture }: { picture: string }) {
         const base64Image = await convertToBase64(file);
         updateField("picture", base64Image);
       } catch (error) {
-        console.error("Error processing file:", error);
+        return;
+      }
+      const cookienewUserQuest = Cookies.get("newUserQuest");
+      if (cookienewUserQuest) {
+        const userQuest = JSON.parse(cookienewUserQuest);
+        if (userQuest.profilePictureChanged != 50) {
+          userQuest.profilePictureChanged = 50;
+          setUserQuest((prevQuest) => {
+            const updatedQuest = [...prevQuest];
+            updatedQuest[2] += 50;
+            return updatedQuest;
+          });
+          Cookies.set("newUserQuest", JSON.stringify(userQuest));
+        }
       }
     }
   };
@@ -32,10 +48,7 @@ export default function ProfilePicture({ picture }: { picture: string }) {
 
   return (
     <>
-      <label
-        htmlFor='img-upload'
-        className='hover:outline hover:outline-2 hover:rounded-full'
-      >
+      <label htmlFor='img-upload' className='hover:outline hover:outline-2 hover:rounded-full'>
         <img
           src={profilePicture || "default-picture.svg"}
           alt='Profile'

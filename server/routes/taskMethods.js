@@ -1,13 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const taskModel = require("../models/taskModel");
-const userModel = require("../models/userModel");
-const { verifyToken } = require("../config/authMiddleware");
-const { broadcast } = require("../config/websocket");
+import { Router } from "express";
+const router = Router();
+import taskModel from "../models/taskModel.js";
+import userModel from "../models/userModel.js";
+
+import { verifyToken } from "../config/authMiddleware.js";
+import { broadcast } from "../config/websocket.js";
 
 router.post("/create", verifyToken, async (req, res) => {
   try {
-    const newTask = new taskModel(req.body);
+    const taskData = req.body;
+    if (!taskData.assignee) {
+      delete taskData.assignee;
+    }
+    const newTask = new taskModel(taskData);
     await newTask.save();
 
     broadcast({ event: "taskCreated", task: newTask }, newTask.author);
@@ -80,4 +85,4 @@ router.delete("/:id", verifyToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

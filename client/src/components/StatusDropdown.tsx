@@ -1,22 +1,10 @@
-import { useTodos } from "@/contexts/TodosContext";
 import { Task } from "@/interfaces/TaskInterface";
 import { useState, useEffect } from "react";
 import { useTodoFunctions } from "./functions/todosFunctions";
 import Options from "./Options";
 import { formatText } from "./functions/formatFields";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-
-export const STATUS_OPTIONS = [
-  { name: "to do", color: "bg-yellow-700" },
-  { name: "in progress", color: "bg-yellow-500" },
-  { name: "done", color: "bg-green-500" },
-];
-
-const PRIORITY_OPTIONS = [
-  { name: "low", color: "bg-blue-500" },
-  { name: "medium", color: "bg-yellow-500" },
-  { name: "high", color: "bg-red-500" },
-];
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "./constants/statuses";
 
 export default function StatusDropdown(todo: Task) {
   const [isOpenStatuses, setIsOpenStatuses] = useState(false);

@@ -90,6 +90,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
                 setName(listName);
                 return;
               }
+              
               updateCategory(listName, name);
             }}
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'

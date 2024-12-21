@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
       if (result.status !== 200) {
         const response = NextResponse.redirect(new URL("/auth", req.url));
         response.cookies.delete("token");
-        response.cookies.set("session-expired", "true", { path: "/auth", httpOnly: false });
+        response.cookies.set("session-expired", "true");
         return response;
       }
 

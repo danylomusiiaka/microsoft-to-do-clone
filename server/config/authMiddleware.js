@@ -1,7 +1,8 @@
-const jwt = require("jsonwebtoken");
+import pkg from "jsonwebtoken";
+const { sign, verify } = pkg;
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "5h",
   });
 };
@@ -13,7 +14,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).send("Токен сесії відсутній");
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       if (err.name === "TokenExpiredError") {
         return res.status(401).send("Термін дії токена закінчився. Будь ласка, залогуйтесь знову");
@@ -36,4 +37,4 @@ function generateRandomString(length = 6) {
   return result;
 }
 
-module.exports = { verifyToken, generateToken, generateRandomString };
+export { verifyToken, generateToken, generateRandomString };

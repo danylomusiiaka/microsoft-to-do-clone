@@ -10,6 +10,7 @@ import { formatText } from "../functions/formatFields";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import Axios from "axios";
 import { useProfileFunctions } from "../functions/userFunctions";
+import { useAlert } from "@/contexts/AlertContext";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function NavSidebar({ userData }: { userData: User }) {
@@ -19,6 +20,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
   const { addCategory, deleteCategory } = useProfileFunctions();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [profileData, setProfileData] = useState(userData);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setProfileDetails(userData);
@@ -75,13 +77,19 @@ export default function NavSidebar({ userData }: { userData: User }) {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await Axios.get(`${webUrl}/category/all`, {
-        withCredentials: true,
-      });
-      setProfileDetails((prevDetails) => ({
-        ...prevDetails,
-        categories: response.data,
-      }));
+      try {
+        const response = await Axios.get(`${webUrl}/category/all`, {
+          withCredentials: true,
+        });
+        if (response.status === 200) {
+          setProfileDetails((prevDetails) => ({
+            ...prevDetails,
+            categories: response.data,
+          }));
+        }
+      } catch (error: any) {
+        showAlert(error.response.data, "error");
+      }
     };
     fetchCategories();
   }, [profileDetails.team]);
@@ -146,27 +154,21 @@ export default function NavSidebar({ userData }: { userData: User }) {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <a href='/' className='flex items-center space-x-3 w-full p-3 rounded-md button'>
-            <img src='/home.svg' className='w-6' />
-            <p>Завдання</p>
-          </a>
+
+          <NavigationButton icon='/home.svg' href='/' text='Завдання' />
           <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
           <hr className='divider' />
           <div className='scroll-container-nav'>
             {profileData.categories?.map((category) => (
-              <div
-                className='flex justify-between p-3 rounded-md button listname-link'
-                key={category}
-              >
-                <a
+              <div className='flex justify-between rounded-md button listname-link' key={category}>
+                <NavigationButton
+                  icon='/list.svg'
                   href={`/list/${encodeURIComponent(category)}`}
-                  className='flex items-center space-x-3 w-full '
-                >
-                  <img src='/list.svg' className='w-6' />
-                  <p className='truncated-text'>{category}</p>
-                </a>
+                  text={category}
+                />
+
                 <button
-                  className='nav-delete'
+                  className='nav-delete pr-3'
                   onClick={() => {
                     deleteCategory(category);
                   }}

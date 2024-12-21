@@ -7,7 +7,7 @@ export default function ArrowDown() {
       xmlns='http://www.w3.org/2000/svg'
       className='cursor-pointer'
     >
-      <g id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'>
+      <g id='Page-1' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
         <g
           id='Dribbble-Light-Preview'
           transform='translate(-220.000000, -6684.000000)'

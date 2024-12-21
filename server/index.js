@@ -1,14 +1,16 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const http = require("http");
-const mongoose = require("./config/mongodb");
-const { setupWebSocketServer } = require("./config/websocket");
-require("dotenv").config({ path: ".env" });
+import express, { json } from "express";
+import cors from "cors";
+import pkg from "body-parser";
+const { urlencoded } = pkg;
+import cookieParser from "cookie-parser";
+import { createServer } from "http";
+import "./config/mongodb.js";
+import { setupWebSocketServer } from "./config/websocket.js";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 const web_url = process.env.WEB_URL || "http://localhost:3000";
 
 setupWebSocketServer(server);
@@ -23,20 +25,20 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "10mb" }));
-app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+app.use(json({ limit: "10mb" }));
+app.use(urlencoded({ limit: "10mb", extended: true }));
 
 app.use(cookieParser());
 
-const userRoutes = require("./routes/userMethods");
+import userRoutes from "./routes/userMethods.js";
 
 app.use("/user", userRoutes);
 
-const taskRoutes = require("./routes/taskMethods");
+import taskRoutes from "./routes/taskMethods.js";
 
 app.use("/task", taskRoutes);
 
-const categoryRoutes = require("./routes/categoryMethods");
+import categoryRoutes from "./routes/categoryMethods.js";
 
 app.use("/category", categoryRoutes);
 

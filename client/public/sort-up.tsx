@@ -4,7 +4,7 @@ export default function SortAsc() {
       <path
         d='M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10'
         className='stroke-svg'
-        stroke-width='2'
+        strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
       />

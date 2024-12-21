@@ -7,16 +7,10 @@ import Todo from "../Todo";
 import Plus from "../../../public/plus";
 import { useTodoFunctions } from "../functions/todosFunctions";
 import Menu from "../Menu";
-import { formatDate } from "../functions/formatFields";
 import ToDoSidebar from "./ToDoSidebar";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useParams } from "next/navigation";
-
-const PRIORITY_OPTIONS = [
-  { name: "low", color: "bg-blue-500" },
-  { name: "medium", color: "bg-yellow-500" },
-  { name: "high", color: "bg-red-500" },
-];
+import StartScreen from "../StartScreen";
 
 export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const { category } = useParams();
@@ -31,6 +25,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const [tasks, setTasks] = useState(formatStarTodos(allTodos));
 
   const [newTodoText, setNewTodoText] = useState("");
+  const [dataReady, setDataReady] = useState(false);
   const [sortOptions, setSortOptions] = useState({ name: "", desc: false });
 
   const incompleteTodos = tasks.filter((todo: Task) => !todo.isCompleted);
@@ -69,6 +64,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   useEffect(() => {
     setTodoChoosed(null);
     setTodos(formatStarTodos(allTodos));
+    setDataReady(true);
   }, []);
 
   useEffect(() => {
@@ -93,6 +89,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
           <Menu listName={listName} sortOptions={sortOptions} setSortOptions={setSortOptions} />
 
           <div className='scroll-container-todos'>
+            {(dataReady && todos.length == 0) && <StartScreen />}
             <table className='w-full text-left'>
               <tbody>
                 {incompleteTodos
@@ -103,24 +100,6 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
                   )
                   .map((todo: Task) => (
                     <React.Fragment key={todo._id}>
-                      {sortOptions.name === "За терміном" && (
-                        <tr>
-                          <td className='p-3 pl-0 text-sm md:hidden'>{formatDate(todo.date)}</td>
-                        </tr>
-                      )}
-                      {sortOptions.name === "За пріорітетністю" && (
-                        <div className='p-3 pl-0 md:hidden'>
-                          <span
-                            className={`${
-                              PRIORITY_OPTIONS.find((option) => option.name === todo.priority)
-                                ?.color || ""
-                            } rounded-xl text-sm text-nowrap px-3 pb-1 `}
-                          >
-                            {todo.priority}
-                          </span>
-                        </div>
-                      )}
-
                       <Todo todo={todo} sortName={sortOptions.name} />
                     </React.Fragment>
                   ))}
@@ -161,7 +140,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
             type='text'
             value={newTodoText}
             placeholder='Додайте завдання'
-            className='task-input'
+            className='task-input '
             autoFocus
             onChange={(e) => setNewTodoText(e.target.value)}
             onKeyDown={handleKeyDown}

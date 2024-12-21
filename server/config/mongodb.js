@@ -1,7 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose, { connect } from "mongoose";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env" });
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/todoLNUProject")
+const mongodb_url = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017/todoLNUProject";
+
+connect(mongodb_url)
   .then(() => {
     console.log("MongoDB connected");
   })
@@ -9,4 +12,4 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-module.exports = mongoose;
+export default mongoose;

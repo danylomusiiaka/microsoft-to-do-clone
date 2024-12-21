@@ -91,6 +91,13 @@
   margin: 10px 0;
 }
 
+.divider-assignees {
+  border: none;
+  height: 1px;
+  background-color: var(--primary-text-color);
+  margin: 10px 0;
+}
+
 .hamburger {
   display: none;
   cursor: pointer;

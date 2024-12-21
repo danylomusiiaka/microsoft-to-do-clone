@@ -3,7 +3,7 @@ import Checkmark from "../../public/checkmark";
 import Calendar from "../../public/calendar";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
-import { STATUS_OPTIONS } from "../../public/statuses";
+import { STATUS_OPTIONS } from "./constants/statuses";
 import { formatDate, formatText } from "./functions/formatFields";
 import Star from "../../public/star";
 import { useTodoFunctions } from "./functions/todosFunctions";
@@ -43,13 +43,30 @@ export default function Todo({ todo, sortName }: TodoProps) {
     <>
       <tr>
         <td className='p-3 pl-0 md:hidden'>
-          <span
-            className={`${
-              STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
-            } rounded-xl text-sm text-nowrap px-3 pb-0.5 `}
-          >
-            {todo.status}
-          </span>
+          {sortName == "За пріорітетністю" && (
+            <span
+              className={`${
+                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
+                "bg-stone-500"
+              } rounded-xl text-sm text-nowrap px-3`}
+            >
+              {todo.priority}
+            </span>
+          )}
+          {sortName === "За терміном" && (
+            <span className='bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4'>
+              <td className='p-3 pl-0 text-sm md:hidden'>{formatDate(todo.date)}</td>
+            </span>
+          )}
+          {(sortName === "За алфавітом" || sortName === "") && (
+              <span
+                className={`${
+                  STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+                } rounded-xl text-sm text-nowrap px-3 `}
+              >
+                {todo.status}
+              </span>
+            )}
         </td>
       </tr>
 
@@ -58,13 +75,14 @@ export default function Todo({ todo, sortName }: TodoProps) {
           <button className='circle-btn mr-5' onClick={toggleCompletion}>
             <Checkmark status={todo.status} />
           </button>
-          <p className="truncated-text-todo">{todo.text}</p>
+          <p className='truncated-text-todo'>{todo.text}</p>
         </td>
         <td className='md:p-3 align-text-top table-field'>
           {sortName == "За пріорітетністю" ? (
             <span
               className={`${
-                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || ""
+                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
+                "bg-stone-500"
               } rounded-xl text-sm text-nowrap px-3`}
             >
               {todo.priority}
@@ -72,7 +90,8 @@ export default function Todo({ todo, sortName }: TodoProps) {
           ) : (
             <span
               className={`${
-                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color ||
+                "bg-stone-500"
               } rounded-xl text-sm text-nowrap px-3 `}
             >
               {todo.status}
