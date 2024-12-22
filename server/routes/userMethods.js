@@ -59,10 +59,12 @@ router.post("/register", async (req, res) => {
   const token = generateToken(user.id);
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "Strict",
     maxAge: 7200000,
+    path: "/",
   });
+
   res.send("Реєстрація відбулася успішно!");
 });
 
@@ -85,10 +87,11 @@ router.post("/login", async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "Strict",
     maxAge: 7200000,
     path: "/",
   });
+
   res.send("Логін відбувся успішно!");
 });
 
