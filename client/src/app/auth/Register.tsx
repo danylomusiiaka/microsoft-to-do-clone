@@ -49,7 +49,7 @@ export default function Register() {
           expires: 7,
           secure: true,
           sameSite: "None",
-          domain: webUrl?.replace(/^https?:\/\//, ""),
+          domain: ".vercel.app",
         });
         window.location.href = "/profile";
       }
