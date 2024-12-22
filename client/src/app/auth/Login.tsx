@@ -27,6 +27,7 @@ export default function Login() {
           expires: 7,
           secure: true,
           sameSite: "None",
+          domain: webUrl,
         });
 
         window.location.href = "/";

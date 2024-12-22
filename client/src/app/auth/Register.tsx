@@ -49,6 +49,7 @@ export default function Register() {
           expires: 7,
           secure: true,
           sameSite: "None",
+          domain: webUrl,
         });
         window.location.href = "/profile";
       }
