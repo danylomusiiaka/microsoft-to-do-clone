@@ -57,15 +57,7 @@ router.post("/register", async (req, res) => {
   await user.save();
 
   const token = generateToken(user.id);
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Lax",
-    maxAge: 7200000,
-    path: "/",
-  });
-
-  res.send("Реєстрація відбулася успішно!");
+  res.json({ token });
 });
 
 router.post("/login", async (req, res) => {
@@ -84,15 +76,7 @@ router.post("/login", async (req, res) => {
   }
 
   const token = generateToken(user.id);
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Lax",
-    maxAge: 7200000,
-    path: "/",
-  });
-
-  res.send("Логін відбувся успішно!");
+  res.json({ token });
 });
 
 router.post("/logout", (req, res) => {
@@ -136,6 +120,8 @@ router.get("/details", verifyToken, async (req, res) => {
 
     return res.json({ name, email, picture, team, categories });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).send("Error retrieving user profile");
   }
 });

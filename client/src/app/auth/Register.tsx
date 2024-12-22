@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Axios from "axios";
+import Cookies from "js-cookie";
+
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function Register() {
@@ -34,20 +36,20 @@ export default function Register() {
 
   const registerUser = async () => {
     try {
-      const response = await Axios.post(
-        `${webUrl}/user/register`,
-        {
-          name: registerForm.name,
-          email: registerForm.email,
-          password: registerForm.password,
-          verificationKey: hashedKey,
-          userInputKey: registerForm.userKey,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await Axios.post(`${webUrl}/user/register`, {
+        name: registerForm.name,
+        email: registerForm.email,
+        password: registerForm.password,
+        verificationKey: hashedKey,
+        userInputKey: registerForm.userKey,
+      });
       if (response.status === 200) {
+        const { token } = response.data;
+        Cookies.set("token", token, {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+        });
         window.location.href = "/profile";
       }
     } catch (error: any) {

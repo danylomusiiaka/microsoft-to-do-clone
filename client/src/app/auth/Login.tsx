@@ -1,15 +1,15 @@
 import Axios from "axios";
 import { useRef, useState } from "react";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import Cookies from "js-cookie";
 
+const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);   
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);  
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -17,15 +17,18 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const response = await Axios.post(
-        `${webUrl}/user/login`,
-        {
-          email: emailRef.current?.value || "",
-          password: passwordRef.current?.value || "",
-        },
-        { withCredentials: true }
-      );
+      const response = await Axios.post(`${webUrl}/user/login`, {
+        email: emailRef.current?.value || "",
+        password: passwordRef.current?.value || "",
+      });
       if (response.status === 200) {
+        const { token } = response.data;
+        Cookies.set("token", token, {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+        });
+
         window.location.href = "/";
       }
     } catch (error: any) {
@@ -45,7 +48,7 @@ export default function Login() {
 
       <div className='input-wrap'>
         <input type='password' id='password2' ref={passwordRef} placeholder=' ' />
-        <label htmlFor="password2">Пароль</label>
+        <label htmlFor='password2'>Пароль</label>
       </div>
 
       <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
