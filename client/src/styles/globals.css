@@ -7,13 +7,17 @@
 @import "./themes.css";
 @import "./loading.css";
 
+html,
 body {
   color: var(--primary-text-color);
   background: var(--primary-background-color);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   height: 100%;
   transition: background-color 0.7s ease;
+  overflow: hidden;
 }
+
+
 
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
@@ -37,7 +41,7 @@ label {
 
 canvas {
   max-width: 100%;
-  max-height: 300px;
+  max-height: 100%;
   height: auto;
 }
 

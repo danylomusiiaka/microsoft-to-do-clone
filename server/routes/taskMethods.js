@@ -26,23 +26,22 @@ router.delete("/all", verifyToken, async (req, res) => {
   try {
     const { category } = req.query;
     const user = await userModel.findById(req.userId).select("-password");
-
-    if (category === "Завдання") {
-      await taskModel.deleteMany({});
-      return res.status(200).json({ message: "Всі завдання видалено успішно" });
+    const author = user.team || user.email;
+    const filter = { author };
+    if (category && category !== "Завдання") {
+      filter.category = category;
     }
 
-    const result = await taskModel.deleteMany({ category });
+    const result = await taskModel.deleteMany(filter);
 
-    const isTeam = Boolean(user.team);
+    const message =
+      category && category !== "Завдання"
+        ? `Видалено ${result.deletedCount} завдань у списку ${category}`
+        : "Всі завдання видалено успішно";
 
-    const remainingTasks = await taskModel.find({ author: isTeam ? user.team : user.email });
-    return res.status(200).json({
-      remainingTasks,
-      message: `Видалено ${result.deletedCount} завдань у списку ${category}`,
-    });
+    res.status(200).json({ message });
   } catch (error) {
-    return res.status(500).send("Сталася помилка у видаленні завдань");
+    res.status(500).send("Сталася помилка у видаленні завдань");
   }
 });
 

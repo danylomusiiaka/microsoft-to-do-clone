@@ -4,12 +4,21 @@ import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import confetti from "canvas-confetti";
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ width: "80%", mr: 1 }}>
-        <LinearProgress variant='determinate' {...props} />
+        <LinearProgress
+          variant='determinate'
+          {...props}
+          sx={{
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: props.value === 100 ? "green" : undefined,
+            },
+          }}
+        />
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>{`${Math.round(
@@ -69,6 +78,15 @@ export default function NewUserQuest() {
       if (userQuest.every((value) => value === 100)) {
         Cookies.remove("newUserQuest");
         Cookies.set("userQuest", JSON.stringify({ completed: true }));
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => {
+            confetti({
+              particleCount: 40,
+              spread: 60,
+              origin: { x: Math.random(), y: Math.random() },
+            });
+          }, i * 200);
+        }
         setIsCompleted(1);
       }
     }
@@ -111,9 +129,10 @@ export default function NewUserQuest() {
           </div>
         </div>
       )}
+
       {isCompleted == 1 && (
         <div
-          className='w-fit p-3 rounded-md md:flex items-center'
+          className='w-fit p-3 rounded-md md:flex'
           style={{ backgroundColor: "var(--secondary-background-color)" }}
         >
           <img src='/congradulations.gif' alt='clapping-cherry' className='w-52 h-fit' />
@@ -125,6 +144,24 @@ export default function NewUserQuest() {
               Ура! Ти пройшов усі завдання! <br />
               Тепер ти повноцінно навчився користуватись додатком
             </p>
+            <div className='ml-3'>
+              <p>Створи список і заверши 3 завдання</p>
+              <Box sx={{ width: "100%" }}>
+                <LinearProgressWithLabel value={userQuest[0]} />
+              </Box>
+            </div>
+            <div className='ml-3'>
+              <p>Створи команду та запроси туди одного учасника</p>
+              <Box sx={{ width: "100%" }}>
+                <LinearProgressWithLabel value={userQuest[1]} />
+              </Box>
+            </div>
+            <div className='ml-3'>
+              <p>Зміни аватарку та признач комусь завдання в команді</p>
+              <Box sx={{ width: "100%" }}>
+                <LinearProgressWithLabel value={userQuest[2]} />
+              </Box>
+            </div>
           </div>
         </div>
       )}

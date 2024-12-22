@@ -84,12 +84,12 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
 
   return (
     <>
-      <main className='flex flex-col justify-between md:p-12 w-full md:pb-4'>
+      <main className='flex flex-col justify-between md:p-12 w-full'>
         <section className='mt-5 md:mt-0'>
           <Menu listName={listName} sortOptions={sortOptions} setSortOptions={setSortOptions} />
 
           <div className='scroll-container-todos'>
-            {(dataReady && todos.length == 0) && <StartScreen />}
+            {dataReady && todos.length == 0 && <StartScreen />}
             <table className='w-full text-left'>
               <tbody>
                 {incompleteTodos

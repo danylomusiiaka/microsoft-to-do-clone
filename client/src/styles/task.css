@@ -60,18 +60,25 @@
 }
 
 .scroll-container-todos {
-  height: 30rem;
+  height: 32rem;
+  overflow-y: scroll;
+}
+
+.scroll-container-profile {
+  height: 46rem;
   overflow-y: scroll;
 }
 
 .scroll-container::-webkit-scrollbar,
-.scroll-container-todos::-webkit-scrollbar {
+.scroll-container-todos::-webkit-scrollbar,
+.scroll-container-profile::-webkit-scrollbar {
   width: 4px;
 }
 
 .scroll-container::-webkit-scrollbar-thumb,
-.scroll-container-todos::-webkit-scrollbar-thumb {
-  background-color: var(--primary-text-color);
+.scroll-container-todos::-webkit-scrollbar-thumb,
+.scroll-container-profile::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-text-color);
   border-radius: 10px;
 }
 

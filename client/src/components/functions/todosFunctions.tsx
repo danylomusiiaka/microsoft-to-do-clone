@@ -119,7 +119,7 @@ export const useTodoFunctions = () => {
         const cookiesUserQuest = Cookies.get("newUserQuest");
         if (cookiesUserQuest) {
           const userQuest = JSON.parse(cookiesUserQuest);
-          if (completedTodos.length == 3 && userQuest.completedThreeTasks != 75) {
+          if (completedTodos.length >= 3 && userQuest.completedThreeTasks != 75) {
             userQuest.completedThreeTasks += 75;
             setUserQuest((prevQuest) => [prevQuest[0] + 75, ...prevQuest.slice(1)]);
             Cookies.set("newUserQuest", JSON.stringify(userQuest));

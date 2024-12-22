@@ -50,14 +50,14 @@ export default function StatusDropdown(todo: Task) {
 
   return (
     <main className='w-full'>
-      <section className='grid grid-cols-[repeat(3,1fr)] items-center'>
+      <section className='grid grid-cols-3 '>
         <button
           onClick={() => {
             setIsOpenStatuses((prev) => !prev);
             setIsOpenCategories(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2 cursor-pointer w-full'
+          className='rounded p-2 cursor-pointer '
           title='Стан завдання'
         >
           <div
@@ -73,7 +73,7 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2 cursor-pointer w-full'
+          className='rounded p-2 cursor-pointer '
           title='До якого списку належить завдання'
         >
           <div className='flex items-center justify-center text-sm bg-stone-400 rounded-xl h-5 space-x-2'>
@@ -87,7 +87,7 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenCategories(false);
           }}
-          className='rounded p-2 cursor-pointer w-full'
+          className='rounded p-2 cursor-pointer '
         >
           <div
             className={`flex items-center justify-center text-sm rounded-xl h-5 ${color2} space-x-2`}

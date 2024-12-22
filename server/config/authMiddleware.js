@@ -3,7 +3,7 @@ const { sign, verify } = pkg;
 
 const generateToken = (id) => {
   return sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "5h",
+    expiresIn: "7d",
   });
 };
 

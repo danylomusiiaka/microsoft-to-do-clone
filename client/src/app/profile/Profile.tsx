@@ -5,7 +5,6 @@ import ProfilePicture from "./Picture";
 import { formatText } from "@/components/functions/formatFields";
 import Controls from "../profile/Controls";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import StatusEditor from "../profile/StatusEditor";
 import ThemeOption from "@/components/ThemeOption";
 import { User } from "@/interfaces/UserInterface";
 import { useAlert } from "@/contexts/AlertContext";
@@ -45,7 +44,7 @@ export default function Profile({ userData }: { userData: User }) {
   };
 
   return (
-    <main className='p-4 md:p-12 w-full h-full space-y-5 md:pb-0'>
+    <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile'>
       <section className='md:flex p-2 pl-0 items-center justify-between'>
         <div className='flex space-x-3 w-full items-center'>
           <ProfilePicture picture={profileInfo.picture} />
@@ -62,7 +61,7 @@ export default function Profile({ userData }: { userData: User }) {
         <Controls />
       </section>
       <hr className='divider' />
-      <section className='space-y-4'>
+      <section className='space-y-4 '>
         <TeamButtons profileInfo={profileInfo} />
         <NewUserQuest />
 
@@ -74,7 +73,7 @@ export default function Profile({ userData }: { userData: User }) {
           ))}
         </div>
 
-        <StatusEditor />
+        
       </section>
     </main>
   );

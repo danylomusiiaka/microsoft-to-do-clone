@@ -59,14 +59,14 @@ export default function Todo({ todo, sortName }: TodoProps) {
             </span>
           )}
           {(sortName === "За алфавітом" || sortName === "") && (
-              <span
-                className={`${
-                  STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
-                } rounded-xl text-sm text-nowrap px-3 `}
-              >
-                {todo.status}
-              </span>
-            )}
+            <span
+              className={`${
+                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
+              } rounded-xl text-sm text-nowrap px-3 `}
+            >
+              {todo.status}
+            </span>
+          )}
         </td>
       </tr>
 

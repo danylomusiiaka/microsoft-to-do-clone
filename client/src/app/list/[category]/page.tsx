@@ -72,7 +72,7 @@ export default async function Category({ params }: { params: { category: string 
             </div>
           </div>
         ) : (
-          <TodoList allTodos={allTodos} />
+          <TodoList allTodos={allTodos.reverse()} />
         )}
       </Suspense>
     </section>
