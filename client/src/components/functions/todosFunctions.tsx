@@ -53,8 +53,10 @@ export const useTodoFunctions = () => {
     }
 
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 201) {
         newTodo._id = response.data.id;
@@ -108,8 +110,10 @@ export const useTodoFunctions = () => {
     }
 
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
         const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
@@ -145,8 +149,10 @@ export const useTodoFunctions = () => {
 
   const deleteTodo = async (id: string) => {
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.delete(`${webUrl}/task/${id}`, {
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
         setTodos(todos.filter((o: any) => o._id !== id));

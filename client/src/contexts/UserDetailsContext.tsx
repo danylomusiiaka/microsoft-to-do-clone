@@ -38,9 +38,11 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
     if (profileDetails.team) {
       const fetchTeamMembers = async () => {
         try {
+          const token = Cookies.get("token");
+
           const response = await Axios.get(`${webUrl}/user/team-members`, {
             params: { teamCode: profileDetails.team },
-            withCredentials: true,
+            headers: { Authorization: `Bearer ${token}` },
           });
           if (response.status === 200) {
             setTeamMembers(response.data);

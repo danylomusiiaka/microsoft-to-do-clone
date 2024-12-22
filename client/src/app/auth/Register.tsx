@@ -49,7 +49,6 @@ export default function Register() {
           expires: 7,
           secure: true,
           sameSite: "None",
-          domain: ".vercel.app",
         });
         window.location.href = "/profile";
       }

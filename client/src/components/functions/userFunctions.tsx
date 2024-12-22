@@ -12,13 +12,17 @@ export const useProfileFunctions = () => {
 
   const updateField = async (userfieldName: string, userfieldValue: string) => {
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.post(
         `${webUrl}/user/update-field`,
         {
           fieldName: userfieldName,
           fieldValue: userfieldValue,
         },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       if (response.status === 200) {
         setProfileDetails({ ...profileDetails, [userfieldName]: userfieldValue });
@@ -40,11 +44,13 @@ export const useProfileFunctions = () => {
     category = category.trim();
     if (category === "") return;
     try {
+      const token = Cookies.get("token");
+
       const result = await Axios.post(
         `${webUrl}/category/create`,
         { category },
         {
-          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       if (result.status === 200) {
@@ -78,8 +84,10 @@ export const useProfileFunctions = () => {
 
   const deleteCategory = async (category: string) => {
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.delete(`${webUrl}/category/${encodeURIComponent(category)}`, {
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       setTodoChoosed(null);
       setTodos(response.data.remainingTasks);
@@ -111,10 +119,14 @@ export const useProfileFunctions = () => {
       return;
     }
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.put(
         `${webUrl}/category/${oldCategory}`,
         { newCategory },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       if (response.status === 200) {
         setTodos(response.data.updatedTodos);
@@ -135,10 +147,14 @@ export const useProfileFunctions = () => {
 
   const createTeam = async () => {
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.post(
         `${webUrl}/user/create-team`,
         {},
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: response.data }));
@@ -150,7 +166,7 @@ export const useProfileFunctions = () => {
             userQuest.teamCreated += 50;
             setUserQuest((prevQuest) => [prevQuest[0], prevQuest[1] + 50, ...prevQuest.slice(2)]);
             Cookies.set("newUserQuest", JSON.stringify(userQuest));
-          } 
+          }
         }
       }
     } catch (error: any) {
@@ -164,7 +180,15 @@ export const useProfileFunctions = () => {
 
   const exitTeam = async () => {
     try {
-      const response = await Axios.post(`${webUrl}/user/exit-team`, {}, { withCredentials: true });
+      const token = Cookies.get("token");
+
+      const response = await Axios.post(
+        `${webUrl}/user/exit-team`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: response.data }));
         showAlert("Ви вийшли з команди", "info");
@@ -180,10 +204,14 @@ export const useProfileFunctions = () => {
       return;
     }
     try {
+      const token = Cookies.get("token");
+
       const response = await Axios.post(
         `${webUrl}/user/join-team`,
         { teamCode: code },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: code }));

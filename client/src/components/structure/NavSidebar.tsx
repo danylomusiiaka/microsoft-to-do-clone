@@ -11,6 +11,8 @@ import { useUserDetails } from "@/contexts/UserDetailsContext";
 import Axios from "axios";
 import { useProfileFunctions } from "../functions/userFunctions";
 import { useAlert } from "@/contexts/AlertContext";
+import Cookies from "js-cookie";
+
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default function NavSidebar({ userData }: { userData: User }) {
@@ -77,9 +79,10 @@ export default function NavSidebar({ userData }: { userData: User }) {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      const token = Cookies.get("token");
       try {
         const response = await Axios.get(`${webUrl}/category/all`, {
-          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (response.status === 200) {
           setProfileDetails((prevDetails) => ({

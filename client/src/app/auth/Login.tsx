@@ -27,7 +27,6 @@ export default function Login() {
           expires: 7,
           secure: true,
           sameSite: "None",
-          domain: ".vercel.app",
         });
 
         window.location.href = "/";

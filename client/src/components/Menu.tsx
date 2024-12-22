@@ -61,7 +61,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
     try {
       const response = await Axios.delete(`${webUrl}/task/all`, {
         params: { category: listName },
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
         setTodoChoosed(null);
@@ -90,7 +90,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
                 setName(listName);
                 return;
               }
-              
+
               updateCategory(listName, name);
             }}
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
