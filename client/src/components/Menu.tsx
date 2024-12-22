@@ -12,6 +12,7 @@ import Delete from "../../public/delete";
 import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
 import { useProfileFunctions } from "./functions/userFunctions";
+import Cookies from "js-cookie";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 interface MenuProps {
@@ -59,6 +60,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
 
   const handleDeleteAll = async () => {
     try {
+      const token = Cookies.get("token");
       const response = await Axios.delete(`${webUrl}/task/all`, {
         params: { category: listName },
         headers: { Authorization: `Bearer ${token}` },
