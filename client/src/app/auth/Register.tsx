@@ -49,7 +49,7 @@ export default function Register() {
           expires: 7,
           secure: true,
           sameSite: "None",
-          domain: webUrl,
+          domain: webUrl?.replace(/^https?:\/\//, ""),
         });
         window.location.href = "/profile";
       }
