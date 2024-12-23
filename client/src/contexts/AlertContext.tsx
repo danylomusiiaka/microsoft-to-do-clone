@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
@@ -48,21 +48,23 @@ export function AlertProvider({ children }: AlertProviderProps) {
     if (reason === "clickaway") return;
     setOpenSnackbar(false);
   };
+
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
       <Snackbar
         key={alert?.key}
         open={openSnackbar}
-        autoHideDuration={4000}
         onClose={handleClose}
         TransitionComponent={SlideTransition}
+        autoHideDuration={4000}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ pointerEvents: "none" }}
       >
         <Alert
           severity={alert?.severity || "success"}
           variant={alert?.variant}
-          sx={{ fontSize: "1.05rem" }}
+          sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}
         >
           {alert?.message}
         </Alert>

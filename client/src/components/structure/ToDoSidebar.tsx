@@ -95,17 +95,17 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
   };
 
   return (
-    <section
-      className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '
-      style={{ opacity: todo._id == loading ? 0.7 : 1 }}
-    >
-      <main className='space-y-3 scroll-container'>
+    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
+      <main
+        className='space-y-3 scroll-container'
+        style={{ opacity: todo._id == loading ? 0.7 : 1 }}
+      >
         <div className='flex justify-end items-center'>
           <button onClick={() => setTodoChoosed(null)} disabled={!!loading}>
             <Cross />
           </button>
         </div>
-        <div className='flex text-sidebar-input items-center justify-between profile'>
+        <div className='flex text-sidebar-input items-center justify-between profile '>
           <textarea
             ref={textareaRef}
             value={taskText}
@@ -113,7 +113,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })}
             placeholder='Введіть назву...'
             className='bg-transparent outline-none resize-none pt-1'
-            disabled={!!loading} // Disable when loading
+            disabled={!!loading}
           />
           <button
             className='self-start mt-2'
@@ -125,7 +125,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                 todoOnFirstPos(currentTodo, newIsImportant);
               }
             }}
-            disabled={!!loading} 
+            disabled={!!loading}
           >
             <Star isImportant={isImportant} />
           </button>
@@ -145,7 +145,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           <button
             className='button description-sidebar-input space-y-3 cursor-pointer text-left'
             onClick={() => setAsigneeMenu(!asigneeMenu)}
-            disabled={!!loading} 
+            disabled={!!loading}
           >
             <p>Призначено</p>
             <div className='flex items-center space-x-3 text-lg'>
