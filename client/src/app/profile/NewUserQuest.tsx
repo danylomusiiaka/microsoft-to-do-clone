@@ -136,7 +136,7 @@ export default function NewUserQuest() {
           className='w-fit p-3 rounded-md md:flex'
           style={{ backgroundColor: "var(--secondary-background-color)" }}
         >
-          <img src='/congradulations.gif' alt='clapping-cherry' className='w-52 h-fit' />
+          <img src='/congradulations.gif' alt='clapping-cherry' className='w-52 h-52' />
           <div className='space-y-3'>
             <p
               className='h-fit rounded-md p-3 text-lg'
