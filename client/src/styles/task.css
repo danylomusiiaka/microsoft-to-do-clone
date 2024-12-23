@@ -60,20 +60,20 @@
 }
 
 .scroll-container-todos {
-  max-height: 55vh;
+  height: 60vh;
   overflow-y: scroll;
 }
 .scroll-container-profile {
-  max-height: 90vh;
+  height: 85vh;
   overflow-y: scroll;
 }
 
 @media (min-width: 800px) {
   .scroll-container-profile {
-    max-height: 85vh;
+    height: 90vh;
   }
   .scroll-container-todos {
-    max-height: 65vh;
+    height: 65vh;
   }
 }
 
