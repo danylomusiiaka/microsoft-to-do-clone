@@ -11,6 +11,7 @@ import ToDoSidebar from "./ToDoSidebar";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useParams } from "next/navigation";
 import StartScreen from "../StartScreen";
+const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 
 export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const { category } = useParams();
@@ -20,6 +21,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   );
 
   const { profileDetails } = useUserDetails();
+  const { loading } = useTodos();
 
   const { addToDo, formatStarTodos } = useTodoFunctions();
   const [tasks, setTasks] = useState(formatStarTodos(allTodos));
@@ -32,7 +34,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const completedTodos = tasks.filter((todo: Task) => todo.isCompleted);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3001");
+    const ws = new WebSocket(`ws://${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(
@@ -72,12 +74,13 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   }, [todos]);
 
   const handleAddTodo = async () => {
-    await addToDo(newTodoText, listName);
+    const todoText = newTodoText;
     setNewTodoText("");
+    await addToDo(todoText, listName);
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !loading) {
       await handleAddTodo();
     }
   };
@@ -125,7 +128,9 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
                   .map(
                     (todo: Task) =>
                       (listName === "Завдання" || todo.category === listName) && (
-                        <Todo key={todo._id} todo={todo} sortName={sortOptions.name} />
+                        <React.Fragment key={todo._id}>
+                          <Todo todo={todo} sortName={sortOptions.name} />
+                        </React.Fragment>
                       )
                   )}
               </tbody>
@@ -133,7 +138,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
           </div>
         </section>
         <section className='flex search-input'>
-          <button onClick={handleAddTodo}>
+          <button onClick={handleAddTodo} disabled={!!loading}>
             <Plus />
           </button>
           <input

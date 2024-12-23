@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import Checkmark from "../../public/checkmark";
-import Calendar from "../../public/calendar";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
 import { STATUS_OPTIONS } from "./constants/statuses";
@@ -20,7 +18,7 @@ const PRIORITY_OPTIONS = [
 ];
 
 export default function Todo({ todo, sortName }: TodoProps) {
-  const { setTodoChoosed, todoChoosed } = useTodos();
+  const { setTodoChoosed, todoChoosed, loading } = useTodos();
   const { updateField } = useTodoFunctions();
 
   const toggleCompletion = (e: React.MouseEvent) => {
@@ -41,7 +39,7 @@ export default function Todo({ todo, sortName }: TodoProps) {
 
   return (
     <>
-      <tr>
+      <tr style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}>
         <td className='p-3 pl-0 md:hidden'>
           {sortName == "За пріорітетністю" && (
             <span
@@ -55,7 +53,7 @@ export default function Todo({ todo, sortName }: TodoProps) {
           )}
           {sortName === "За терміном" && (
             <span className='bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4'>
-              <td className='p-3 pl-0 text-sm md:hidden'>{formatDate(todo.date)}</td>
+              {formatDate(todo.date)}
             </span>
           )}
           {(sortName === "За алфавітом" || sortName === "") && (
@@ -70,9 +68,22 @@ export default function Todo({ todo, sortName }: TodoProps) {
         </td>
       </tr>
 
-      <tr className='task' onClick={toggleToDoSidebar}>
+      <tr
+        className='task'
+        onClick={
+          (!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleToDoSidebar
+        }
+        style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}
+      >
         <td className='p-3 flex items-center'>
-          <button className='circle-btn mr-5' onClick={toggleCompletion}>
+          <button
+            className='circle-btn mr-5'
+            onClick={
+              (!todo._id && loading == "no id") || todo._id == loading
+                ? undefined
+                : toggleCompletion
+            }
+          >
             <Checkmark status={todo.status} />
           </button>
           <p className='truncated-text-todo'>{todo.text}</p>

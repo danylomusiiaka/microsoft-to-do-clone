@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { formatText } from "./functions/formatFields";
-
 interface NavigationButtonProps {
   icon: string;
   href: string;

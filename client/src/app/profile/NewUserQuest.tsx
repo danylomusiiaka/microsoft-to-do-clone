@@ -52,6 +52,7 @@ export default function NewUserQuest() {
         authorAssignedTask: 0,
       };
       Cookies.set("newUserQuest", JSON.stringify(initialCookieValue));
+      setIsCompleted(0);
     } else {
       const {
         listCreated,

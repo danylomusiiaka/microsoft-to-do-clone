@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useTodoFunctions = () => {
-  const { todos, setTodos } = useTodos();
+  const { todos, setTodos, setLoading } = useTodos();
   const { profileDetails, setUserQuest } = useUserDetails();
   const { showAlert } = useAlert();
 
@@ -36,6 +36,7 @@ export const useTodoFunctions = () => {
       showAlert("Назва завдання не може перевищувати 200 символів", "error");
       return;
     }
+
     const newTodo: Task = {
       author: profileDetails.team || profileDetails.email,
       text: newTodoText,
@@ -52,16 +53,23 @@ export const useTodoFunctions = () => {
       newTodo.assignee = "Нема виконавця";
     }
 
+    const temporaryTodos = [newTodo, ...todos];
+    setTodos(temporaryTodos);
+    setLoading("no id");
+
     try {
       const token = Cookies.get("token");
 
       const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (response.status === 201) {
-        newTodo._id = response.data.id;
-        const updatedTodos = [newTodo, ...todos];
+        const updatedTodos = temporaryTodos.map((todo) =>
+          todo.text === newTodoText && !todo._id ? { ...todo, _id: response.data.id } : todo
+        );
         setTodos(updatedTodos);
+        setLoading(undefined);
 
         const sortSettings = sessionStorage.getItem("sortSettings");
 
@@ -73,10 +81,11 @@ export const useTodoFunctions = () => {
         }
       }
     } catch (error: any) {
+      setTodos(todos.filter((todo) => todo.text !== newTodoText));
       if (error.status === 401) {
         window.location.href = "/auth";
       } else {
-        showAlert(error.response.data, "error");
+        showAlert(error.response?.data, "error");
       }
     }
   };
@@ -111,6 +120,7 @@ export const useTodoFunctions = () => {
 
     try {
       const token = Cookies.get("token");
+      setLoading(todo._id);
 
       const response = await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
         headers: { Authorization: `Bearer ${token}` },
@@ -118,6 +128,7 @@ export const useTodoFunctions = () => {
       if (response.status === 200) {
         const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
         setTodos(updatedTodos);
+        setLoading(undefined);
         const completedTodos = updatedTodos.filter((todo: Task) => todo.isCompleted);
 
         const cookiesUserQuest = Cookies.get("newUserQuest");

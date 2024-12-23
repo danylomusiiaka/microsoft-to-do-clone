@@ -29,6 +29,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
   const [name, setName] = useState(listName);
   const { showAlert } = useAlert();
   const { updateCategory } = useProfileFunctions();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const savedSortOptions = sessionStorage.getItem("sortSettings");
@@ -59,6 +60,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
   };
 
   const handleDeleteAll = async () => {
+    setLoading(true);
     try {
       const token = Cookies.get("token");
       const response = await Axios.delete(`${webUrl}/task/all`, {
@@ -76,8 +78,10 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
       } else {
         showAlert(error.response.data, "error");
       }
+    } finally {
+      setOpenMenu(false);
+      setLoading(false);
     }
-    setOpenMenu(false);
   };
 
   return (
@@ -136,7 +140,11 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
                 className='flex space-x-2 w-full items-center profile p-2 pl-0'
                 onClick={handleDeleteAll}
               >
-                <Delete color='#b91c1c' width='25px' />
+                {loading ? (
+                  <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div>
+                ) : (
+                  <Delete color='#b91c1c' width='25px' />
+                )}
                 <p className='text-red-600'> Видалити всі завдання</p>
               </button>
             </section>

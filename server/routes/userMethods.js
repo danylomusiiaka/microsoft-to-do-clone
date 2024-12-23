@@ -79,11 +79,6 @@ router.post("/login", async (req, res) => {
   res.json({ token });
 });
 
-router.post("/logout", (req, res) => {
-  res.clearCookie("token", { httpOnly: true, path: "/" });
-  res.send("Вихід з профілю виконаний успішно!");
-});
-
 router.delete("/delete", async (req, res) => {
   try {
     await userModel.findByIdAndDelete(req.userId);

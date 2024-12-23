@@ -14,10 +14,11 @@ import { useAlert } from "@/contexts/AlertContext";
 import Cookies from "js-cookie";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 
 export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
-  const { setSearch, setTodos } = useTodos();
+  const { setSearch, setTodos, loading } = useTodos();
   const { profileDetails, setProfileDetails } = useUserDetails();
   const { addCategory, deleteCategory } = useProfileFunctions();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -33,7 +34,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
   }, [profileDetails]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3001");
+    const ws = new WebSocket(`ws://${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(
@@ -134,7 +135,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
         className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 p-3 rounded-md'
       >
         <div className='space-y-4'>
-          <Link
+          <a
             href='/profile'
             className='flex space-x-3 profile items-center rounded-md p-2 pl-1'
             onClick={handleItemClick}
@@ -148,7 +149,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
               <h1 className='font-bold'>{formatText(profileData.name, 30)}</h1>
               <p className='text-sm'>{formatText(profileData.email, 30)}</p>
             </div>
-          </Link>
+          </a>
           <div className='search-container'>
             <input
               type='text'
@@ -163,12 +164,20 @@ export default function NavSidebar({ userData }: { userData: User }) {
           <hr className='divider' />
           <div className='scroll-container-nav'>
             {profileData.categories?.map((category) => (
-              <div className='flex justify-between rounded-md button listname-link' key={category}>
-                <NavigationButton
-                  icon='/list.svg'
-                  href={`/list/${encodeURIComponent(category)}`}
-                  text={category}
-                />
+              <div
+                className='flex justify-between rounded-md button listname-link'
+                style={{
+                  opacity: category == loading ? 0.5 : 1,
+                }}
+                key={category}
+              >
+                <button className="w-full" disabled={!!loading}>
+                  <NavigationButton
+                    icon='/list.svg'
+                    href={`/list/${encodeURIComponent(category)}`}
+                    text={category}
+                  />
+                </button>
 
                 <button
                   className='nav-delete pr-3'

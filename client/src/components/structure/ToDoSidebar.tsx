@@ -17,7 +17,7 @@ import { formatText } from "../functions/formatFields";
 import Cookies from "js-cookie";
 
 export default function ToDoSidebar({ todo }: { todo: Task }) {
-  const { todos, setTodoChoosed } = useTodos();
+  const { todos, setTodoChoosed, setLoading, loading } = useTodos();
   const { profileDetails, teamMembers, setUserQuest } = useUserDetails();
   const { showAlert } = useAlert();
 
@@ -84,11 +84,24 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
     }
   };
 
+  const handleDeleteTodo = async () => {
+    setLoading(todo._id!);
+    setTodoChoosed(null);
+    try {
+      await deleteTodo(todo._id!);
+    } finally {
+      setLoading(undefined);
+    }
+  };
+
   return (
-    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
+    <section
+      className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '
+      style={{ opacity: todo._id == loading ? 0.7 : 1 }}
+    >
       <main className='space-y-3 scroll-container'>
         <div className='flex justify-end items-center'>
-          <button onClick={() => setTodoChoosed(null)}>
+          <button onClick={() => setTodoChoosed(null)} disabled={!!loading}>
             <Cross />
           </button>
         </div>
@@ -100,6 +113,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })}
             placeholder='Введіть назву...'
             className='bg-transparent outline-none resize-none pt-1'
+            disabled={!!loading} // Disable when loading
           />
           <button
             className='self-start mt-2'
@@ -111,6 +125,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                 todoOnFirstPos(currentTodo, newIsImportant);
               }
             }}
+            disabled={!!loading} 
           >
             <Star isImportant={isImportant} />
           </button>
@@ -123,12 +138,14 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           onChange={(e) => setTaskDescription(e.target.value)}
           className='description-sidebar-input button'
           placeholder='Введіть опис...'
+          disabled={!!loading}
         />
         <Calendar currentTodo={currentTodo!} />
         {profileDetails.team && (
-          <div
-            className='button description-sidebar-input space-y-3 cursor-pointer'
+          <button
+            className='button description-sidebar-input space-y-3 cursor-pointer text-left'
             onClick={() => setAsigneeMenu(!asigneeMenu)}
+            disabled={!!loading} 
           >
             <p>Призначено</p>
             <div className='flex items-center space-x-3 text-lg'>
@@ -162,16 +179,14 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                   ))}
               </>
             )}
-          </div>
+          </button>
         )}
       </main>
 
       <button
         className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
-        onClick={() => {
-          deleteTodo(todo._id!);
-          setTodoChoosed(null);
-        }}
+        onClick={handleDeleteTodo}
+        disabled={!!loading} // Disable when loading
       >
         <Delete color='#b91c1c' width='30px' />
         <p className='text-red-700'>Видалити завдання</p>

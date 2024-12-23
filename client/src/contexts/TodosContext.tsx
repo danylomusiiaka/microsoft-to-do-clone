@@ -10,6 +10,8 @@ interface TodosContextType {
   setTodoChoosed: React.Dispatch<React.SetStateAction<Task | null>>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  loading: string | undefined;
+  setLoading: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
@@ -18,6 +20,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<Task[]>([]);
   const [todoChoosed, setTodoChoosed] = useState<Task | null>(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState<string | undefined>(undefined);
 
   return (
     <TodosContext.Provider
@@ -28,6 +31,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         setTodoChoosed,
         search,
         setSearch,
+        loading,
+        setLoading,
       }}
     >
       {children}

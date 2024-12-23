@@ -8,7 +8,7 @@ const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 export const useProfileFunctions = () => {
   const { profileDetails, setProfileDetails, setUserQuest } = useUserDetails();
   const { showAlert } = useAlert();
-  const { setTodoChoosed, setTodos } = useTodos();
+  const { setTodoChoosed, setTodos, setLoading, todos } = useTodos();
 
   const updateField = async (userfieldName: string, userfieldValue: string) => {
     try {
@@ -43,6 +43,17 @@ export const useProfileFunctions = () => {
     }
     category = category.trim();
     if (category === "") return;
+    setProfileDetails((prevDetails) => {
+      const alreadyExists = prevDetails.categories.some((cat) => cat === category);
+      if (alreadyExists) {
+        return prevDetails;
+      }
+      return {
+        ...prevDetails,
+        categories: [...prevDetails.categories, category],
+      };
+    });
+    setLoading(category);
     try {
       const token = Cookies.get("token");
 
@@ -54,6 +65,7 @@ export const useProfileFunctions = () => {
         }
       );
       if (result.status === 200) {
+        setLoading(undefined);
         const cookienewUserQuest = Cookies.get("newUserQuest");
         if (cookienewUserQuest) {
           const userQuest = JSON.parse(cookienewUserQuest);
@@ -63,26 +75,25 @@ export const useProfileFunctions = () => {
             Cookies.set("newUserQuest", JSON.stringify(userQuest));
           }
         }
-        setProfileDetails((prevDetails) => {
-          const alreadyExists = prevDetails.categories.some((cat) => cat === category);
-          if (alreadyExists) {
-            return prevDetails;
-          }
-          return {
-            ...prevDetails,
-            categories: [...prevDetails.categories, category],
-          };
-        });
+
         showAlert("Список успішно створено!", "success");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         window.location.href = "/auth";
-      } else showAlert(error.response.data, "error");
+      } else {
+        showAlert(error.response.data, "error");
+        setProfileDetails((prevDetails) => ({
+          ...prevDetails,
+          categories: prevDetails.categories.filter((cat) => cat !== category),
+        }));
+      }
     }
   };
 
   const deleteCategory = async (category: string) => {
+    setLoading(category);
+
     try {
       const token = Cookies.get("token");
 
@@ -90,11 +101,14 @@ export const useProfileFunctions = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTodoChoosed(null);
+
       setTodos(response.data.remainingTasks);
+
       setProfileDetails((prevDetails) => ({
         ...prevDetails,
         categories: response.data.remainingCategories,
       }));
+      setLoading(undefined);
 
       if (decodeURIComponent(window.location.pathname) === `/list/${category}`) {
         window.location.href = "/";

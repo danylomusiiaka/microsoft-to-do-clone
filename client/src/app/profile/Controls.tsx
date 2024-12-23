@@ -1,13 +1,11 @@
 "use client";
-import Axios from "axios";
 import Link from "next/link";
 import React from "react";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
-
+import Cookies from "js-cookie";
 
 export default function Controls() {
   const handleLogOut = async () => {
-    await Axios.post(`${webUrl}/user/logout`, {}, { withCredentials: true });
+    Cookies.remove("token");
   };
 
   return (
