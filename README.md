@@ -10,5 +10,5 @@ Next Js with Typescript, Tailwind, MUI library, Context API, Cookies
 Node Js, Express, MongoDB, JWT, WebSockets
 ### Deployed 
 Vercel for client and Render for server
-[![image](https://github.com/user-attachments/assets/f8bfe082-2451-4035-9f9b-f937c04fc9a3){: width="48" height="48"}]
+<img src="https://github.com/user-attachments/assets/f8bfe082-2451-4035-9f9b-f937c04fc9a3" width="48" height="48" />
 
