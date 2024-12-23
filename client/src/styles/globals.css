@@ -17,7 +17,11 @@ body {
   overflow: hidden;
 }
 
-
+@media (max-width: 768px) {
+  body {
+    font-size: 85%;
+  }
+}
 
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;

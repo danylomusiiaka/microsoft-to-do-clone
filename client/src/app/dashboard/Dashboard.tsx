@@ -40,7 +40,7 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
   console.log(chartData.priority);
 
   return (
-    <main className='md:p-12 md:pr-0 md:mt-0 mt-5 w-full'>
+    <main className='md:p-12 md:pr-0 md:mt-0 mt-5 w-full scroll-container-profile'>
       <h1 className='text-5xl font-bold'>Статистика</h1>
       <p className='my-3 mb-6 '>
         {userData.team ? `для команди ${userData.team}` : `для користувача ${userData.name}`}
@@ -115,7 +115,6 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
                   backgroundColors={["#3b82f6", "#eab308", "#ef4444", "#a8a29e"]}
                 />
               </div>
-              
             </section>
           ) : (
             <div className='md:flex justify-center items-center w-full space-x-6 h-4/6'>
