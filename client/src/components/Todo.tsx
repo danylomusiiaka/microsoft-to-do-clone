@@ -99,20 +99,20 @@ export default function Todo({ todo, sortName }: TodoProps) {
               {todo.priority}
             </span>
           ) : (
-            <span
+            <div
               className={`${
                 STATUS_OPTIONS.find((option) => option.name === todo.status)?.color ||
                 "bg-stone-500"
-              } rounded-xl text-sm text-nowrap px-3 `}
+              } rounded-xl text-sm text-nowrap px-3 w-fit`}
             >
               {todo.status}
-            </span>
+            </div>
           )}
         </td>
         <td className='md:p-3 table-field'>{formatDate(todo.date)}</td>
         <td className=''>
           {todo.isImportant && (
-            <div className='flex justify-end items-end'>
+            <div className='flex justify-end items-end md:block'>
               <Star isImportant={todo.isImportant} />
             </div>
           )}

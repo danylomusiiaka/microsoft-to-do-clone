@@ -102,7 +102,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
           />
         ) : (
-          <h2 className='text-5xl font-bold mb-5 mt-3 '>{name}</h2>
+          <h2 className='text-5xl font-bold mb-5 mt-3 md:mt-0 '>{name}</h2>
         )}
 
         <section className='relative'>
