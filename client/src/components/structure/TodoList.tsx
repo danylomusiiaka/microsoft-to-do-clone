@@ -34,7 +34,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const completedTodos = tasks.filter((todo: Task) => todo.isCompleted);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${wsUrl}`);
+    const ws = new WebSocket(`wss://${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(

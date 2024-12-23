@@ -34,7 +34,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
   }, [profileDetails]);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${wsUrl}`);
+    const ws = new WebSocket(`wss://${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(
