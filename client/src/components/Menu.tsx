@@ -137,7 +137,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
                 <p>За пріорітетністю</p>
               </button>
               <button
-                className='flex space-x-2 w-full items-center profile p-2 pl-0'
+                className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap'
                 onClick={handleDeleteAll}
               >
                 {loading ? (
