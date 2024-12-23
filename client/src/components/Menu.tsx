@@ -86,7 +86,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
 
   return (
     <>
-      <main className='relative flex justify-between items-center'>
+      <section className='flex justify-between items-center'>
         {listName !== "Завдання" ? (
           <input
             value={name}
@@ -102,7 +102,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
           />
         ) : (
-          <h2 className='text-5xl font-bold md:mb-5 mb-7 '>{name}</h2>
+          <h2 className='text-5xl font-bold md:mb-5 mt-3 '>{name}</h2>
         )}
 
         <section className='relative'>
@@ -150,7 +150,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
             </section>
           )}
         </section>
-      </main>
+      </section>
       {sortOptions.name && (
         <div className='flex items-center space-x-2 mb-3'>
           <button onClick={handleSortOrder}>{!desc ? <SortDesc /> : <SortAsc />}</button>
