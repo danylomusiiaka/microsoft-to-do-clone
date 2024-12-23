@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 export default function Controls() {
   const handleLogOut = async () => {
     Cookies.remove("token");
+    window.location.href = "/auth";
   };
 
   return (
