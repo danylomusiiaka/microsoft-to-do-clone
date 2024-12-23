@@ -60,14 +60,20 @@
 }
 
 .scroll-container-todos {
-  height: 32rem;
+  height: 65vh;
+  overflow-y: scroll;
+}
+.scroll-container-profile {
+  max-height: 90vh; 
   overflow-y: scroll;
 }
 
-.scroll-container-profile {
-  height: 37rem;
-  overflow-y: scroll;
+@media (min-height: 800px) {
+  .scroll-container-profile {
+    max-height: 85vh;
+  }
 }
+
 
 .scroll-container::-webkit-scrollbar,
 .scroll-container-todos::-webkit-scrollbar,

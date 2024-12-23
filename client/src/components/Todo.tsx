@@ -110,7 +110,13 @@ export default function Todo({ todo, sortName }: TodoProps) {
           )}
         </td>
         <td className='md:p-3 table-field'>{formatDate(todo.date)}</td>
-        <td>{todo.isImportant && <Star isImportant={todo.isImportant} />}</td>
+        <td className=''>
+          {todo.isImportant && (
+            <div className='flex justify-end items-end'>
+              <Star isImportant={todo.isImportant} />
+            </div>
+          )}
+        </td>
       </tr>
     </>
   );
