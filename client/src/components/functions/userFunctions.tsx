@@ -1,6 +1,7 @@
 import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { Status } from "@/interfaces/UserInterface";
 import Axios from "axios";
 import Cookies from "js-cookie";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
@@ -8,13 +9,13 @@ const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 export const useProfileFunctions = () => {
   const { profileDetails, setProfileDetails, setUserQuest } = useUserDetails();
   const { showAlert } = useAlert();
-  const { setTodoChoosed, setTodos, setLoading, todos } = useTodos();
+  const { setTodoChoosed, setTodos, setLoading } = useTodos();
 
-  const updateField = async (userfieldName: string, userfieldValue: string) => {
+  const updateField = async (userfieldName: string, userfieldValue: string | Status[] | boolean) => {
     try {
       const token = Cookies.get("token");
 
-      const response = await Axios.post(
+      const response = await Axios.put(
         `${webUrl}/user/update-field`,
         {
           fieldName: userfieldName,
@@ -164,7 +165,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/user/create-team`,
+        `${webUrl}/team/create`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -197,7 +198,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/user/exit-team`,
+        `${webUrl}/team/exit`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -221,7 +222,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/user/join-team`,
+        `${webUrl}/team/join`,
         { teamCode: code },
         {
           headers: { Authorization: `Bearer ${token}` },

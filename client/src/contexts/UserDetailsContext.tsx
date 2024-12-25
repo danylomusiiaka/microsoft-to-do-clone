@@ -25,6 +25,8 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
     picture: "",
     team: "",
     categories: [""],
+    statuses: [],
+    isUserQuestDone: false,
   });
 
   const [teamMembers, setTeamMembers] = useState<
@@ -40,7 +42,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
         try {
           const token = Cookies.get("token");
 
-          const response = await Axios.get(`${webUrl}/user/team-members`, {
+          const response = await Axios.get(`${webUrl}/team/all-members`, {
             params: { teamCode: profileDetails.team },
             headers: { Authorization: `Bearer ${token}` },
           });

@@ -11,6 +11,7 @@ import { useAlert } from "@/contexts/AlertContext";
 const themes = ["dark", "light", "purple"];
 import TeamButtons from "./TeamButtons";
 import NewUserQuest from "./NewUserQuest";
+import StatusEditor from "./StatusEditor";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -63,7 +64,7 @@ export default function Profile({ userData }: { userData: User }) {
       <hr className='divider' />
       <section className='space-y-4 '>
         <TeamButtons profileInfo={profileInfo} />
-        <NewUserQuest />
+        <NewUserQuest isUserQuestDone={profileInfo.isUserQuestDone} />
 
         <h2 className='text-2xl'>Загальні налаштування</h2>
         <p>Обрати тему для додатка</p>
@@ -72,9 +73,8 @@ export default function Profile({ userData }: { userData: User }) {
             <ThemeOption theme={theme} key={theme} />
           ))}
         </div>
-
-        
       </section>
+      <StatusEditor userData={profileInfo} />
     </main>
   );
 }

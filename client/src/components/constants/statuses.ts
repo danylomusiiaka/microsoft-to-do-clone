@@ -1,13 +1,13 @@
 export const STATUS_OPTIONS = [
-  { name: "to do", color: "bg-yellow-700" },
-  { name: "in progress", color: "bg-yellow-500" },
-  { name: "done", color: "bg-green-500" },
+  { name: "to do", color: "#a16207" },
+  { name: "in progress", color: "#eab308" },
+  { name: "done", color: "#22c55e" },
 ];
 
 export const PRIORITY_OPTIONS = [
-  { name: "low", color: "bg-blue-500" },
-  { name: "medium", color: "bg-yellow-500" },
-  { name: "high", color: "bg-red-500" },
+  { name: "low", color: "#3b82f6" },
+  { name: "medium", color: "#eab308" },
+  { name: "high", color: "#ef4444" },
 ];
 
 export const PRIORITY_RATING = [

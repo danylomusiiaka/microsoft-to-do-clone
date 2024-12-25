@@ -12,12 +12,11 @@ export default function Options({ options, handleClick }: OptionsProps) {
         <div
           key={option.name || option}
           onClick={() => handleClick(option.name || option)}
-          className={`text-center m-3 ml-2.5 cursor-pointer rounded-xl text-sm h-5 ${
-            option.color ? option.color : "bg-stone-400"
-          }`}
+          className={`text-center m-3 mx-2 cursor-pointer rounded-xl text-sm h-5 truncated-text`}
+          style={{ backgroundColor: `${option.color}` }}
         >
-          {formatText(option.name || option, 12)}
-        </div>
+          {option.name || option}
+        </div>  
       ))}
     </div>
   );

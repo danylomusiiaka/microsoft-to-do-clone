@@ -19,10 +19,12 @@ export default function StatusDropdown(todo: Task) {
   const [selectedCategory, setSelectedCategory] = useState(todo.category);
   const [selectedPriority, setSelectedPriority] = useState(todo.priority);
 
-  const color = STATUS_OPTIONS.find((option) => option.name === selectedStatus)?.color || "";
+  const color =
+    [...STATUS_OPTIONS, ...profileDetails.statuses].find((option) => option.name === selectedStatus)
+      ?.color || "#a8a29e";
 
   const color2 =
-    PRIORITY_OPTIONS.find((option) => option.name === selectedPriority)?.color || "bg-stone-400";
+    PRIORITY_OPTIONS.find((option) => option.name === selectedPriority)?.color || "#a8a29e";
 
   useEffect(() => {
     setSelectedStatus(todo.status);
@@ -50,7 +52,7 @@ export default function StatusDropdown(todo: Task) {
 
   return (
     <main className='w-full'>
-      <section className='grid grid-cols-3 '>
+      <section className='grid grid-cols-3'>
         <button
           onClick={() => {
             setIsOpenStatuses((prev) => !prev);
@@ -61,9 +63,10 @@ export default function StatusDropdown(todo: Task) {
           title='Стан завдання'
         >
           <div
-            className={`flex items-center justify-center text-sm rounded-xl h-5 ${color} space-x-2`}
+            className='text-sm rounded-xl h-5 space-x-2 truncated-text'
+            style={{ backgroundColor: `${color}` }}
           >
-            {formatText(selectedStatus, 12)}
+            {selectedStatus}
           </div>
         </button>
 
@@ -73,11 +76,11 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2 cursor-pointer '
+          className='rounded p-2 cursor-pointer'
           title='До якого списку належить завдання'
         >
-          <div className='flex items-center justify-center text-sm bg-stone-400 rounded-xl h-5 space-x-2'>
-            {formatText(selectedCategory, 11)}
+          <div className='text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text'>
+            {selectedCategory}
           </div>
         </button>
 
@@ -90,14 +93,20 @@ export default function StatusDropdown(todo: Task) {
           className='rounded p-2 cursor-pointer '
         >
           <div
-            className={`flex items-center justify-center text-sm rounded-xl h-5 ${color2} space-x-2`}
+            className='text-sm rounded-xl h-5 space-x-2'
+            style={{ backgroundColor: `${color2}` }}
           >
             {selectedPriority}
           </div>
         </button>
       </section>
 
-      {isOpenStatuses && <Options options={STATUS_OPTIONS} handleClick={handleOptionClick} />}
+      {isOpenStatuses && (
+        <Options
+          options={[...STATUS_OPTIONS, ...profileDetails.statuses]}
+          handleClick={handleOptionClick}
+        />
+      )}
 
       {isOpenCategories && (
         <Options options={profileDetails.categories} handleClick={handleCategoryClick} />

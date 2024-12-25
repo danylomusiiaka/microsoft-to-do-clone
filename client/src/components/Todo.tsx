@@ -1,25 +1,29 @@
 import Checkmark from "../../public/checkmark";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
-import { STATUS_OPTIONS } from "./constants/statuses";
-import { formatDate, formatText } from "./functions/formatFields";
+import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "./constants/statuses";
+import { formatDate } from "./functions/formatFields";
 import Star from "../../public/star";
 import { useTodoFunctions } from "./functions/todosFunctions";
+import { Status } from "@/interfaces/UserInterface";
+import { useEffect, useState } from "react";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 
 interface TodoProps {
   todo: Task;
   sortName: string;
+  userStatuses: Status[];
 }
 
-const PRIORITY_OPTIONS = [
-  { name: "low", color: "bg-blue-500" },
-  { name: "medium", color: "bg-yellow-500" },
-  { name: "high", color: "bg-red-500" },
-];
-
-export default function Todo({ todo, sortName }: TodoProps) {
+export default function Todo({ todo, sortName, userStatuses }: TodoProps) {
   const { setTodoChoosed, todoChoosed, loading } = useTodos();
   const { updateField } = useTodoFunctions();
+  const { profileDetails } = useUserDetails();
+  const [statuses, setStatuses] = useState(userStatuses);
+
+  useEffect(() => {
+    setStatuses(profileDetails.statuses);
+  }, [profileDetails.statuses]);
 
   const toggleCompletion = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -40,13 +44,16 @@ export default function Todo({ todo, sortName }: TodoProps) {
   return (
     <>
       <tr style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}>
-        <td className='p-3 pl-0 md:hidden'>
+        <td className='p-3 pl-0 md:hidden truncated-text'>
           {sortName == "За пріорітетністю" && (
             <span
-              className={`${
-                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
-                "bg-stone-500"
-              } rounded-xl text-sm text-nowrap px-3`}
+              className='rounded-xl text-sm text-nowrap px-3'
+              style={{
+                backgroundColor: `${
+                  PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
+                  "#a8a29e"
+                }`,
+              }}
             >
               {todo.priority}
             </span>
@@ -57,13 +64,17 @@ export default function Todo({ todo, sortName }: TodoProps) {
             </span>
           )}
           {(sortName === "За алфавітом" || sortName === "") && (
-            <span
-              className={`${
-                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color || ""
-              } rounded-xl text-sm text-nowrap px-3 `}
+            <div
+              className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
+              style={{
+                backgroundColor: `${
+                  [...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)
+                    ?.color || "#a8a29e"
+                }`,
+              }}
             >
               {todo.status}
-            </span>
+            </div>
           )}
         </td>
       </tr>
@@ -91,19 +102,25 @@ export default function Todo({ todo, sortName }: TodoProps) {
         <td className='md:p-3 align-text-top table-field'>
           {sortName == "За пріорітетністю" ? (
             <span
-              className={`${
-                PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
-                "bg-stone-500"
-              } rounded-xl text-sm text-nowrap px-3`}
+              className='rounded-xl text-sm text-nowrap px-3'
+              style={{
+                backgroundColor: `${
+                  PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
+                  "#a8a29e"
+                }`,
+              }}
             >
               {todo.priority}
             </span>
           ) : (
             <div
-              className={`${
-                STATUS_OPTIONS.find((option) => option.name === todo.status)?.color ||
-                "bg-stone-500"
-              } rounded-xl text-sm text-nowrap px-3 w-fit`}
+              className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
+              style={{
+                backgroundColor: `${
+                  [...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)
+                    ?.color || "#a8a29e"
+                }`,
+              }}
             >
               {todo.status}
             </div>

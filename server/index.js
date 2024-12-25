@@ -42,6 +42,10 @@ import categoryRoutes from "./routes/categoryMethods.js";
 
 app.use("/category", categoryRoutes);
 
+import teamRoutes from "./routes/teamMethods.js";
+
+app.use("/team", teamRoutes);
+
 server.listen(3001, () => {
   console.log("Server is listening on port 3001");
 });

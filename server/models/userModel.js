@@ -9,6 +9,14 @@ const userSchema = new Schema(
     picture: { type: String },
     team: { type: String },
     categories: { type: [String] },
+    statuses: [
+      {
+        name: { type: String, required: true },
+        color: { type: String, required: true },
+        _id: false,
+      },
+    ],
+    isUserQuestDone: { type: Boolean, default: false },
   },
   { default: [] }
 );

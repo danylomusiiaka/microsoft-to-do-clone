@@ -6,6 +6,13 @@ const teamSchema = new Schema(
     participants: { type: [String] },
     admins: { type: [String] },
     categories: { type: [String] },
+    statuses: [
+      {
+        name: { type: String, required: true },
+        color: { type: String, required: true },
+        _id: false,
+      },
+    ],
   },
   { default: [] }
 );

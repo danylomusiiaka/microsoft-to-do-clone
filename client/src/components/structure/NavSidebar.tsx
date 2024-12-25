@@ -5,13 +5,13 @@ import Delete from "@/../public/delete";
 import { useState, useRef, useEffect } from "react";
 import { useTodos } from "@/contexts/TodosContext";
 import { User } from "@/interfaces/UserInterface";
-import Link from "next/link";
 import { formatText } from "../functions/formatFields";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import Axios from "axios";
 import { useProfileFunctions } from "../functions/userFunctions";
 import { useAlert } from "@/contexts/AlertContext";
 import Cookies from "js-cookie";
+import { Task } from "@/interfaces/TaskInterface";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -34,7 +34,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
   }, [profileDetails]);
 
   useEffect(() => {
-    const ws = new WebSocket(`wss://${wsUrl}`);
+    const ws = new WebSocket(`${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(
@@ -70,6 +70,17 @@ export default function NavSidebar({ userData }: { userData: User }) {
         }
 
         setTodos(message.remainingTasks);
+      } else if (message.event === "statusesUpdated") {
+        setProfileDetails({
+          ...profileDetails,
+          statuses: message.newStatuses,
+        });
+        setTodos((prevTodos) =>
+          prevTodos.map(
+            (todo) =>
+              message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo
+          )
+        );
       }
     };
 
@@ -171,7 +182,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
                 }}
                 key={category}
               >
-                <button className="w-full" disabled={!!loading}>
+                <button className='w-full' disabled={!!loading}>
                   <NavigationButton
                     icon='/list.svg'
                     href={`/list/${encodeURIComponent(category)}`}

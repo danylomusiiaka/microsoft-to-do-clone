@@ -5,39 +5,41 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import confetti from "canvas-confetti";
+import { useProfileFunctions } from "@/components/functions/userFunctions";
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+function LinearProgressWithTask(props: LinearProgressProps & { value: number; task: string }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "80%", mr: 1 }}>
-        <LinearProgress
-          variant='determinate'
-          {...props}
-          sx={{
-            "& .MuiLinearProgress-bar": {
-              backgroundColor: props.value === 100 ? "green" : undefined,
-            },
-          }}
-        />
+    <div className='ml-3'>
+      <p>{props.task}</p>
+      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+        <Box sx={{ width: "80%", mr: 1 }}>
+          <LinearProgress
+            variant='determinate'
+            {...props}
+            sx={{
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: props.value === 100 ? "green" : undefined,
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>{`${Math.round(
+            props.value
+          )}%`}</Typography>
+        </Box>
       </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
-    </Box>
+    </div>
   );
 }
 
-export default function NewUserQuest() {
+export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boolean }) {
   const { userQuest, setUserQuest } = useUserDetails();
-  const [isCompleted, setIsCompleted] = useState<number | null>(null);
+  const { updateField } = useProfileFunctions();
+  const [isCompleted, setIsCompleted] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const cookieUserQuest = Cookies.get("userQuest");
-    const { completed } = JSON.parse(cookieUserQuest || "{}");
-    if (completed) {
-      setIsCompleted(null);
+    if (isUserQuestDone) {
       return;
     }
     const cookienewUserQuest = Cookies.get("newUserQuest");
@@ -52,7 +54,6 @@ export default function NewUserQuest() {
         authorAssignedTask: 0,
       };
       Cookies.set("newUserQuest", JSON.stringify(initialCookieValue));
-      setIsCompleted(0);
     } else {
       const {
         listCreated,
@@ -69,8 +70,8 @@ export default function NewUserQuest() {
         profilePictureChanged + authorAssignedTask,
       ];
       setUserQuest(values);
-      setIsCompleted(0);
     }
+    setIsCompleted(false);
   }, []);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function NewUserQuest() {
     if (cookieUserQuest) {
       if (userQuest.every((value) => value === 100)) {
         Cookies.remove("newUserQuest");
-        Cookies.set("userQuest", JSON.stringify({ completed: true }));
+        updateField("isUserQuestDone", true);
         for (let i = 0; i < 30; i++) {
           setTimeout(() => {
             confetti({
@@ -88,83 +89,54 @@ export default function NewUserQuest() {
             });
           }, i * 200);
         }
-        setIsCompleted(1);
+        setIsCompleted(true);
       }
     }
   }, [userQuest]);
 
   return (
     <>
-      {isCompleted == 0 && (
-        <div
+      {isCompleted !== null && (
+        <section
           className='w-fit p-3 rounded-md md:flex'
           style={{ backgroundColor: "var(--secondary-background-color)" }}
         >
-          <img src='/educational-cherry.gif' alt='hi-cherry' className='w-52 h-52' />
+          <img
+            src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"}
+            alt={!isCompleted ? "hi-cherry" : "clapping-cherry"}
+            className='w-52 h-52'
+          />
           <div className='space-y-3'>
-            <p
+            <div
               className='h-fit rounded-md p-3 text-lg'
               style={{ backgroundColor: "var(--sidebar-block-color)" }}
             >
-              Привіт! Я бачу ти новенький <br />
-              Виконай пару квестів, щоб краще ознайомитись з додатком
-            </p>
-            <div className='ml-3'>
-              <p>Створи список і заверши 3 завдання</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[0]} />
-              </Box>
+              {!isCompleted ? (
+                <p>
+                  Привіт! Я бачу ти новенький. <br /> Виконай пару квестів, щоб краще ознайомитись з
+                  додатком
+                </p>
+              ) : (
+                <p>
+                  Ура! Ти пройшов усі завдання! <br /> Тепер ти повноцінно навчився користуватись
+                  додатком
+                </p>
+              )}
             </div>
-            <div className='ml-3'>
-              <p>Створи команду та запроси туди одного учасника</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[1]} />
-              </Box>
-            </div>
-            <div className='ml-3'>
-              <p>Зміни аватарку та признач комусь завдання в команді</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[2]} />
-              </Box>
-            </div>
+            <LinearProgressWithTask
+              value={userQuest[0]}
+              task={"Створи список і заверши 3 завдання"}
+            />
+            <LinearProgressWithTask
+              value={userQuest[1]}
+              task={"Створи команду та запроси туди одного учасника"}
+            />
+            <LinearProgressWithTask
+              value={userQuest[2]}
+              task={"Зміни аватарку та признач комусь завдання в команді"}
+            />
           </div>
-        </div>
-      )}
-
-      {isCompleted == 1 && (
-        <div
-          className='w-fit p-3 rounded-md md:flex'
-          style={{ backgroundColor: "var(--secondary-background-color)" }}
-        >
-          <img src='/congradulations.gif' alt='clapping-cherry' className='w-52 h-52' />
-          <div className='space-y-3'>
-            <p
-              className='h-fit rounded-md p-3 text-lg'
-              style={{ backgroundColor: "var(--sidebar-block-color)" }}
-            >
-              Ура! Ти пройшов усі завдання! <br />
-              Тепер ти повноцінно навчився користуватись додатком
-            </p>
-            <div className='ml-3'>
-              <p>Створи список і заверши 3 завдання</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[0]} />
-              </Box>
-            </div>
-            <div className='ml-3'>
-              <p>Створи команду та запроси туди одного учасника</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[1]} />
-              </Box>
-            </div>
-            <div className='ml-3'>
-              <p>Зміни аватарку та признач комусь завдання в команді</p>
-              <Box sx={{ width: "100%" }}>
-                <LinearProgressWithLabel value={userQuest[2]} />
-              </Box>
-            </div>
-          </div>
-        </div>
+        </section>
       )}
     </>
   );

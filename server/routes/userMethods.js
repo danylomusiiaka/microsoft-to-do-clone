@@ -6,6 +6,7 @@ import taskModel from "../models/taskModel.js";
 import { createTransport } from "nodemailer";
 import { hash, compare } from "bcrypt";
 import { generateToken, verifyToken, generateRandomString } from "../config/authMiddleware.js";
+import { broadcast } from "../config/websocket.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
@@ -91,124 +92,76 @@ router.delete("/delete", async (req, res) => {
 router.get("/details", verifyToken, async (req, res) => {
   try {
     const user = await userModel.findById(req.userId).select("-password");
-
-    if (!user) {
-      return res.status(404).send("Користувач не знайдений");
-    }
-
-    const { name, email, picture, team, categories } = user;
+    const { team } = user;
 
     if (team) {
       const userTeam = await teamModel.findOne({ code: team });
       if (!userTeam) {
         user.team = "";
         await user.save();
-        return res.json({ name, email, picture, team: "", categories });
+        return res.json({ ...user, team: "" });
       }
-      if (!userTeam.categories) {
-        userTeam.categories = [];
-        await userTeam.save();
-        return res.json({ name, email, picture, team, categories: [] });
-      }
-      return res.json({ name, email, picture, team, categories: userTeam.categories });
+      return res.json({
+        ...user.toObject(),
+        categories: userTeam.categories,
+        statuses: userTeam.statuses,
+      });
     }
-
-    return res.json({ name, email, picture, team, categories });
+    return res.json(user);
   } catch (error) {
-    console.log(error);
-
     return res.status(500).send("Error retrieving user profile");
   }
 });
 
-router.post("/update-field", verifyToken, async (req, res) => {
+router.put("/update-field", verifyToken, async (req, res) => {
   const { fieldName, fieldValue } = req.body;
 
   try {
     const user = await userModel.findById(req.userId).select("-password");
-    user[fieldName] = fieldValue;
-    await user.save();
-    res.status(200).send("Поле профілю оновлено");
-  } catch (error) {
-    res.status(500).send("Error updating user profile");
-  }
-});
+    if (fieldName === "statuses") {
+      const tasks = await taskModel.find({ author: user.team || user.email });
+      const statusNames = fieldValue.map((status) => status.name);
+      const validStatuses = [...statusNames, "to do", "in progress", "done"];
+      const invalidTasks = tasks.filter((task) => !validStatuses.includes(task.status));
+      await taskModel.updateMany(
+        { _id: { $in: invalidTasks.map((task) => task._id) } },
+        { $set: { status: "to do" } }
+      );
 
-router.post("/create-team", verifyToken, async (req, res) => {
-  const teamCode = generateRandomString(12);
-  const user = await userModel.findById(req.userId).select("-password");
-  const team = new teamModel({
-    code: teamCode,
-    participants: [user.email],
-    admins: [user.email],
-  });
-  await team.save();
-  if (!user["team"]) {
-    user["team"] = teamCode;
-    await user.save();
-    res.json(teamCode);
-  }
-});
-
-router.post("/exit-team", verifyToken, async (req, res) => {
-  try {
-    const user = await userModel.findById(req.userId).select("-password");
-    const team = await teamModel.findOne({ code: user.team });
-
-    if (team) {
-      team.participants = team.participants.filter((participant) => participant !== user.email);
-      if (team.participants.length === 0) {
-        await teamModel.findByIdAndDelete(team._id);
-        await taskModel.deleteMany({ author: team.code });
-      } else {
+      if (user.team) {
+        const team = await teamModel.findOne({ code: user.team });
+        team[fieldName] = fieldValue;
+        const updatedTodos = await taskModel.find({ author: user.team });
+        broadcast({ event: "statusesUpdated", newStatuses: fieldValue, updatedTodos }, user.team);
         await team.save();
+        return res.status(200).send("Поле профілю оновлено");
       }
     }
-    user["team"] = "";
+
+    user[fieldName] = fieldValue;
     await user.save();
-    res.json("");
+    return res.status(200).send("Поле профілю оновлено");
   } catch (error) {
-    res.status(500).send("Error exiting team");
+    console.log(error);
+
+    return res.status(500).send("Помилка оновлення профілю");
   }
 });
 
-router.post("/join-team", verifyToken, async (req, res) => {
-  const { teamCode } = req.body;
-
+router.get("/statuses", verifyToken, async (req, res) => {
   try {
-    const team = await teamModel.findOne({ code: teamCode });
-
-    if (!team) {
-      return res.status(404).send("Команда не знайдена");
-    }
-
     const user = await userModel.findById(req.userId).select("-password");
-    if (team.participants.includes(user.email)) {
-      return res.status(400).send("Ви вже є учасником цієї команди");
+
+    if (user.team) {
+      const userTeam = await teamModel.findOne({ code: user.team });
+      console.log(userTeam.statuses);
+      return res.json(userTeam.statuses);
     }
+    console.log(user.statuses);
 
-    team.participants.push(user.email);
-    await team.save();
-
-    user.team = teamCode;
-    await user.save();
-
-    res.status(200).send("Ви успішно приєдналися до команди");
+    return res.json(user.statuses);
   } catch (error) {
-    res.status(500).send("Помилка приєднання до команди");
-  }
-});
-
-router.get("/team-members", verifyToken, async (req, res) => {
-  const { teamCode } = req.query;
-  try {
-    const team = await teamModel.findOne({ code: teamCode });
-    const participants = await userModel
-      .find({ email: { $in: team.participants } })
-      .select("email name picture");
-    res.status(200).json(participants);
-  } catch (error) {
-    res.status(500).send("Помилка відображення учасників команди");
+    return res.status(500).send("Помилка оновлення профілю");
   }
 });
 

@@ -19,5 +19,7 @@ Node Js, Express, MongoDB, JWT, WebSockets
 ### Deployed 
 Vercel for client and Render for server
 
+<div style="display: flex; align-items: center;">
 <img src="https://skillicons.dev/icons?i=vercel" width="50" height="50" />
-<img src="https://github.com/user-attachments/assets/77eb8d77-b68c-4aa8-929e-496c8530d387" width="50" height="50" />
+<img src="https://github.com/user-attachments/assets/b29c7a88-6f71-4bdc-b2d2-53a98a1c977a" width="50" height="50" />
+</div>

@@ -2,18 +2,20 @@
 import "@/styles/task.css";
 import { useTodos } from "@/contexts/TodosContext";
 import { Task } from "@/interfaces/TaskInterface";
+import { Status } from "@/interfaces/UserInterface";
 import React, { useEffect, useState } from "react";
 import Todo from "../Todo";
 import Plus from "../../../public/plus";
-import { useTodoFunctions } from "../functions/todosFunctions";
 import Menu from "../Menu";
 import ToDoSidebar from "./ToDoSidebar";
+import { useTodoFunctions } from "../functions/todosFunctions";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useParams } from "next/navigation";
 import StartScreen from "../StartScreen";
+
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 
-export default function TodoList({ allTodos }: { allTodos: Task[] }) {
+export default function TodoList({allTodos, userStatuses }: { allTodos: Task[]; userStatuses: Status[] }) {
   const { category } = useParams();
   const { todoChoosed, setTodoChoosed, todos, setTodos, search } = useTodos();
   const listName = decodeURIComponent(
@@ -34,7 +36,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
   const completedTodos = tasks.filter((todo: Task) => todo.isCompleted);
 
   useEffect(() => {
-    const ws = new WebSocket(`wss://${wsUrl}`);
+    const ws = new WebSocket(`${wsUrl}`);
 
     ws.onopen = () => {
       ws.send(
@@ -90,7 +92,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
       <main className='flex flex-col justify-between md:p-12 w-full'>
         <section className=' md:mt-0'>
           <Menu listName={listName} sortOptions={sortOptions} setSortOptions={setSortOptions} />
-          
+
           <div className='scroll-container-todos'>
             {dataReady && todos.length == 0 && <StartScreen />}
             <table className='w-full text-left'>
@@ -103,7 +105,7 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
                   )
                   .map((todo: Task) => (
                     <React.Fragment key={todo._id}>
-                      <Todo todo={todo} sortName={sortOptions.name} />
+                      <Todo todo={todo} sortName={sortOptions.name} userStatuses={userStatuses} />
                     </React.Fragment>
                   ))}
 
@@ -129,7 +131,11 @@ export default function TodoList({ allTodos }: { allTodos: Task[] }) {
                     (todo: Task) =>
                       (listName === "Завдання" || todo.category === listName) && (
                         <React.Fragment key={todo._id}>
-                          <Todo todo={todo} sortName={sortOptions.name} />
+                          <Todo
+                            todo={todo}
+                            sortName={sortOptions.name}
+                            userStatuses={userStatuses}
+                          />
                         </React.Fragment>
                       )
                   )}
