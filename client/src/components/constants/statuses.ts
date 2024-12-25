@@ -8,6 +8,7 @@ export const PRIORITY_OPTIONS = [
   { name: "low", color: "#3b82f6" },
   { name: "medium", color: "#eab308" },
   { name: "high", color: "#ef4444" },
+  { name: "no priority", color: "#a8a29e" },
 ];
 
 export const PRIORITY_RATING = [

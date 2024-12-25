@@ -116,13 +116,9 @@ export default function NavSidebar({ userData }: { userData: User }) {
     }
   };
 
-  const handleItemClick = () => {
-    (document.getElementById("nav_check") as HTMLInputElement).checked = false;
-  };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-      handleItemClick();
+      (document.getElementById("nav_check") as HTMLInputElement).checked = false;
     }
   };
 
@@ -146,11 +142,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
         className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 p-3 rounded-md'
       >
         <div className='space-y-4'>
-          <a
-            href='/profile'
-            className='flex space-x-3 profile items-center rounded-md p-2 pl-1'
-            onClick={handleItemClick}
-          >
+          <a href='/profile' className='flex space-x-3 profile items-center rounded-md p-2 pl-1'>
             <img
               src={profileData.picture || `/default-picture.svg`}
               alt='photo'
@@ -182,13 +174,12 @@ export default function NavSidebar({ userData }: { userData: User }) {
                 }}
                 key={category}
               >
-                <button className='w-full' disabled={!!loading}>
-                  <NavigationButton
-                    icon='/list.svg'
-                    href={`/list/${encodeURIComponent(category)}`}
-                    text={category}
-                  />
-                </button>
+                <NavigationButton
+                  icon='/list.svg'
+                  href={`/list/${encodeURIComponent(category)}`}
+                  text={category}
+                  disabled={!!loading}
+                />
 
                 <button
                   className='nav-delete pr-3'

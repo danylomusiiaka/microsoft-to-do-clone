@@ -88,21 +88,22 @@ export default function StatusEditor({ userData }: { userData: User }) {
         </div>
 
         {isChangingStatuses && (
-          <div className='space-x-2 flex items-center'>
+          <div className='space-x-2 flex items-center '>
+            <input
+              type='color'
+              className='bg-transparent theme-option w-8 h-6'
+              value={status.color}
+              onChange={(e) => setStatus({ ...status, color: e.target.value })}
+            />
             <input
               type='text'
               value={status.name}
-              className='bg-transparent border rounded-md text-sm p-1'
+              className='bg-transparent border rounded-md text-sm p-1 w-full'
               placeholder='Введіть назву статусу..'
               onChange={(e) => setStatus({ ...status, name: e.target.value })}
               onKeyDown={handleKeyDown}
             />
-            <input
-              type='color'
-              className='bg-transparent  theme-option'
-              value={status.color}
-              onChange={(e) => setStatus({ ...status, color: e.target.value })}
-            />
+
             <button onClick={addStatus}>
               <Plus />
             </button>

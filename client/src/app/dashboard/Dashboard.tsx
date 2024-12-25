@@ -8,36 +8,27 @@ import { User } from "@/interfaces/UserInterface";
 interface ChartData {
   labels: string[];
   data: number[];
+  colors: string[];
 }
 
 export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; userData: User }) {
   const { formatForChart } = useTodoFunctions();
-  const [chartData, setChartData] = useState<{
-    status: ChartData;
-    priority: ChartData;
-  }>({
-    status: { labels: [], data: [] },
-    priority: { labels: [], data: [] },
-  });
+  const [chartData, setChartData] = useState<ChartData>({ labels: [], data: [], colors: [] });
+  const [toggleStats, setToggleStats] = useState("status");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (allTodos.length > 0) {
-      const statusChart = formatForChart(allTodos, "status");
-      const priorityChart = formatForChart(allTodos, "priority");
-      console.log(statusChart);
-
-      setChartData({
-        status: statusChart,
-        priority: priorityChart,
-      });
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
+      if (toggleStats == "status") {
+        const statusChart = formatForChart(allTodos, "status", userData);
+        setChartData(statusChart);
+      } else if (toggleStats == "priority") {
+        const priorityChart = formatForChart(allTodos, "priority", userData);
+        setChartData(priorityChart);
+      }
     }
-  }, [allTodos]);
-
-  console.log(chartData.priority);
+    setIsLoading(false);
+  }, [toggleStats]);
 
   return (
     <main className='md:p-12 md:pr-0 md:mt-0 mt-5 w-full scroll-container-profile'>
@@ -45,6 +36,22 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
       <p className='my-3 mb-6 '>
         {userData.team ? `для команди ${userData.team}` : `для користувача ${userData.name}`}
       </p>
+      <div className='flex space-x-4 mb-5'>
+        <button
+          className='px-4 py-2 rounded-md font-semibold shadow-md hover:opacity-90 active:translate-y-1 transform'
+          style={{ backgroundColor: "var(--secondary-background-color)" }}
+          onClick={() => setToggleStats("status")}
+        >
+          По статусам
+        </button>
+        <button
+          className='px-4 py-2 rounded-md font-semibold shadow-md hover:opacity-90 active:translate-y-1 transform'
+          style={{ backgroundColor: "var(--secondary-background-color)" }}
+          onClick={() => setToggleStats("priority")}
+        >
+          По пріорітетності
+        </button>
+      </div>
 
       {isLoading ? (
         <div className='loading-container flex flex-col h-5/6'>
@@ -58,61 +65,33 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
       ) : (
         <>
           {allTodos.length > 0 ? (
-            <section className='flex flex-wrap xl:space-x-6  space-y-3'>
+            <section className='flex flex-wrap xl:space-x-6  md:space-y-0 space-y-3'>
               <div
-                className='p-3 md:w-fit w-full space-y-3 mt-3'
+                className='p-3 md:w-96 w-full space-y-3 shadow-md'
                 style={{ backgroundColor: "var(--secondary-background-color)" }}
               >
-                <div className='flex items-center flex-wrap space-y-3'>
-                  <p className='mt-3'>Всього </p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-sm h-5 bg-yellow-700'>
-                    to do
-                  </span>
-                  <p>завдань: {chartData.status.data[0] + chartData.status.data[1]}</p>
-                </div>
-                <div className='flex items-center flex-wrap  space-y-3'>
-                  <p className='mt-3'>З них</p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-sm h-5 bg-green-500'>
-                    done
-                  </span>
-                  <p>вже {chartData.status.data[2]} та</p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-nowrap text-sm h-5 bg-yellow-500'>
-                    in progress
-                  </span>
-                  <p>є {chartData.status.data[1]}</p>
-                </div>
-                <DonutChart
-                  data={chartData.status.data}
-                  inputLabels={chartData.status.labels}
-                  backgroundColors={["#a16207", "#eab308", "#22c55e"]}
-                />
+                {chartData.labels.map((status, index) => (
+                  <div key={index} className='flex justify-between space-x-2'>
+                    <div className='flex items-center space-x-2'>
+                      <span
+                        className='w-4 h-4 inline-block'
+                        style={{ backgroundColor: chartData.colors[index] }}
+                      ></span>
+                      <p className='truncated-text'>{status} </p>
+                    </div>
+                    <p>{chartData.data[index]}</p>
+                  </div>
+                ))}
               </div>
               <div
-                className='p-3 md:w-fit w-full space-y-3'
+                className='p-3 md:w-fit w-full space-y-5 mt-3 shadow-md'
                 style={{ backgroundColor: "var(--secondary-background-color)" }}
               >
-                <div className='flex items-center flex-wrap space-y-3'>
-                  <p className='mt-3'>Завдань з </p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-sm h-5 bg-red-500'>
-                    high
-                  </span>
-                  <p>пріорітетністю: {chartData.priority.data[2]}</p>
-                </div>
-                <div className='flex items-center flex-wrap space-y-3'>
-                  <p className='mt-3'>З них</p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-sm h-5 bg-yellow-500'>
-                    medium
-                  </span>
-                  <p> всього {chartData.priority.data[1]} та</p>
-                  <span className='flex mx-2 w-20 items-center justify-center rounded-xl text-nowrap text-sm h-5 bg-blue-500'>
-                    low
-                  </span>
-                  <p>є {chartData.priority.data[0]}</p>
-                </div>
+                <p className='text-xl mt-3'>Кругова діаграма</p>
                 <DonutChart
-                  data={chartData.priority.data}
-                  inputLabels={chartData.priority.labels}
-                  backgroundColors={["#3b82f6", "#eab308", "#ef4444", "#a8a29e"]}
+                  data={chartData.data}
+                  inputLabels={chartData.labels}
+                  backgroundColors={chartData.colors}
                 />
               </div>
             </section>

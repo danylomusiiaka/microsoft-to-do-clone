@@ -3,8 +3,10 @@ import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Task } from "@/interfaces/TaskInterface";
 import Axios from "axios";
-import { PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
+import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
 import Cookies from "js-cookie";
+import { Status, User } from "@/interfaces/UserInterface";
+import { formatText } from "./formatFields";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -202,17 +204,20 @@ export const useTodoFunctions = () => {
     setTodos(sortedTodos);
   };
 
-  const formatForChart = (todos: Task[], type: "status" | "priority") => {
-    const options = type === "status" ? STATUS_OPTIONS : PRIORITY_RATING;
+  const formatForChart = (todos: Task[], type: "status" | "priority", userData: User) => {
+    const options =
+      type === "status" ? [...STATUS_OPTIONS, ...userData.statuses] : PRIORITY_OPTIONS;
 
-    const chartData: { labels: string[]; data: number[] } = {
+    const chartData: { labels: string[]; data: number[]; colors: string[] } = {
       labels: [],
       data: [],
+      colors: [],
     };
 
     options.forEach((option) => {
       const count = todos.filter((todo) => todo[type] === option.name).length;
       chartData.labels.push(option.name);
+      chartData.colors.push(option.color);
       chartData.data.push(count);
     });
 

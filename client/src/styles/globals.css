@@ -17,8 +17,6 @@ body {
   overflow: hidden;
 }
 
-
-
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }

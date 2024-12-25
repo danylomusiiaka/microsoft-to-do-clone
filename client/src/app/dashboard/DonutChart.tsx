@@ -30,7 +30,7 @@ export default function DonutChart({ data, backgroundColors, inputLabels }: Donu
           options: {
             plugins: {
               legend: {
-                display: true,
+                display: false,
                 position: "right",
               },
             },
