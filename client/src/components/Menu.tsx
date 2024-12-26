@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ThreeDots from "../../public/three-dots";
 import SortByAlphabetIcon from "../../public/sort-by-alphabet";
 import SortByDateIcon from "../../public/sort-by-date";
 import SortByPriorityIcon from "../../public/sort-by-priority";
@@ -10,6 +11,7 @@ import { useTodos } from "@/contexts/TodosContext";
 import Delete from "../../public/delete";
 import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
+import { useProfileFunctions } from "./functions/userFunctions";
 import Cookies from "js-cookie";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -17,14 +19,16 @@ interface MenuProps {
   listName: string;
   sortOptions: { name: string; desc: boolean };
   setSortOptions: (options: { name: string; desc: boolean }) => void;
-  setOpenMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Menu({ listName, sortOptions, setSortOptions, setOpenMenu }: MenuProps) {
+export default function Menu({ listName, sortOptions, setSortOptions }: MenuProps) {
   const { todos, setTodos, setTodoChoosed } = useTodos();
   const { sortBy } = useTodoFunctions();
   const [desc, setDesc] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+  const [name, setName] = useState(listName);
   const { showAlert } = useAlert();
+  const { updateCategory } = useProfileFunctions();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -82,42 +86,74 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenMen
 
   return (
     <>
-      <section className='absolute right-0 mt-2 menu shadow-lg rounded-md p-3'>
-        <p className='p-2 pl-1'>Відсортувати:</p>
-        <button
-          className='flex space-x-2 w-full items-center profile p-2'
-          onClick={() => handleSort("За алфавітом")}
-        >
-          <SortByAlphabetIcon />
-          <p>За алфавітом</p>
-        </button>
-        <button
-          className='flex space-x-2 w-full items-center profile p-2'
-          onClick={() => handleSort("За терміном")}
-        >
-          <SortByDateIcon />
-          <p>За терміном</p>
-        </button>
-        <button
-          className='flex space-x-2 w-full items-center profile p-2'
-          onClick={() => handleSort("За пріорітетністю")}
-        >
-          <SortByPriorityIcon />
-          <p>За пріорітетністю</p>
-        </button>
-        <button
-          className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap'
-          onClick={handleDeleteAll}
-        >
-          {loading ? (
-            <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div>
-          ) : (
-            <Delete color='#b91c1c' width='25px' />
-          )}
-          <p className='text-red-600'> Видалити всі завдання</p>
-        </button>
-      </section>
+      <section className='flex justify-between items-center'>
+        {listName !== "Завдання" ? (
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={() => {
+              if (name.trim() === "") {
+                setName(listName);
+                return;
+              }
 
+              updateCategory(listName, name);
+            }}
+            className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
+          />
+        ) : (
+          <h2 className='text-5xl font-bold mb-5 mt-3 md:mt-0 '>{name}</h2>
+        )}
+
+        <section className='relative'>
+          <div className='flex space-x-3'>
+            <button onClick={() => setOpenMenu(!openMenu)}>
+              <ThreeDots />
+            </button>
+          </div>
+
+          {openMenu && (
+            <section className='absolute right-0 mt-2 menu shadow-lg rounded-md p-3'>
+              <p className='p-2 pl-1'>Відсортувати:</p>
+              <button
+                className='flex space-x-2 w-full items-center profile p-2'
+                onClick={() => handleSort("За алфавітом")}
+              >
+                <SortByAlphabetIcon />
+                <p>За алфавітом</p>
+              </button>
+              <button
+                className='flex space-x-2 w-full items-center profile p-2'
+                onClick={() => handleSort("За терміном")}
+              >
+                <SortByDateIcon />
+                <p>За терміном</p>
+              </button>
+              <button
+                className='flex space-x-2 w-full items-center profile p-2'
+                onClick={() => handleSort("За пріорітетністю")}
+              >
+                <SortByPriorityIcon />
+                <p>За пріорітетністю</p>
+              </button>
+              <button
+                className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap'
+                onClick={handleDeleteAll}
+              >
+                {loading ? (
+                  <div
+                    className='spinner'
+                    style={{ borderTopColor: "red", marginLeft: "0.5rem" }}
+                  ></div>
+                ) : (
+                  <Delete color='#b91c1c' width='25px' />
+                )}
+                <p className='text-red-600'> Видалити всі завдання</p>
+              </button>
+            </section>
+          )}
+        </section>
+      </section>
       {sortOptions.name && (
         <div className='flex items-center space-x-2 mb-3'>
           <button onClick={handleSortOrder}>{!desc ? <SortDesc /> : <SortAsc />}</button>

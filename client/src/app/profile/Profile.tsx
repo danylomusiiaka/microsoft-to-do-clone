@@ -64,6 +64,7 @@ export default function Profile({ userData }: { userData: User }) {
       <hr className='divider' />
       <section className='space-y-4 '>
         <TeamButtons profileInfo={profileInfo} />
+
         <NewUserQuest isUserQuestDone={profileInfo.isUserQuestDone} />
 
         <h2 className='text-2xl'>Загальні налаштування</h2>

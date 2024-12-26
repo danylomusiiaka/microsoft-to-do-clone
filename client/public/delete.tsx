@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Delete({ color, width }: { color: string; width: string }) {
   return (
     <svg

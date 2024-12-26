@@ -1,13 +1,15 @@
-import LinearProgress, { LinearProgressProps } from "@mui/material/LinearProgress";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import confetti from "canvas-confetti";
 import { useProfileFunctions } from "@/components/functions/userFunctions";
+import { useEffect, useState } from "react";
 
-function LinearProgressWithTask(props: LinearProgressProps & { value: number; task: string }) {
+const LinearProgress = dynamic(() => import("@mui/material/LinearProgress"), { ssr: false });
+const Typography = dynamic(() => import("@mui/material/Typography"), { ssr: false });
+const Box = dynamic(() => import("@mui/material/Box"), { ssr: false });
+
+function LinearProgressWithTask(props: { value: number; task: string }) {
   return (
     <div className='ml-3'>
       <p>{props.task}</p>
@@ -15,7 +17,7 @@ function LinearProgressWithTask(props: LinearProgressProps & { value: number; ta
         <Box sx={{ width: "80%", mr: 1 }}>
           <LinearProgress
             variant='determinate'
-            {...props}
+            value={props.value}
             sx={{
               "& .MuiLinearProgress-bar": {
                 backgroundColor: props.value === 100 ? "green" : undefined,
@@ -24,9 +26,9 @@ function LinearProgressWithTask(props: LinearProgressProps & { value: number; ta
           />
         </Box>
         <Box sx={{ minWidth: 35 }}>
-          <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>{`${Math.round(
-            props.value
-          )}%`}</Typography>
+          <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>
+            {`${Math.round(props.value)}%`}
+          </Typography>
         </Box>
       </Box>
     </div>

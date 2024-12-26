@@ -1,4 +1,3 @@
-import Chart from "chart.js/auto";
 import { useEffect, useRef } from "react";
 
 interface DonutChartProps {
@@ -9,35 +8,45 @@ interface DonutChartProps {
 
 export default function DonutChart({ data, backgroundColors, inputLabels }: DonutChartProps) {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
-  const chartInstance = useRef<Chart<"doughnut", number[], string> | null>(null);
+  const chartInstance = useRef<any | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      const myCharRef = chartRef.current.getContext("2d");
-      if (myCharRef) {
-        chartInstance.current = new Chart(myCharRef, {
-          type: "doughnut",
-          data: {
-            labels: inputLabels,
-            datasets: [
-              {
-                data: data,
-                backgroundColor: backgroundColors,
-                borderWidth: 0,
-              },
-            ],
-          },
-          options: {
-            plugins: {
-              legend: {
-                display: false,
-                position: "right",
+    const loadChart = async () => {
+      const Chart = (await import("chart.js/auto")).default;
+
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+      if (chartRef.current) {
+        const myCharRef = chartRef.current.getContext("2d");
+        if (myCharRef) {
+          chartInstance.current = new Chart(myCharRef, {
+            type: "doughnut",
+            data: {
+              labels: inputLabels,
+              datasets: [
+                {
+                  data: data,
+                  backgroundColor: backgroundColors,
+                  borderWidth: 0,
+                },
+              ],
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: false,
+                  position: "right",
+                },
               },
             },
-          },
-        });
+          });
+        }
       }
-    }
+    };
+
+    loadChart();
+
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();

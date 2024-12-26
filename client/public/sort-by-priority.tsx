@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function SortByPriorityIcon() {
   return (
     <svg width='25px' viewBox='0 0 24 24' className='fill-svg' xmlns='http://www.w3.org/2000/svg'>

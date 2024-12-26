@@ -1,9 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import Slide from "@mui/material/Slide";
+import React, { createContext, useState, useContext, ReactNode, lazy, Suspense } from "react";
 import { SlideProps } from "@mui/material/Slide";
 
 interface AlertState {
@@ -26,6 +23,10 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 interface AlertProviderProps {
   children: ReactNode;
 }
+
+const Snackbar = lazy(() => import("@mui/material/Snackbar"));
+const Alert = lazy(() => import("@mui/material/Alert"));
+const Slide = lazy(() => import("@mui/material/Slide"));
 
 function SlideTransition(props: SlideProps) {
   return <Slide {...props} direction='left' />;
@@ -52,23 +53,25 @@ export function AlertProvider({ children }: AlertProviderProps) {
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-      <Snackbar
-        key={alert?.key}
-        open={openSnackbar}
-        onClose={handleClose}
-        TransitionComponent={SlideTransition}
-        autoHideDuration={4000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        sx={{ pointerEvents: "none" }}
-      >
-        <Alert
-          severity={alert?.severity || "success"}
-          variant={alert?.variant}
-          sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}
+      <Suspense>
+        <Snackbar
+          key={alert?.key}
+          open={openSnackbar}
+          onClose={handleClose}
+          TransitionComponent={SlideTransition}
+          autoHideDuration={4000}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          sx={{ pointerEvents: "none" }}
         >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            severity={alert?.severity || "success"}
+            variant={alert?.variant}
+            sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}
+          >
+            {alert?.message}
+          </Alert>
+        </Snackbar>
+      </Suspense>
     </AlertContext.Provider>
   );
 }

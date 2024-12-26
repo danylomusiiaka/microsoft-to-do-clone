@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function ThreeDots() {
   return (
     <svg width='30px' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' className='fill-svg '>

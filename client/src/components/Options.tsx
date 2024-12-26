@@ -1,4 +1,3 @@
-import { formatText } from "./functions/formatFields";
 
 type OptionsProps = {
   options: { name: string; color: string }[] | string[];

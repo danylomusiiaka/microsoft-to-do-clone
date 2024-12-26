@@ -6,7 +6,6 @@ import Axios from "axios";
 import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
 import Cookies from "js-cookie";
 import { Status, User } from "@/interfaces/UserInterface";
-import { formatText } from "./formatFields";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 

@@ -2,7 +2,6 @@ import { Task } from "@/interfaces/TaskInterface";
 import { useState, useEffect } from "react";
 import { useTodoFunctions } from "./functions/todosFunctions";
 import Options from "./Options";
-import { formatText } from "./functions/formatFields";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "./constants/statuses";
 
