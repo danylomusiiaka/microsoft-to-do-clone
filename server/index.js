@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import "./config/mongodb.js";
 import { setupWebSocketServer } from "./config/websocket.js";
+import cron from "./config/cron.js";
+const { job } = cron;
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
@@ -45,6 +47,12 @@ app.use("/category", categoryRoutes);
 import teamRoutes from "./routes/teamMethods.js";
 
 app.use("/team", teamRoutes);
+
+job.start();
+
+app.get("/", (req, res) => {
+  res.status(200).send("Server is running");
+});
 
 server.listen(3001, () => {
   console.log("Server is listening on port 3001");
