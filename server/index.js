@@ -14,6 +14,7 @@ dotenv.config({ path: ".env" });
 const app = express();
 const server = createServer(app);
 const web_url = process.env.WEB_URL || "http://localhost:3000";
+const port = process.env.PORT || 3001;
 
 setupWebSocketServer(server);
 
@@ -54,6 +55,6 @@ app.get("/", (req, res) => {
   res.status(200).send("Server is running");
 });
 
-server.listen(3001, () => {
+server.listen(port, () => {
   console.log("Server is listening on port 3001");
 });
