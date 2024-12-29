@@ -60,32 +60,24 @@
 }
 
 .scroll-container-todos {
-  height: 60vh;
+  height: 70vh;
   overflow-y: scroll;
-}
-.scroll-container-profile {
-  height: 85vh;
-  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 @media (min-width: 800px) {
-  .scroll-container-profile {
-    height: 90vh;
-  }
   .scroll-container-todos {
     height: 65vh;
   }
 }
 
 .scroll-container::-webkit-scrollbar,
-.scroll-container-todos::-webkit-scrollbar,
-.scroll-container-profile::-webkit-scrollbar {
+.scroll-container-todos::-webkit-scrollbar {
   width: 4px;
 }
 
 .scroll-container::-webkit-scrollbar-thumb,
-.scroll-container-todos::-webkit-scrollbar-thumb,
-.scroll-container-profile::-webkit-scrollbar-thumb {
+.scroll-container-todos::-webkit-scrollbar-thumb {
   background-color: var(--secondary-text-color);
   border-radius: 10px;
 }

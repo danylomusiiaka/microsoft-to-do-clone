@@ -45,7 +45,7 @@ export default function Profile({ userData }: { userData: User }) {
   };
 
   return (
-    <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile'>
+    <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 '>
       <section className='md:flex p-2 pl-0 items-center justify-between'>
         <div className='flex space-x-3 w-full items-center'>
           <ProfilePicture picture={profileInfo.picture} />

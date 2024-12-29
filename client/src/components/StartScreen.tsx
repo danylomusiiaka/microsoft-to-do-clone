@@ -2,7 +2,7 @@ import ThreeDots from "../../public/three-dots";
 
 export default function StartScreen() {
   return (
-    <div className='md:flex justify-center items-center w-full h-full space-x-6'>
+    <div className='md:flex justify-center items-center w-full h-full md:space-x-6'>
       <img src='/no-tasks.gif' alt='no-tasks-cherry' className='w-60 h-60' />
       <div className='space-y-4'>
         <h1 className='text-3xl font-semibold'>Це початок роботи з планування задач</h1>

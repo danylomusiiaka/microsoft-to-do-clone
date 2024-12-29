@@ -31,7 +31,7 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
   }, [toggleStats]);
 
   return (
-    <main className='md:p-12 md:pr-0 md:mt-0 mt-5 w-full scroll-container-profile'>
+    <main className='md:p-12 md:pr-0 md:mt-0 mt-5 w-full'>
       <h1 className='text-5xl font-bold'>Статистика</h1>
       <p className='my-3 mb-6 '>
         {userData.team ? `для команди ${userData.team}` : `для користувача ${userData.name}`}

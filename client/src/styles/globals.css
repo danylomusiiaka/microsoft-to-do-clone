@@ -17,6 +17,13 @@ body {
   overflow: hidden;
 }
 
+@media (max-width: 800px) {
+  html,
+  body {
+    overflow: visible;
+  }
+}
+
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
