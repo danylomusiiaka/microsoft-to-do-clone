@@ -186,7 +186,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
       <button
         className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
         onClick={handleDeleteTodo}
-        disabled={!!loading} // Disable when loading
+        disabled={!!loading} 
       >
         <Delete color='#b91c1c' width='30px' />
         <p className='text-red-700'>Видалити завдання</p>

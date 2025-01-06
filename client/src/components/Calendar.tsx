@@ -14,7 +14,6 @@ export default function Calendar({ currentTodo }: { currentTodo: Task }) {
 
   useEffect(() => {
     setTaskDate(currentTodo.date);
-    setDateEdit(false);
   }, [currentTodo]);
 
   return (

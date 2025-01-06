@@ -57,6 +57,7 @@
 .scroll-container {
   height: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .scroll-container-todos {
@@ -72,12 +73,14 @@
 }
 
 .scroll-container::-webkit-scrollbar,
-.scroll-container-todos::-webkit-scrollbar {
+.scroll-container-todos::-webkit-scrollbar,
+.scroll-container-profile::-webkit-scrollbar {
   width: 4px;
 }
 
 .scroll-container::-webkit-scrollbar-thumb,
-.scroll-container-todos::-webkit-scrollbar-thumb {
+.scroll-container-todos::-webkit-scrollbar-thumb,
+.scroll-container-profile::-webkit-scrollbar-thumb {
   background-color: var(--secondary-text-color);
   border-radius: 10px;
 }
@@ -166,5 +169,26 @@ select {
 @media (max-width: 768px) {
   .table-field {
     display: none;
+  }
+}
+
+.proposition {
+  background-color: var(--sidebar-block-color);
+  cursor: pointer;
+}
+
+.proposition:active {
+  background-color: var(--secondary-text-color);
+}
+
+.special-offers {
+  background-color: var(--sidebar-block-color);
+}
+
+@media (min-width: 1024px) {
+  .scroll-container-profile {
+    height: 98vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 }

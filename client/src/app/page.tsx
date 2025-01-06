@@ -48,7 +48,7 @@ export default async function Home() {
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
         <NavSidebar userData={userData} />
-        <TodoList allTodos={allTodos.reverse()} userStatuses={userData.statuses} />
+        <TodoList allTodos={allTodos.reverse()} userData={userData} category="Завдання" />
       </Suspense>
     </section>
   );

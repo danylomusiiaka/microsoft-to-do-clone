@@ -13,9 +13,10 @@ interface TodoProps {
   todo: Task;
   sortName: string;
   userStatuses: Status[];
+  setOpenSuggestions: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Todo({ todo, sortName, userStatuses }: TodoProps) {
+export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions }: TodoProps) {
   const { setTodoChoosed, todoChoosed, loading } = useTodos();
   const { updateField } = useTodoFunctions();
   const { profileDetails } = useUserDetails();
@@ -38,6 +39,7 @@ export default function Todo({ todo, sortName, userStatuses }: TodoProps) {
       setTodoChoosed(null);
     } else {
       setTodoChoosed(todo);
+      setOpenSuggestions(false);
     }
   };
 

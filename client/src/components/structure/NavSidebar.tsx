@@ -110,7 +110,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
   }, [profileDetails.team]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !loading) {
       addCategory(category);
       setCategory("");
     }
@@ -163,7 +163,15 @@ export default function NavSidebar({ userData }: { userData: User }) {
           </div>
 
           <NavigationButton icon='/home.svg' href='/' text='Завдання' />
+          <NavigationButton icon='/sun.svg' href='/list/Мій день' text='Мій день' />
           <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
+
+          <NavigationButton
+            icon='/assignment.svg'
+            href='/list/Призначено мені'
+            text='Призначено мені'
+          />
+
           <hr className='divider' />
           <div className='scroll-container-nav'>
             {profileData.categories?.map((category) => (
@@ -201,6 +209,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
                 addCategory(category);
                 setCategory("");
               }}
+              disabled={!!loading}
             >
               <Plus name='plus-2' />
             </button>

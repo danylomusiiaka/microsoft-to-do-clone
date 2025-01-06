@@ -108,7 +108,10 @@ export default function StatusDropdown(todo: Task) {
       )}
 
       {isOpenCategories && (
-        <Options options={profileDetails.categories} handleClick={handleCategoryClick} />
+        <Options
+          options={[...profileDetails.categories, "Завдання"]}
+          handleClick={handleCategoryClick}
+        />
       )}
 
       {isOpenPriority && <Options options={PRIORITY_OPTIONS} handleClick={handlePriorityClick} />}

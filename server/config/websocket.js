@@ -20,9 +20,7 @@ function setupWebSocketServer(server) {
 
           if (user) {
             ws.user = user;
-            console.log(`User with team ${userTeam} connected`);
           } else {
-            console.log(`No user found with team ${userTeam}`);
             ws.close();
           }
         }

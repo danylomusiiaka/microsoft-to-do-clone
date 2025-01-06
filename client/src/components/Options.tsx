@@ -11,7 +11,7 @@ export default function Options({ options, handleClick }: OptionsProps) {
         <div
           key={option.name || option}
           onClick={() => handleClick(option.name || option)}
-          className={`text-center m-3 mx-2 cursor-pointer rounded-xl text-sm h-5 truncated-text`}
+          className={`text-center m-3 mx-2 cursor-pointer rounded-xl bg-stone-400 text-sm h-5 truncated-text`}
           style={{ backgroundColor: `${option.color}` }}
         >
           {option.name || option}

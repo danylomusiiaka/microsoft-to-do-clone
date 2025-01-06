@@ -13,16 +13,24 @@ import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
 import { useProfileFunctions } from "./functions/userFunctions";
 import Cookies from "js-cookie";
+import { formatDate } from "./functions/formatFields";
+import Propositions from "../../public/Idea";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 interface MenuProps {
   listName: string;
   sortOptions: { name: string; desc: boolean };
   setSortOptions: (options: { name: string; desc: boolean }) => void;
+  setOpenSuggestions: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Menu({ listName, sortOptions, setSortOptions }: MenuProps) {
-  const { todos, setTodos, setTodoChoosed } = useTodos();
+export default function Menu({
+  listName,
+  sortOptions,
+  setSortOptions,
+  setOpenSuggestions,
+}: MenuProps) {
+  const { todos, setTodos, setTodoChoosed, todoChoosed } = useTodos();
   const { sortBy } = useTodoFunctions();
   const [desc, setDesc] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -87,7 +95,7 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
   return (
     <>
       <section className='flex justify-between items-center'>
-        {listName !== "Завдання" ? (
+        {!["Завдання", "Мій день", "Призначено мені"].includes(listName) ? (
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -102,11 +110,25 @@ export default function Menu({ listName, sortOptions, setSortOptions }: MenuProp
             className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
           />
         ) : (
-          <h2 className='text-5xl font-bold mb-5 mt-3 md:mt-0 '>{name}</h2>
+          <div className='space-y-3 mb-5 items-center'>
+            <h2 className='text-5xl font-bold mt-3 md:mt-0'>{name}</h2>
+            {listName === "Мій день" && <div>{formatDate(`${new Date()}`)}</div>}
+          </div>
         )}
-
         <section className='relative'>
           <div className='flex space-x-3'>
+            {listName == "Мій день" && (
+              <button
+                style={{ backgroundColor: 'var(--secondary-background-color)' }}
+                className="p-2 rounded-md"
+                onClick={() => {
+                  setTodoChoosed(null);
+                  setOpenSuggestions((prev) => !prev);
+                }}
+              >
+                <Propositions />
+              </button>
+            )}
             <button onClick={() => setOpenMenu(!openMenu)}>
               <ThreeDots />
             </button>

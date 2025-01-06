@@ -41,7 +41,10 @@ export default async function Category({ params }: { params: { category: string 
 
   const userData = token ? await fetchUserData(token) : {};
   let allTodos = [];
-  if (userData.categories?.includes(category)) {
+  if (
+    userData.categories?.includes(category) ||
+    ["Мій день", "Призначено мені"].includes(category)
+  ) {
     allTodos = token ? await fetchTodos(token, userData.team || userData.email) : [];
   }
 
@@ -49,7 +52,8 @@ export default async function Category({ params }: { params: { category: string 
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
         <NavSidebar userData={userData} />
-        {!userData.categories?.includes(category) ? (
+        {!userData.categories?.includes(category) &&
+        !["Мій день", "Призначено мені"].includes(category) ? (
           <div className='md:flex items-center space-x-6 justify-center w-full'>
             <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
             <div className='space-y-4'>
@@ -72,7 +76,7 @@ export default async function Category({ params }: { params: { category: string 
             </div>
           </div>
         ) : (
-          <TodoList allTodos={allTodos.reverse()} userStatuses={userData.statuses} />
+          <TodoList allTodos={allTodos.reverse()} userData={userData} category={category} />
         )}
       </Suspense>
     </section>

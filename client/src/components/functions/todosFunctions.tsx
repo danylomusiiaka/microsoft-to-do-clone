@@ -5,7 +5,7 @@ import { Task } from "@/interfaces/TaskInterface";
 import Axios from "axios";
 import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
 import Cookies from "js-cookie";
-import { Status, User } from "@/interfaces/UserInterface";
+import { User } from "@/interfaces/UserInterface";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -31,24 +31,14 @@ export const useTodoFunctions = () => {
     return [...importantTodos, ...nonImportantTodos];
   };
 
-  const addToDo = async (newTodoText: string, listName: string) => {
+  const addToDo = async (newTodoText: string, listName: string, newTodo: Task) => {
     if (newTodoText.trim() === "") return;
     if (newTodoText.length >= 200) {
       showAlert("Назва завдання не може перевищувати 200 символів", "error");
       return;
     }
 
-    const newTodo: Task = {
-      author: profileDetails.team || profileDetails.email,
-      text: newTodoText,
-      isCompleted: false,
-      status: "to do",
-      date: "Нема дати",
-      description: "",
-      category: listName,
-      isImportant: false,
-      priority: "no priority",
-    };
+    
 
     if (profileDetails.team) {
       newTodo.assignee = "Нема виконавця";
