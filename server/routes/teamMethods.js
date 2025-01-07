@@ -4,6 +4,16 @@ import { verifyToken, generateRandomString } from "../config/authMiddleware.js";
 import userModel from "../models/userModel.js";
 import teamModel from "../models/teamModel.js";
 import taskModel from "../models/taskModel.js";
+import { rateLimit } from "express-rate-limit";
+
+const teamJoinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  handler: (req, res) => {
+    res.status(429).send("Забагато спроб вступу, спробуйте через 15 хвилин");
+  },
+  skipSuccessfulRequests: true,
+});
 
 router.post("/create", verifyToken, async (req, res) => {
   const teamCode = generateRandomString(12);
@@ -43,7 +53,7 @@ router.post("/exit", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/join", verifyToken, async (req, res) => {
+router.post("/join", verifyToken, teamJoinLimiter, async (req, res) => {
   const { teamCode } = req.body;
 
   try {

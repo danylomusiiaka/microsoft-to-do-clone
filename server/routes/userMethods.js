@@ -29,8 +29,6 @@ const registerLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
-router.use("/login", loginLimiter);
-router.use("/register", registerLimiter);
 
 router.post("/verify-email", async (req, res) => {
   const { email } = req.body;
@@ -67,7 +65,7 @@ router.post("/verify-email", async (req, res) => {
   });
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", registerLimiter, async (req, res) => {
   const { name, email, password, verificationKey, userInputKey } = req.body;
 
   const isMatch = await compare(userInputKey, verificationKey);
@@ -83,7 +81,7 @@ router.post("/register", async (req, res) => {
   res.json({ token });
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   const user = await userModel.findOne({ email });
