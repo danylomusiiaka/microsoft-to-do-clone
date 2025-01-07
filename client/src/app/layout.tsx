@@ -7,6 +7,9 @@ import { cookies } from "next/headers";
 export const metadata = {
   title: "Microsoft To Do Clone",
   description: "Моя кастомна веб версія Microsoft To Do запущена в тестовому режимі",
+  icons: {
+    icon: "/microsoft-todo.ico",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

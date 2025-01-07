@@ -13,7 +13,7 @@ const job = new CronJob("*/13 * * * *", function () {
       console.error(`Failed to restart server with status code: ${res.statusCode}`);
     }
   }).on("error", (err) => {
-    console.error("Error during Restart:", err.message);
+    console.error("Error during restart ", err.message);
   });
 });
 

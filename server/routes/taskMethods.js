@@ -8,6 +8,12 @@ import { broadcast } from "../config/websocket.js";
 router.post("/create", verifyToken, async (req, res) => {
   try {
     const taskData = req.body;
+
+    const authorTasksCount = await taskModel.countDocuments({ author: taskData.author });
+    if (authorTasksCount >= 50) {
+      return res.status(400).send("Ви досягнули ліміту створення завдань.");
+    }
+
     if (!taskData.assignee) {
       delete taskData.assignee;
     }

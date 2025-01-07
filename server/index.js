@@ -16,9 +16,10 @@ const server = createServer(app);
 const web_url = process.env.WEB_URL || "http://localhost:3000";
 const port = process.env.PORT || 3001;
 
+app.set("trust proxy", 1);
+
 setupWebSocketServer(server);
 
-// Middleware
 app.use(
   cors({
     origin: web_url,

@@ -95,102 +95,104 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
   };
 
   return (
-    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
-      <main
-        className='space-y-3 scroll-container'
-        style={{ opacity: todo._id == loading ? 0.7 : 1 }}
-      >
-        <div className='flex justify-end items-center'>
-          <button onClick={() => setTodoChoosed(null)} disabled={!!loading}>
-            <Cross />
-          </button>
-        </div>
-        <div className='flex text-sidebar-input items-center justify-between profile '>
+    <section className='sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
+      <div className='todo-content flex flex-col md:justify-between'>
+        <main
+          className='space-y-3 scroll-container'
+          style={{ opacity: todo._id == loading ? 0.7 : 1 }}
+        >
+          <div className='flex justify-end items-center'>
+            <button onClick={() => setTodoChoosed(null)} disabled={!!loading}>
+              <Cross />
+            </button>
+          </div>
+          <div className='flex text-sidebar-input items-center justify-between profile '>
+            <textarea
+              ref={textareaRef}
+              value={taskText}
+              onChange={(e) => setTaskText(e.target.value)}
+              onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })}
+              placeholder='Введіть назву...'
+              className='bg-transparent outline-none resize-none pt-1'
+              disabled={!!loading}
+            />
+            <button
+              className='self-start mt-2'
+              onClick={() => {
+                if (currentTodo) {
+                  const newIsImportant = !isImportant;
+                  setIsImportant(newIsImportant);
+                  updateField(currentTodo, { isImportant: newIsImportant });
+                  todoOnFirstPos(currentTodo, newIsImportant);
+                }
+              }}
+              disabled={!!loading}
+            >
+              <Star isImportant={isImportant} />
+            </button>
+          </div>
+          <StatusDropdown {...(currentTodo || todo)} />
           <textarea
-            ref={textareaRef}
-            value={taskText}
-            onChange={(e) => setTaskText(e.target.value)}
-            onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })}
-            placeholder='Введіть назву...'
-            className='bg-transparent outline-none resize-none pt-1'
+            ref={descriptionRef}
+            value={taskDescription}
+            onBlur={() => currentTodo && updateField(currentTodo, { description: taskDescription })}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            className='description-sidebar-input button'
+            placeholder='Введіть опис...'
             disabled={!!loading}
           />
-          <button
-            className='self-start mt-2'
-            onClick={() => {
-              if (currentTodo) {
-                const newIsImportant = !isImportant;
-                setIsImportant(newIsImportant);
-                updateField(currentTodo, { isImportant: newIsImportant });
-                todoOnFirstPos(currentTodo, newIsImportant);
-              }
-            }}
-            disabled={!!loading}
-          >
-            <Star isImportant={isImportant} />
-          </button>
-        </div>
-        <StatusDropdown {...(currentTodo || todo)} />
-        <textarea
-          ref={descriptionRef}
-          value={taskDescription}
-          onBlur={() => currentTodo && updateField(currentTodo, { description: taskDescription })}
-          onChange={(e) => setTaskDescription(e.target.value)}
-          className='description-sidebar-input button'
-          placeholder='Введіть опис...'
-          disabled={!!loading}
-        />
-        <Calendar currentTodo={currentTodo!} />
-        {profileDetails.team && (
-          <button
-            className='button description-sidebar-input space-y-3 cursor-pointer text-left'
-            onClick={() => setAsigneeMenu(!asigneeMenu)}
-            disabled={!!loading}
-          >
-            <p>Призначено</p>
-            <div className='flex items-center space-x-3 text-lg'>
-              <img
-                src={assignee.picture || `/default-picture.svg`}
-                className='w-10 h-10 object-cover rounded-full'
-                alt='profile-photo'
-              />
-              <p>{formatText(assignee.name, 30)}</p>
-            </div>
-            {asigneeMenu && (
-              <>
-                <hr className='divider-assignees' />
-                {teamMembers
-                  .filter((member) => member.email !== assignee.email)
-                  .map((member) => (
-                    <div
-                      key={member.email}
-                      onClick={() => {
-                        handleAssigneeChoosed(member);
-                      }}
-                      className='flex items-center space-x-3 text-lg'
-                    >
-                      <img
-                        src={member.picture || `/default-picture.svg`}
-                        className='w-10 h-10 object-cover rounded-full'
-                        alt='profile-photo'
-                      />
-                      <p>{formatText(member.name, 30)}</p>
-                    </div>
-                  ))}
-              </>
-            )}
-          </button>
-        )}
-      </main>
+          <Calendar currentTodo={currentTodo!} />
+          {profileDetails.team && (
+            <button
+              className='button description-sidebar-input space-y-3 cursor-pointer text-left'
+              onClick={() => setAsigneeMenu(!asigneeMenu)}
+              disabled={!!loading}
+            >
+              <p>Призначено</p>
+              <div className='flex items-center space-x-3 text-lg'>
+                <img
+                  src={assignee.picture || `/default-picture.svg`}
+                  className='w-10 h-10 object-cover rounded-full'
+                  alt='profile-photo'
+                />
+                <p>{formatText(assignee.name, 30)}</p>
+              </div>
+              {asigneeMenu && (
+                <>
+                  <hr className='divider-assignees' />
+                  {teamMembers
+                    .filter((member) => member.email !== assignee.email)
+                    .map((member) => (
+                      <div
+                        key={member.email}
+                        onClick={() => {
+                          handleAssigneeChoosed(member);
+                        }}
+                        className='flex items-center space-x-3 text-lg'
+                      >
+                        <img
+                          src={member.picture || `/default-picture.svg`}
+                          className='w-10 h-10 object-cover rounded-full'
+                          alt='profile-photo'
+                        />
+                        <p>{formatText(member.name, 30)}</p>
+                      </div>
+                    ))}
+                </>
+              )}
+            </button>
+          )}
+        </main>
 
-      <button
-        className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
-        onClick={handleDeleteTodo}
-        disabled={!!loading} 
-      >
-        <Delete color='#b91c1c' width='30px' />
-        <p className='text-red-700'>Видалити завдання</p>
-      </button>
+        <button
+          className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
+          onClick={handleDeleteTodo}
+          disabled={!!loading}
+        >
+          <Delete color='#b91c1c' width='30px' />
+          <p className='text-red-700'>Видалити завдання</p>
+        </button>
+      </div>
     </section>
   );
 }

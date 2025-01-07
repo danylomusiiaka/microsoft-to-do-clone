@@ -7,8 +7,30 @@ import { createTransport } from "nodemailer";
 import { hash, compare } from "bcrypt";
 import { generateToken, verifyToken, generateRandomString } from "../config/authMiddleware.js";
 import { broadcast } from "../config/websocket.js";
+import { rateLimit } from "express-rate-limit";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  handler: (req, res) => {
+    res.status(429).send("Забагато спроб входу, спробуйте через 15 хвилин");
+  },
+  skipSuccessfulRequests: true,
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  handler: (req, res) => {
+    res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
+  },
+  skipSuccessfulRequests: true,
+});
+
+router.use("/login", loginLimiter);
+router.use("/register", registerLimiter);
 
 router.post("/verify-email", async (req, res) => {
   const { email } = req.body;
@@ -121,6 +143,9 @@ router.put("/update-field", verifyToken, async (req, res) => {
     if (fieldName === "statuses") {
       const tasks = await taskModel.find({ author: user.team || user.email });
       const statusNames = fieldValue.map((status) => status.name);
+      if (statusNames.length >= 20) {
+        return res.status(400).send("Ви досягнули ліміту створення статусів.");
+      }
       const validStatuses = [...statusNames, "to do", "in progress", "done"];
       const invalidTasks = tasks.filter((task) => !validStatuses.includes(task.status));
       await taskModel.updateMany(
@@ -142,8 +167,6 @@ router.put("/update-field", verifyToken, async (req, res) => {
     await user.save();
     return res.status(200).send("Поле профілю оновлено");
   } catch (error) {
-    console.log(error);
-
     return res.status(500).send("Помилка оновлення профілю");
   }
 });
@@ -154,10 +177,8 @@ router.get("/statuses", verifyToken, async (req, res) => {
 
     if (user.team) {
       const userTeam = await teamModel.findOne({ code: user.team });
-      console.log(userTeam.statuses);
       return res.json(userTeam.statuses);
     }
-    console.log(user.statuses);
 
     return res.json(user.statuses);
   } catch (error) {

@@ -38,8 +38,6 @@ export const useTodoFunctions = () => {
       return;
     }
 
-    
-
     if (profileDetails.team) {
       newTodo.assignee = "Нема виконавця";
     }
@@ -73,6 +71,7 @@ export const useTodoFunctions = () => {
       }
     } catch (error: any) {
       setTodos(todos.filter((todo) => todo.text !== newTodoText));
+      setLoading(undefined);
       if (error.status === 401) {
         window.location.href = "/auth";
       } else {

@@ -22,19 +22,22 @@ export default function StatusEditor({ userData }: { userData: User }) {
 
   const [status, setStatus] = useState({ name: "", color: "#a8a29e" });
 
-  const addStatus = () => {
+  const addStatus = async () => {
     if (!status.name.trim()) return;
 
     const updatedStatuses = profileDetails.statuses.filter((s: Status) => s.name !== status.name);
     const newStatuses = [...updatedStatuses, status];
-
-    setStatusOptions([...STATUS_OPTIONS, ...newStatuses]);
     setStatus({ ...status, name: "" });
-    updateField("statuses", newStatuses);
-    setProfileDetails({
-      ...profileDetails,
-      statuses: newStatuses,
-    });
+
+    const responseSuccesful = await updateField("statuses", newStatuses);
+
+    if (responseSuccesful) {
+      setStatusOptions([...STATUS_OPTIONS, ...newStatuses]);
+      setProfileDetails({
+        ...profileDetails,
+        statuses: newStatuses,
+      });
+    }
   };
 
   const deleteStatus = (statusName: string) => {

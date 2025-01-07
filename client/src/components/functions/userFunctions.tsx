@@ -28,12 +28,14 @@ export const useProfileFunctions = () => {
       if (response.status === 200) {
         setProfileDetails({ ...profileDetails, [userfieldName]: userfieldValue });
         showAlert("Ваші дані були успішно оновлені", "success");
+        return true
       }
     } catch (error: any) {
       if (error.status === 401) {
         window.location.href = "/auth";
       }
       showAlert(error.response.data, "error");
+      return false
     }
   };
 

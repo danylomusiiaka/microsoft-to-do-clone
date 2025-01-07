@@ -16,6 +16,9 @@ router.post("/create", verifyToken, async (req, res) => {
       if (!userTeam.categories) {
         userTeam.categories = [];
       }
+      if (userTeam.categories.length >= 20) {
+        return res.status(400).send(`Ваша команда досягнула ліміту створення списків.`);
+      }
       if (userTeam.categories.includes(category)) {
         return res.status(400).send(`Категорія з таким ім'ям вже існує`);
       }
@@ -32,6 +35,10 @@ router.post("/create", verifyToken, async (req, res) => {
       user.categories = [];
     }
 
+    if (user.categories.length >= 20) {
+      return res.status(400).send(`Ви досягнули ліміту створення списків.`);
+    }
+
     user.categories.push(category);
     await user.save();
 
@@ -39,7 +46,6 @@ router.post("/create", verifyToken, async (req, res) => {
       message: `Ви успішно створили список`,
     });
   } catch (error) {
-    console.error("Помилка створення списку:", error);
     return res.status(500).send("Помилка створення списку");
   }
 });
@@ -59,8 +65,6 @@ router.get("/all", verifyToken, async (req, res) => {
     }
     return res.json(user.categories);
   } catch (error) {
-    console.log(error);
-
     res.status(500).send("Помилка отримання категорій");
   }
 });
@@ -80,8 +84,6 @@ router.put("/:name", verifyToken, async (req, res) => {
 
     await taskModel.updateMany({ category: oldCategory }, { category: newCategory });
     const updatedTodos = await taskModel.find({ author: isTeam ? user.team : user.email });
-
-    console.log(updatedTodos);
 
     if (isTeam) {
       broadcast(
