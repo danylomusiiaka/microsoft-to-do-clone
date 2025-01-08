@@ -29,8 +29,15 @@ const registerLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
+const verificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 3,
+  handler: (req, res) => {
+    res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
+  },
+});
 
-router.post("/verify-email", async (req, res) => {
+router.post("/verify-email", verificationLimiter, async (req, res) => {
   const { email } = req.body;
 
   const existingUser = await userModel.findOne({ email });
@@ -62,7 +69,7 @@ router.post("/verify-email", async (req, res) => {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
-      
+
       return res.status(401).send("Пошта не є валідною");
     }
     res.json({ hashedKey });
