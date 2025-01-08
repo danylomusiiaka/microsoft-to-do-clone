@@ -13,7 +13,7 @@ dotenv.config({ path: ".env" });
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 20,
   handler: (req, res) => {
     res.status(429).send("Забагато спроб входу, спробуйте через 15 хвилин");
   },
@@ -22,7 +22,7 @@ const loginLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 20,
   handler: (req, res) => {
     res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
   },
