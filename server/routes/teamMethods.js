@@ -8,7 +8,7 @@ import { rateLimit } from "express-rate-limit";
 
 const teamJoinLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 20,
   handler: (req, res) => {
     res.status(429).send("Забагато спроб вступу, спробуйте через 15 хвилин");
   },
