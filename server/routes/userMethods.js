@@ -43,7 +43,9 @@ router.post("/verify-email", async (req, res) => {
   const hashedKey = await hash(verificationKey, 10);
 
   const transporter = createTransport({
-    service: "Gmail",
+    host: "smtp-relay.brevo.com",
+    port: 465,
+    secure: true, 
     auth: {
       user: process.env.EMAIL,
       pass: process.env.EMAIL_PASSWORD,
@@ -51,7 +53,7 @@ router.post("/verify-email", async (req, res) => {
   });
 
   const mailOptions = {
-    from: "To do Project LNU App",
+    from: '"To do Project LNU App" <microsoft.todo.clone@gmail.com>',
     to: email,
     subject: "Підтвердіть свою пошту",
     html: `<h3>Ваш код доступу: ${verificationKey}</h3>`,
@@ -59,6 +61,8 @@ router.post("/verify-email", async (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(error);
+      
       return res.status(401).send("Пошта не є валідною");
     }
     res.json({ hashedKey });
