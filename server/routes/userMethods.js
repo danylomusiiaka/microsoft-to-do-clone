@@ -31,7 +31,7 @@ const registerLimiter = rateLimit({
 
 const verificationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 3,
+  max: 10,
   handler: (req, res) => {
     res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
   },
