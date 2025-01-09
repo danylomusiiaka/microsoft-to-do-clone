@@ -94,6 +94,7 @@ router.post("/register", registerLimiter, async (req, res) => {
 
 router.post("/login", loginLimiter, async (req, res) => {
   const { email, password } = req.body;
+  console.log(`${req.ip}`);
 
   const user = await userModel.findOne({ email });
 
