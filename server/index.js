@@ -54,7 +54,7 @@ job.start();
 
 app.get("/", (req, res) => {
   const userIp = req.ip;
-  console.log('User Ip: {userIp}');
+  console.log('User Ip: ${userIp}');
   res.status(200).send("Server is running");
 });
 
