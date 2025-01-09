@@ -16,7 +16,7 @@ const server = createServer(app);
 const web_url = process.env.WEB_URL || "http://localhost:3000";
 const port = process.env.PORT || 3001;
 
-app.set("trust proxy", 0);
+app.set("trust proxy", true);
 
 setupWebSocketServer(server);
 
@@ -53,7 +53,7 @@ app.use("/team", teamRoutes);
 job.start();
 
 app.get("/", (req, res) => {
-  res.status(200).send("Server is running");
+  res.status(200).send(`Server is running and user ip is ${req.ip}`);
 });
 
 server.listen(port, () => {
