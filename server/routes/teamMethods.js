@@ -56,37 +56,42 @@ router.post("/join", verifyToken, async (req, res) => {
     const user = await userModel.findById(req.userId).select("-password");
     const team = await teamModel.findOne({ code: teamCode });
 
-    if (!team) {
-      const existingAttempt = await authAttemptsModel.findOne({
+    const existingAttempt = await authAttemptsModel.findOne({
+      userIp: req.ip,
+      email: user.email,
+    });
+
+    if (!existingAttempt) {
+      const newAttempt = new authAttemptsModel({
         userIp: req.ip,
         email: user.email,
+        teamJoinCount: TEAM_JOIN_COUNT - 1,
+        waitUntilNextTeamJoin: new Date(Date.now() + HALF_HOUR),
       });
-
-      if (!existingAttempt) {
-        const newAttempt = new authAttemptsModel({
-          userIp: req.ip,
-          email: user.email,
-          teamJoinCount: TEAM_JOIN_COUNT,
-          waitUntilNextTeamJoin: new Date(Date.now() + HALF_HOUR),
-        });
-        await newAttempt.save();
+      await newAttempt.save();
+    } else {
+      existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+      if (
+        existingAttempt.waitUntilNextTeamJoin <= Date.now() ||
+        !existingAttempt.waitUntilNextTeamJoin
+      ) {
+        existingAttempt.teamJoinCount = TEAM_JOIN_COUNT;
+        existingAttempt.waitUntilNextTeamJoin = new Date(Date.now() + HALF_HOUR);
       } else {
-        if (
-          existingAttempt.waitUntilNextTeamJoin <= Date.now() ||
-          !existingAttempt.waitUntilNextTeamJoin
-        ) {
-          existingAttempt.teamJoinCount = TEAM_JOIN_COUNT;
-          existingAttempt.waitUntilNextTeamJoin = new Date(Date.now() + HALF_HOUR);
+        if (existingAttempt.teamJoinCount === 0) {
+          return res.status(404).send("Забагато спроб входу. Спробуйте через 30 хв");
         } else {
-          if (existingAttempt.teamJoinCount === 0) {
-            return res.status(404).send("Забагато спроб входу. Спробуйте через 30 хв");
-          } else {
+          if (!team) {
             existingAttempt.teamJoinCount -= 1;
+          } else {
+            existingAttempt.teamJoinCount = TEAM_JOIN_COUNT;
           }
         }
-        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
-        await existingAttempt.save();
       }
+      await existingAttempt.save();
+    }
+
+    if (!team) {
       return res.status(404).send("Команда не знайдена");
     }
 
@@ -102,6 +107,7 @@ router.post("/join", verifyToken, async (req, res) => {
 
     res.status(200).send("Ви успішно приєдналися до команди");
   } catch (error) {
+    console.log(error);
     res.status(500).send("Помилка приєднання до команди");
   }
 });

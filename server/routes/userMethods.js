@@ -27,28 +27,26 @@ router.post("/verify-email", async (req, res) => {
     const newAttempt = new authAttemptsModel({
       userIp: req.ip,
       email,
-      registerCount: REGISTER_COUNT,
+      registerCount: REGISTER_COUNT - 1,
       waitUntilNextRegister: new Date(Date.now() + HALF_HOUR),
     });
     await newAttempt.save();
   } else {
+    existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
     if (
       existingAttempt.waitUntilNextRegister <= Date.now() ||
       !existingAttempt.waitUntilNextRegister
     ) {
       existingAttempt.registerCount = REGISTER_COUNT;
       existingAttempt.waitUntilNextRegister = new Date(Date.now() + HALF_HOUR);
-      await existingAttempt.save();
     } else {
       if (existingAttempt.registerCount === 0) {
         return res.status(401).send("Забагато спроб реєстрації. Спробуйте через 30 хв");
       } else {
         existingAttempt.registerCount -= 1;
-        await existingAttempt.save();
       }
-      existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
-      await existingAttempt.save();
     }
+    await existingAttempt.save();
   }
 
   const verificationKey = generateRandomString();
@@ -86,34 +84,39 @@ router.post("/register", async (req, res) => {
 
     const isMatch = await compare(userInputKey, verificationKey);
 
-    if (!isMatch) {
-      const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
+    const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
 
-      if (!existingAttempt) {
-        const newAttempt = new authAttemptsModel({
-          userIp: req.ip,
-          email,
-          registerCount: REGISTER_COUNT,
-          waitUntilNextRegister: new Date(Date.now() + HALF_HOUR),
-        });
-        await newAttempt.save();
+    if (!existingAttempt) {
+      const newAttempt = new authAttemptsModel({
+        userIp: req.ip,
+        email,
+        registerCount: REGISTER_COUNT - 1,
+        waitUntilNextRegister: new Date(Date.now() + HALF_HOUR),
+      });
+      await newAttempt.save();
+    } else {
+      existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+      if (
+        existingAttempt.waitUntilNextRegister <= Date.now() ||
+        !existingAttempt.waitUntilNextRegister
+      ) {
+        existingAttempt.registerCount = REGISTER_COUNT;
+        existingAttempt.waitUntilNextRegister = new Date(Date.now() + HALF_HOUR);
       } else {
-        if (
-          existingAttempt.waitUntilNextRegister <= Date.now() ||
-          !existingAttempt.waitUntilNextRegister
-        ) {
-          existingAttempt.registerCount = REGISTER_COUNT;
-          existingAttempt.waitUntilNextRegister = new Date(Date.now() + HALF_HOUR);
+        if (existingAttempt.registerCount === 0) {
+          return res.status(401).send("Забагато спроб реєстрації. Спробуйте через 30 хв");
         } else {
-          if (existingAttempt.registerCount === 0) {
-            return res.status(401).send("Забагато спроб реєстрації. Спробуйте через 30 хв");
-          } else {
+          if (!isMatch) {
             existingAttempt.registerCount -= 1;
+          } else {
+            existingAttempt.registerCount = REGISTER_COUNT;
           }
         }
-        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
-        await existingAttempt.save();
       }
+      await existingAttempt.save();
+    }
+
+    if (!isMatch) {
       return res.status(400).send("Неправильний ключ верифікації");
     }
     const hashedPassword = await hash(password, 10);
@@ -138,36 +141,36 @@ router.post("/login", async (req, res) => {
     const user = await userModel.findOne({ email });
     const isMatch = await user?.comparePassword(password);
 
-    if (!user || !isMatch) {
-      const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
+    const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
 
-      if (!existingAttempt) {
-        const newAttempt = new authAttemptsModel({
-          userIp: req.ip,
-          email,
-          loginCount: LOGIN_COUNT,
-          waitUntilNextLogin: new Date(Date.now() + HALF_HOUR),
-        });
-        await newAttempt.save();
+    if (!existingAttempt) {
+      const newAttempt = new authAttemptsModel({
+        userIp: req.ip,
+        email,
+        loginCount: LOGIN_COUNT - 1,
+        waitUntilNextLogin: new Date(Date.now() + HALF_HOUR),
+      });
+      await newAttempt.save();
+    } else {
+      existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+      if (existingAttempt.waitUntilNextLogin <= Date.now() || !existingAttempt.waitUntilNextLogin) {
+        existingAttempt.loginCount = LOGIN_COUNT;
+        existingAttempt.waitUntilNextLogin = new Date(Date.now() + HALF_HOUR);
       } else {
-        if (
-          existingAttempt.waitUntilNextLogin <= Date.now() ||
-          !existingAttempt.waitUntilNextLogin
-        ) {
-          existingAttempt.loginCount = LOGIN_COUNT;
-          existingAttempt.waitUntilNextLogin = new Date(Date.now() + HALF_HOUR);
-          await existingAttempt.save();
+        if (existingAttempt.loginCount === 0) {
+          return res.status(401).send("Забагато спроб входу. Спробуйте через 30 хв");
         } else {
-          if (existingAttempt.loginCount === 0) {
-            return res.status(401).send("Забагато спроб входу. Спробуйте через 30 хв");
-          } else {
+          if (!user || !isMatch) {
             existingAttempt.loginCount -= 1;
-            await existingAttempt.save();
+          } else {
+            existingAttempt.loginCount = LOGIN_COUNT;
           }
         }
-        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
-        await existingAttempt.save();
       }
+      await existingAttempt.save();
+    }
+
+    if (!user || !isMatch) {
       return res.status(401).send("Неправильна пошта або пароль");
     }
 
