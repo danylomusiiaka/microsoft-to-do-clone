@@ -10,7 +10,7 @@ Next Js with Typescript, Tailwind, Context API, MUI library, Cookies
 
 
 ### Backend
-Node Js, Express, MongoDB, JWT, WebSockets, nodemailer, express-rate-limit
+Node Js, Express, MongoDB, JWT, WebSockets, nodemailer
 
 [![Back](https://skillicons.dev/icons?i=nodejs,express,mongodb)](https://skillicons.dev)
 <img src="https://github.com/user-attachments/assets/401cc875-2e15-4d37-8646-f8189ac228a7" width="50" height="50">

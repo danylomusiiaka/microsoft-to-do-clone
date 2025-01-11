@@ -68,7 +68,9 @@ export default function StatusEditor({ userData }: { userData: User }) {
           }));
         }
       } catch (error: any) {
-        showAlert(error.response.data, "error");
+        if (error.response) {
+          showAlert(error.response.data, 'error');
+        }
       }
     };
     fetchStatuses();

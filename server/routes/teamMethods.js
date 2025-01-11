@@ -4,16 +4,8 @@ import { verifyToken, generateRandomString } from "../config/authMiddleware.js";
 import userModel from "../models/userModel.js";
 import teamModel from "../models/teamModel.js";
 import taskModel from "../models/taskModel.js";
-import { rateLimit } from "express-rate-limit";
-
-const teamJoinLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  handler: (req, res) => {
-    res.status(429).send("Забагато спроб вступу, спробуйте через 15 хвилин");
-  },
-  skipSuccessfulRequests: true,
-});
+import authAttemptsModel from "../models/authAttemptsModel.js";
+import { HALF_HOUR, TWO_DAYS, TEAM_JOIN_COUNT } from "../config/constants.js";
 
 router.post("/create", verifyToken, async (req, res) => {
   const teamCode = generateRandomString(12);
@@ -53,17 +45,51 @@ router.post("/exit", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/join", verifyToken, teamJoinLimiter, async (req, res) => {
+router.post("/join", verifyToken, async (req, res) => {
   const { teamCode } = req.body;
 
+  if (!teamCode) {
+    return res.status(400).send("Код команди не може бути пустим");
+  }
+
   try {
+    const user = await userModel.findById(req.userId).select("-password");
     const team = await teamModel.findOne({ code: teamCode });
 
     if (!team) {
+      const existingAttempt = await authAttemptsModel.findOne({
+        userIp: req.ip,
+        email: user.email,
+      });
+
+      if (!existingAttempt) {
+        const newAttempt = new authAttemptsModel({
+          userIp: req.ip,
+          email: user.email,
+          teamJoinCount: TEAM_JOIN_COUNT,
+          waitUntilNextTeamJoin: new Date(Date.now() + HALF_HOUR),
+        });
+        await newAttempt.save();
+      } else {
+        if (
+          existingAttempt.waitUntilNextTeamJoin <= Date.now() ||
+          !existingAttempt.waitUntilNextTeamJoin
+        ) {
+          existingAttempt.teamJoinCount = TEAM_JOIN_COUNT;
+          existingAttempt.waitUntilNextTeamJoin = new Date(Date.now() + HALF_HOUR);
+        } else {
+          if (existingAttempt.teamJoinCount === 0) {
+            return res.status(404).send("Забагато спроб входу. Спробуйте через 30 хв");
+          } else {
+            existingAttempt.teamJoinCount -= 1;
+          }
+        }
+        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+        await existingAttempt.save();
+      }
       return res.status(404).send("Команда не знайдена");
     }
 
-    const user = await userModel.findById(req.userId).select("-password");
     if (team.participants.includes(user.email)) {
       return res.status(400).send("Ви вже є учасником цієї команди");
     }

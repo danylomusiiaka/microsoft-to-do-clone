@@ -20,10 +20,12 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
   const { setTodoChoosed, todoChoosed, loading } = useTodos();
   const { updateField } = useTodoFunctions();
   const { profileDetails } = useUserDetails();
-  const [statuses, setStatuses] = useState(userStatuses);
+  const [statuses, setStatuses] = useState(userStatuses || []);
 
   useEffect(() => {
-    setStatuses(profileDetails.statuses);
+    if (profileDetails.statuses) {
+      setStatuses(profileDetails.statuses);
+    }
   }, [profileDetails.statuses]);
 
   const toggleCompletion = (e: React.MouseEvent) => {

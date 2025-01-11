@@ -103,7 +103,9 @@ export default function NavSidebar({ userData }: { userData: User }) {
           }));
         }
       } catch (error: any) {
-        showAlert(error.response.data, "error");
+        if (error.response) {
+          showAlert(error.response.data, 'error');
+        }
       }
     };
     fetchCategories();

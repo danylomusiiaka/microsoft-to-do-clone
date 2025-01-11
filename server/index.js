@@ -31,7 +31,6 @@ app.use(
 
 app.use(json({ limit: "10mb" }));
 app.use(urlencoded({ limit: "10mb", extended: true }));
-
 app.use(cookieParser());
 
 import userRoutes from "./routes/userMethods.js";
@@ -52,8 +51,15 @@ app.use("/team", teamRoutes);
 
 job.start();
 
-app.get("/", (req, res) => {
-  res.status(200).send(`Server is running and user ip is ${req.ip}`);
+import authAttemptsModel from "./models/authAttemptsModel.js";
+
+app.get("/", async (req, res) => {
+  try {
+    await authAttemptsModel.deleteMany({ clearTime: { $lte: Date.now() } });
+    res.status(200).send("Server is running");
+  } catch (err) {
+    res.status(500).send("Error occurred while cleaning up old auth attempts.");
+  }
 });
 
 server.listen(port, () => {

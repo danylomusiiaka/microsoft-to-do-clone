@@ -19,7 +19,7 @@ export default function StatusDropdown(todo: Task) {
   const [selectedPriority, setSelectedPriority] = useState(todo.priority);
 
   const color =
-    [...STATUS_OPTIONS, ...profileDetails.statuses].find((option) => option.name === selectedStatus)
+    [...STATUS_OPTIONS, ...(profileDetails?.statuses || [])].find((option) => option.name === selectedStatus)
       ?.color || "#a8a29e";
 
   const color2 =
@@ -102,14 +102,14 @@ export default function StatusDropdown(todo: Task) {
 
       {isOpenStatuses && (
         <Options
-          options={[...STATUS_OPTIONS, ...profileDetails.statuses]}
+          options={[...STATUS_OPTIONS, ...(profileDetails?.statuses || [])]}
           handleClick={handleOptionClick}
         />
       )}
 
       {isOpenCategories && (
         <Options
-          options={[...profileDetails.categories, "Завдання"]}
+          options={[...(profileDetails?.categories || []), "Завдання"]}
           handleClick={handleCategoryClick}
         />
       )}

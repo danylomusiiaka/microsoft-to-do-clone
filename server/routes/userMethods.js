@@ -3,41 +3,16 @@ const router = Router();
 import userModel from "../models/userModel.js";
 import teamModel from "../models/teamModel.js";
 import taskModel from "../models/taskModel.js";
+import authAttemptsModel from "../models/authAttemptsModel.js";
 import { createTransport } from "nodemailer";
 import { hash, compare } from "bcrypt";
 import { generateToken, verifyToken, generateRandomString } from "../config/authMiddleware.js";
 import { broadcast } from "../config/websocket.js";
-import { rateLimit } from "express-rate-limit";
+import { HALF_HOUR, TWO_DAYS, LOGIN_COUNT, REGISTER_COUNT } from "../config/constants.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  handler: (req, res) => {
-    res.status(429).send("Забагато спроб входу, спробуйте через 15 хвилин");
-  },
-  skipSuccessfulRequests: true,
-});
-
-const registerLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  handler: (req, res) => {
-    res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
-  },
-  skipSuccessfulRequests: true,
-});
-
-const verificationLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  handler: (req, res) => {
-    res.status(429).send("Забагато спроб реєстрації, спробуйте через 15 хвилин");
-  },
-});
-
-router.post("/verify-email", verificationLimiter, async (req, res) => {
+router.post("/verify-email", async (req, res) => {
   const { email } = req.body;
 
   const existingUser = await userModel.findOne({ email });
@@ -46,13 +21,43 @@ router.post("/verify-email", verificationLimiter, async (req, res) => {
     return res.status(400).send("Ця пошта вже зареєстрована");
   }
 
+  const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
+
+  if (!existingAttempt) {
+    const newAttempt = new authAttemptsModel({
+      userIp: req.ip,
+      email,
+      registerCount: REGISTER_COUNT,
+      waitUntilNextRegister: new Date(Date.now() + HALF_HOUR),
+    });
+    await newAttempt.save();
+  } else {
+    if (
+      existingAttempt.waitUntilNextRegister <= Date.now() ||
+      !existingAttempt.waitUntilNextRegister
+    ) {
+      existingAttempt.registerCount = REGISTER_COUNT;
+      existingAttempt.waitUntilNextRegister = new Date(Date.now() + HALF_HOUR);
+      await existingAttempt.save();
+    } else {
+      if (existingAttempt.registerCount === 0) {
+        return res.status(401).send("Забагато спроб реєстрації. Спробуйте через 30 хв");
+      } else {
+        existingAttempt.registerCount -= 1;
+        await existingAttempt.save();
+      }
+      existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+      await existingAttempt.save();
+    }
+  }
+
   const verificationKey = generateRandomString();
   const hashedKey = await hash(verificationKey, 10);
 
   const transporter = createTransport({
     host: "smtp-relay.brevo.com",
     port: 465,
-    secure: true, 
+    secure: true,
     auth: {
       user: process.env.EMAIL,
       pass: process.env.EMAIL_PASSWORD,
@@ -69,47 +74,108 @@ router.post("/verify-email", verificationLimiter, async (req, res) => {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
-
       return res.status(401).send("Пошта не є валідною");
     }
     res.json({ hashedKey });
   });
 });
 
-router.post("/register", registerLimiter, async (req, res) => {
-  const { name, email, password, verificationKey, userInputKey } = req.body;
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password, verificationKey, userInputKey } = req.body;
 
-  const isMatch = await compare(userInputKey, verificationKey);
+    const isMatch = await compare(userInputKey, verificationKey);
 
-  if (!isMatch) {
-    return res.status(400).send("Неправильний ключ верифікації");
+    if (!isMatch) {
+      const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
+
+      if (!existingAttempt) {
+        const newAttempt = new authAttemptsModel({
+          userIp: req.ip,
+          email,
+          registerCount: REGISTER_COUNT,
+          waitUntilNextRegister: new Date(Date.now() + HALF_HOUR),
+        });
+        await newAttempt.save();
+      } else {
+        if (
+          existingAttempt.waitUntilNextRegister <= Date.now() ||
+          !existingAttempt.waitUntilNextRegister
+        ) {
+          existingAttempt.registerCount = REGISTER_COUNT;
+          existingAttempt.waitUntilNextRegister = new Date(Date.now() + HALF_HOUR);
+        } else {
+          if (existingAttempt.registerCount === 0) {
+            return res.status(401).send("Забагато спроб реєстрації. Спробуйте через 30 хв");
+          } else {
+            existingAttempt.registerCount -= 1;
+          }
+        }
+        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+        await existingAttempt.save();
+      }
+      return res.status(400).send("Неправильний ключ верифікації");
+    }
+    const hashedPassword = await hash(password, 10);
+    const user = new userModel({ name, email, password: hashedPassword, picture: "" });
+    await user.save();
+
+    const token = generateToken(user.id);
+    res.json({ token });
+  } catch (error) {
+    res.status(401).send("Помилка регістрації.");
   }
-  const hashedPassword = await hash(password, 10);
-  const user = new userModel({ name, email, password: hashedPassword, picture: "" });
-  await user.save();
-
-  const token = generateToken(user.id);
-  res.json({ token });
 });
 
-router.post("/login", loginLimiter, async (req, res) => {
-  const { email, password } = req.body;
-  console.log(`${req.ip}`);
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  const user = await userModel.findOne({ email });
+    if (!email || !password) {
+      return res.status(401).send("Поля пошти або паролю не можуть бути пустими");
+    }
 
-  if (!user) {
-    return res.status(401).send("Неправильна пошта або пароль");
+    const user = await userModel.findOne({ email });
+    const isMatch = await user?.comparePassword(password);
+
+    if (!user || !isMatch) {
+      const existingAttempt = await authAttemptsModel.findOne({ userIp: req.ip, email });
+
+      if (!existingAttempt) {
+        const newAttempt = new authAttemptsModel({
+          userIp: req.ip,
+          email,
+          loginCount: LOGIN_COUNT,
+          waitUntilNextLogin: new Date(Date.now() + HALF_HOUR),
+        });
+        await newAttempt.save();
+      } else {
+        if (
+          existingAttempt.waitUntilNextLogin <= Date.now() ||
+          !existingAttempt.waitUntilNextLogin
+        ) {
+          existingAttempt.loginCount = LOGIN_COUNT;
+          existingAttempt.waitUntilNextLogin = new Date(Date.now() + HALF_HOUR);
+          await existingAttempt.save();
+        } else {
+          if (existingAttempt.loginCount === 0) {
+            return res.status(401).send("Забагато спроб входу. Спробуйте через 30 хв");
+          } else {
+            existingAttempt.loginCount -= 1;
+            await existingAttempt.save();
+          }
+        }
+        existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
+        await existingAttempt.save();
+      }
+      return res.status(401).send("Неправильна пошта або пароль");
+    }
+
+    const token = generateToken(user.id);
+    res.json({ token });
+  } catch (error) {
+    res.status(401).send("Помилка входу.");
   }
-
-  const isMatch = await user.comparePassword(password);
-
-  if (!isMatch) {
-    return res.status(401).send("Неправильна пошта або пароль");
-  }
-
-  const token = generateToken(user.id);
-  res.json({ token });
 });
 
 router.delete("/delete", async (req, res) => {
