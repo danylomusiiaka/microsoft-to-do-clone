@@ -42,10 +42,7 @@ export default async function Category({ params }: { params: Promise<{ category:
 
   const userData = token ? await fetchUserData(token) : {};
   let allTodos = [];
-  if (
-    userData.categories?.includes(category) ||
-    ["Мій день", "Призначено мені"].includes(category)
-  ) {
+  if (userData.categories?.includes(decodedCategory) || ["Мій день", "Призначено мені"].includes(decodedCategory)) {
     allTodos = token ? await fetchTodos(token, userData.team || userData.email) : [];
   }
 
@@ -53,7 +50,8 @@ export default async function Category({ params }: { params: Promise<{ category:
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
         <NavSidebar userData={userData} />
-        {!userData.categories?.includes(category) && !["Мій день", "Призначено мені"].includes(category) ? (
+        {!userData.categories?.includes(decodedCategory) &&
+        !["Мій день", "Призначено мені"].includes(decodedCategory) ? (
           <div className='md:flex items-center space-x-6 justify-center w-full'>
             <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
             <div className='space-y-4'>
