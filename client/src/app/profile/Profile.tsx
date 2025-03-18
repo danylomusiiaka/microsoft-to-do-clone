@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProfileFunctions } from "@/components/functions/userFunctions";
 import ProfilePicture from "./Picture";
-import { formatText } from "@/components/functions/formatFields";
 import Controls from "../profile/Controls";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import ThemeOption from "@/components/ThemeOption";
@@ -12,8 +11,7 @@ const themes = ["dark", "light", "purple"];
 import TeamButtons from "./TeamButtons";
 import NewUserQuest from "./NewUserQuest";
 import StatusEditor from "./StatusEditor";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { adjustHeight } from "@/components/functions/adjustHeight";
 
 export default function Profile({ userData }: { userData: User }) {
   const { updateField } = useProfileFunctions();
@@ -21,6 +19,11 @@ export default function Profile({ userData }: { userData: User }) {
   const [name, setName] = useState(userData.name);
   const [profileInfo, setProfileInfo] = useState(userData);
   const { profileDetails, setProfileDetails } = useUserDetails();
+  const nameRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    adjustHeight(nameRef, "auto");
+  }, [name]);
 
   useEffect(() => {
     setProfileDetails(userData);
@@ -50,13 +53,15 @@ export default function Profile({ userData }: { userData: User }) {
         <div className='flex space-x-3 w-full items-center'>
           <ProfilePicture picture={profileInfo.picture} />
           <div className='w-4/6'>
-            <input
-              className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full'
+            <textarea
+              className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full resize-none overflow-hidden'
               value={name}
+              ref={nameRef}
               onChange={(e) => setName(e.target.value)}
               onBlur={updateName}
+              rows={1}
             />
-            <p className='md:text-2xl pl-1 '>{formatText(profileInfo.email, 30)}</p>
+            <p className='md:text-2xl pl-1 break-words'>{profileInfo.email}</p>
           </div>
         </div>
         <Controls />
