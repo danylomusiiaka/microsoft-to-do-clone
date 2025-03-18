@@ -49,10 +49,10 @@ export default function Profile({ userData }: { userData: User }) {
 
   return (
     <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile'>
-      <section className='md:flex p-2 pl-0 items-center justify-between'>
+      <section className='md:flex md:p-2 items-center justify-between'>
         <div className='flex space-x-3 w-full items-center'>
           <ProfilePicture picture={profileInfo.picture} />
-          <div className='w-4/6'>
+          <div className="w-full md:w-auto">
             <textarea
               className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full resize-none overflow-hidden'
               value={name}
@@ -61,7 +61,7 @@ export default function Profile({ userData }: { userData: User }) {
               onBlur={updateName}
               rows={1}
             />
-            <p className='md:text-2xl pl-1 break-words'>{profileInfo.email}</p>
+            <p className='md:text-2xl truncate'>{profileInfo.email}</p>
           </div>
         </div>
         <Controls />

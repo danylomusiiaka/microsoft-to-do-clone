@@ -52,7 +52,7 @@ export default function ProfilePicture({ picture }: { picture: string }) {
         <img
           src={profilePicture || "default-picture.svg"}
           alt='Profile'
-          className='w-20 h-20 object-cover cursor-pointer rounded-full'
+          className='w-30 h-30 md:w-20 md:h-20 object-contain cursor-pointer rounded-full resize-none'
         />
       </label>
       <input
