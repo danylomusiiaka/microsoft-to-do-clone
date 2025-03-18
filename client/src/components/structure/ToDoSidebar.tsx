@@ -97,10 +97,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
   return (
     <section className='sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
       <div className='todo-content flex flex-col md:justify-between'>
-        <main
-          className='space-y-3 scroll-container'
-          style={{ opacity: todo._id == loading ? 0.7 : 1 }}
-        >
+        <main className='space-y-3 scroll-container' style={{ opacity: todo._id == loading ? 0.7 : 1 }}>
           <div className='flex justify-end items-center'>
             <button onClick={() => setTodoChoosed(null)} disabled={!!loading}>
               <Cross />

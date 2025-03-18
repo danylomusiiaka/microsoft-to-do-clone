@@ -34,7 +34,7 @@ async function fetchTodos(token: string, teamOrEmail: string) {
 }
 
 export default async function DashboardPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   const userData = token ? await fetchUserData(token) : {};

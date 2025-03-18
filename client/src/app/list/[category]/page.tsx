@@ -33,10 +33,11 @@ async function fetchTodos(token: string, teamOrEmail: string) {
   }
 }
 
-export default async function Category({ params }: { params: { category: string } }) {
-  const category = decodeURIComponent(params.category);
+export default async function Category({ params }: { params: Promise<{ category: string }> }) {
+  const { category } = await params;
+  const decodedCategory = decodeURIComponent(category);
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   const userData = token ? await fetchUserData(token) : {};
@@ -52,14 +53,11 @@ export default async function Category({ params }: { params: { category: string 
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
         <NavSidebar userData={userData} />
-        {!userData.categories?.includes(category) &&
-        !["Мій день", "Призначено мені"].includes(category) ? (
+        {!userData.categories?.includes(category) && !["Мій день", "Призначено мені"].includes(category) ? (
           <div className='md:flex items-center space-x-6 justify-center w-full'>
             <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
             <div className='space-y-4'>
-              <h1 className='text-2xl font-semibold'>
-                Ми чесно шукали, але нічого не змогли знайти..
-              </h1>
+              <h1 className='text-2xl font-semibold'>Ми чесно шукали, але нічого не змогли знайти..</h1>
               <p>Зверніть увагу на наступні кроки: </p>
               <ul className='list-disc pl-5 space-y-2'>
                 <li>чи створений список, який ви шукаєте</li>
@@ -76,7 +74,7 @@ export default async function Category({ params }: { params: { category: string 
             </div>
           </div>
         ) : (
-          <TodoList allTodos={allTodos.reverse()} userData={userData} category={category} />
+          <TodoList allTodos={allTodos.reverse()} userData={userData} category={decodedCategory} />
         )}
       </Suspense>
     </section>

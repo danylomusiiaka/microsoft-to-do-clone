@@ -13,7 +13,6 @@ import { useUserDetails } from "@/contexts/UserDetailsContext";
 import StartScreen from "../StartScreen";
 import NoAssignments from "../NoAssignments";
 import Loading from "@/app/loading";
-import Cross from "../../../public/cross";
 import Propositions from "../Propositions";
 
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -30,7 +29,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
   const { profileDetails } = useUserDetails();
   const { loading } = useTodos();
 
-  const { addToDo, formatStarTodos, updateField } = useTodoFunctions();
+  const { addToDo, formatStarTodos } = useTodoFunctions();
   const [tasks, setTasks] = useState(formatStarTodos(todos));
 
   const [newTodoText, setNewTodoText] = useState("");
@@ -55,9 +54,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
       if (message.event === "taskCreated") {
         setTodos((prevTodos) => [message.task, ...prevTodos]);
       } else if (message.event === "taskUpdated") {
-        setTodos((prevTodos) =>
-          prevTodos.map((todo) => (todo._id === message.task._id ? message.task : todo))
-        );
+        setTodos((prevTodos) => prevTodos.map((todo) => (todo._id === message.task._id ? message.task : todo)));
       } else if (message.event === "taskDeleted") {
         setTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== message.taskId));
       }
@@ -130,17 +127,16 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
             {!dataReady ? (
               <Loading />
             ) : category === "Призначено мені" ? (
-              todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && (
-                <NoAssignments />
-              )
+              todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && <NoAssignments />
             ) : (
-              todos.filter((todo: Task) => category === "Завдання" || todo.category === category)
-                .length === 0 && <StartScreen />
+              todos.filter((todo: Task) => category === "Завдання" || todo.category === category).length === 0 && (
+                <StartScreen />
+              )
             )}
             <table className='w-full text-left'>
               <tbody>
                 {incompleteTodos.map((todo: Task) => (
-                  <React.Fragment key={todo._id}>
+                  <React.Fragment key={todo._id || todos.length + 1}>
                     <Todo
                       todo={todo}
                       sortName={sortOptions.name}
@@ -194,9 +190,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
         )}
       </main>
       {todoChoosed && <ToDoSidebar todo={todoChoosed} />}
-      {openSuggestions && (
-        <Propositions setOpenSuggestions={setOpenSuggestions} category={category} />
-      )}
+      {openSuggestions && <Propositions setOpenSuggestions={setOpenSuggestions} category={category} />}
     </>
   );
 }

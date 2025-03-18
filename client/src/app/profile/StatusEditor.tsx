@@ -103,7 +103,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
             <input
               type='text'
               value={status.name}
-              className='bg-transparent border rounded-md text-sm p-1 w-full'
+              className='bg-transparent border rounded-md text-sm p-1'
               placeholder='Введіть назву статусу..'
               onChange={(e) => setStatus({ ...status, name: e.target.value })}
               onKeyDown={handleKeyDown}
