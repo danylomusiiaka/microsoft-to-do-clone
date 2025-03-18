@@ -61,7 +61,7 @@ export default function Profile({ userData }: { userData: User }) {
               onBlur={updateName}
               rows={1}
             />
-            <p className='md:text-2xl truncate'>{profileInfo.email}</p>
+            <p className='md:text-2xl pl-1 truncate'>{profileInfo.email}</p>
           </div>
         </div>
         <Controls />
