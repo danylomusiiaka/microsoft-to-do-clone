@@ -48,7 +48,7 @@ export default function ProfilePicture({ picture }: { picture: string }) {
 
   return (
     <>
-      <label htmlFor='img-upload' className='hover:outline hover:outline-2 hover:rounded-full'>
+      <label htmlFor='img-upload' className='hover:outline-2 hover:rounded-full'>
         <img
           src={profilePicture || "default-picture.svg"}
           alt='Profile'

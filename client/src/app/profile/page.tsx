@@ -20,7 +20,7 @@ async function fetchUserData(token: string) {
 }
 
 export default async function ProfilePage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   const userData = token ? await fetchUserData(token) : {};

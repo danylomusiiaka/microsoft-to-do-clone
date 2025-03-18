@@ -49,7 +49,7 @@ export default function Profile({ userData }: { userData: User }) {
       <section className='md:flex p-2 pl-0 items-center justify-between'>
         <div className='flex space-x-3 w-full items-center'>
           <ProfilePicture picture={profileInfo.picture} />
-          <div className='w-4/6 md:w-6/6'>
+          <div className='w-4/6'>
             <input
               className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full'
               value={name}
