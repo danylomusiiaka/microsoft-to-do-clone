@@ -21,7 +21,8 @@ const verifyToken = (req, res, next) => {
       }
       return res.status(403).send("Ви не є авторизованим");
     }
-
+    console.log(err);
+    
     req.userId = decoded.id;
     next();
   });
