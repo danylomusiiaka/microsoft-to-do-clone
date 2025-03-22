@@ -16,12 +16,12 @@ const verifyToken = (req, res, next) => {
 
   verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
+      console.log(err);
       if (err.name === "TokenExpiredError") {
         return res.status(401).send("Термін дії токена закінчився. Будь ласка, залогуйтесь знову");
       }
       return res.status(403).send("Ви не є авторизованим");
     }
-    console.log(err);
     
     req.userId = decoded.id;
     next();
