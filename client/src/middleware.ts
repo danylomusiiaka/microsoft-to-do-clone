@@ -19,8 +19,11 @@ export async function middleware(req: NextRequest) {
 
   if (token) {
     try {
-      const result = await fetch(`${webUrl}/user/details`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const result = await fetch(`https://microsoft-to-do-clone-api.onrender.com/user/details`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
 
       if ([401, 403, 500].includes(result.status)) {
