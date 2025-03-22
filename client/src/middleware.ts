@@ -19,18 +19,16 @@ export async function middleware(req: NextRequest) {
 
   if (token) {
     try {
-      const result = await fetch(`https://microsoft-to-do-clone-api.onrender.com/user/details`, {
+      const result = await fetch(`${webUrl}/user/details`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
       });
 
-      if ([401, 403, 500].includes(result.status)) {
+      if ([401, 500].includes(result.status)) {
         const response = NextResponse.redirect(new URL("/auth", req.url));
         response.cookies.delete("token");
         response.cookies.set("session-expired", "true");
-        response.cookies.set("status", `${result.status}`);
         return response;
       }
 
