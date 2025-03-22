@@ -23,8 +23,7 @@ export async function middleware(req: NextRequest) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (![200, 201, 203, 204].includes(result.status)) {
-        console.log(result.status)
+      if ([401, 403, 500].includes(result.status)) {
         const response = NextResponse.redirect(new URL("/auth", req.url));
         response.cookies.delete("token");
         response.cookies.set("session-expired", "true");
