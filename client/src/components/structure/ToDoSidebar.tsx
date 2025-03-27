@@ -146,13 +146,13 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
               disabled={!!loading}
             >
               <p>Призначено</p>
-              <div className='flex items-center space-x-3 text-lg'>
+              <div className='flex items-center space-x-3 text-lg '>
                 <img
                   src={assignee.picture || `/default-picture.svg`}
-                  className='w-10 h-10 object-cover rounded-full'
+                  className='w-10 h-10 object-cover rounded-full aspect-square'
                   alt='profile-photo'
                 />
-                <p>{formatText(assignee.name, 30)}</p>
+                <p className="truncate">{assignee.name}</p>
               </div>
               {asigneeMenu && (
                 <>
@@ -169,10 +169,10 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                       >
                         <img
                           src={member.picture || `/default-picture.svg`}
-                          className='w-10 h-10 object-cover rounded-full'
+                          className='w-10 h-10 object-cover rounded-full aspect-square'
                           alt='profile-photo'
                         />
-                        <p>{formatText(member.name, 30)}</p>
+                        <p className="truncate">{member.name}</p>
                       </div>
                     ))}
                 </>

@@ -48,11 +48,11 @@ export default function ProfilePicture({ picture }: { picture: string }) {
 
   return (
     <div className='w-25 sm:w-20'>
-      <label htmlFor='img-upload' className='hover:outline-2 hover:rounded-full'>
+      <label htmlFor='img-upload' className='w-20 h-20 cursor-pointer rounded-full overflow-hidden block'>
         <img
           src={profilePicture || "default-picture.svg"}
           alt='Profile'
-          className='w-20 h-20 object-cover cursor-pointer rounded-full resize-none'
+          className='w-full h-full object-cover rounded-full'
         />
       </label>
       <input type='file' id='img-upload' className='hidden' accept='image/*' onChange={handleFileUpload} />

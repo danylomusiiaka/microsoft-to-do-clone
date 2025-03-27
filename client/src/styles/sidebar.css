@@ -37,7 +37,7 @@
 }
 
 .scroll-container-nav {
-  height: 30vh;
+  height: 35vh;
   overflow-y: scroll;
   overflow-x: hidden;
   outline: none;
@@ -126,6 +126,10 @@
     height: 100vh;
     transition: left 0.4s ease;
     box-shadow: 2px 0 20px 0 rgba(0, 0, 0, 0.42);
+  }
+
+  .scroll-container-nav {
+    height: 30vh;
   }
 
   .hamburger {
