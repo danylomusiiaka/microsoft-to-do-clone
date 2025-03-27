@@ -7,14 +7,14 @@ import Cookies from "js-cookie";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useProfileFunctions = () => {
-  const { profileDetails, setProfileDetails, setUserQuest } = useUserDetails();
+  const { profileDetails, setProfileDetails, setUserQuest, setLoadingProfile } = useUserDetails();
   const { showAlert } = useAlert();
   const { setTodoChoosed, setTodos, setLoading } = useTodos();
 
   const updateField = async (userfieldName: string, userfieldValue: string | Status[] | boolean) => {
     try {
       const token = Cookies.get("token");
-
+      setLoadingProfile(true);
       const response = await Axios.put(
         `${webUrl}/user/update-field`,
         {
@@ -28,14 +28,16 @@ export const useProfileFunctions = () => {
       if (response.status === 200) {
         setProfileDetails({ ...profileDetails, [userfieldName]: userfieldValue });
         showAlert("Ваші дані були успішно оновлені", "success");
-        return true
+        setLoadingProfile(false);
+        return true;
       }
     } catch (error: any) {
       if (error.status === 401) {
         window.location.href = "/auth";
       }
       showAlert(error.response.data, "error");
-      return false
+      setLoadingProfile(false);
+      return false;
     }
   };
 

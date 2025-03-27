@@ -18,7 +18,7 @@ import Cookies from "js-cookie";
 
 export default function ToDoSidebar({ todo }: { todo: Task }) {
   const { todos, setTodoChoosed, setLoading, loading } = useTodos();
-  const { profileDetails, teamMembers, setUserQuest } = useUserDetails();
+  const { profileDetails, teamMembers, setUserQuest, loadingProfile } = useUserDetails();
   const { showAlert } = useAlert();
 
   const { updateField, todoOnFirstPos, deleteTodo } = useTodoFunctions();

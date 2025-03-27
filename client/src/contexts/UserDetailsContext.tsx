@@ -14,6 +14,8 @@ interface UserContextType {
   teamMembers: { email: string; picture?: string; name: string }[];
   userQuest: number[];
   setUserQuest: React.Dispatch<React.SetStateAction<number[]>>;
+  loadingProfile: boolean;
+  setLoadingProfile: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -29,6 +31,8 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
     isUserQuestDone: false,
   });
 
+  const [loadingProfile, setLoadingProfile] = useState(false);
+
   const [teamMembers, setTeamMembers] = useState<
     { email: string; picture?: string; name: string }[]
   >([]);
@@ -41,7 +45,6 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
       const fetchTeamMembers = async () => {
         try {
           const token = Cookies.get("token");
-
           const response = await Axios.get(`${webUrl}/team/all-members`, {
             params: { teamCode: profileDetails.team },
             headers: { Authorization: `Bearer ${token}` },
@@ -79,6 +82,8 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
         teamMembers,
         userQuest,
         setUserQuest,
+        loadingProfile,
+        setLoadingProfile
       }}
     >
       {children}

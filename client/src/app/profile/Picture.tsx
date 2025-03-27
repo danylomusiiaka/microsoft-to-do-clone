@@ -3,11 +3,13 @@ import { useProfileFunctions } from "@/components/functions/userFunctions";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { useAlert } from "@/contexts/AlertContext";
 
 export default function ProfilePicture({ picture }: { picture: string }) {
   const [profilePicture, setProfilePicture] = useState(picture);
   const { updateField } = useProfileFunctions();
-  const { setUserQuest } = useUserDetails();
+  const { setUserQuest, loadingProfile } = useUserDetails();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setProfilePicture(picture);
@@ -18,8 +20,10 @@ export default function ProfilePicture({ picture }: { picture: string }) {
     if (file) {
       try {
         const base64Image = await convertToBase64(file);
-        updateField("picture", base64Image);
+        const response = await updateField("picture", base64Image);
+        if (response) setProfilePicture(base64Image);
       } catch (error) {
+        showAlert("Не вдалось загрузити зображення. Спробуйте ще раз", "error");
         return;
       }
       const cookienewUserQuest = Cookies.get("newUserQuest");
@@ -47,12 +51,13 @@ export default function ProfilePicture({ picture }: { picture: string }) {
     });
 
   return (
-    <div className='w-25 sm:w-20'>
-      <label htmlFor='img-upload' className='w-20 h-20 cursor-pointer rounded-full overflow-hidden block'>
+    <div className='w-25 sm:w-20 '>
+      {loadingProfile && <div className='loading-bar'></div>}
+      <label htmlFor='img-upload' className='w-20 h-20 rounded-full overflow-hidden block'>
         <img
           src={profilePicture || "default-picture.svg"}
           alt='Profile'
-          className='w-full h-full object-cover rounded-full'
+          className='w-full h-full object-cover rounded-full cursor-pointer'
         />
       </label>
       <input type='file' id='img-upload' className='hidden' accept='image/*' onChange={handleFileUpload} />

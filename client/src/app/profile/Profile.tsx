@@ -18,7 +18,7 @@ export default function Profile({ userData }: { userData: User }) {
   const { showAlert } = useAlert();
   const [name, setName] = useState(userData.name);
   const [profileInfo, setProfileInfo] = useState(userData);
-  const { profileDetails, setProfileDetails } = useUserDetails();
+  const { profileDetails, setProfileDetails, loadingProfile } = useUserDetails();
   const nameRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -32,12 +32,7 @@ export default function Profile({ userData }: { userData: User }) {
     setProfileDetails(userData);
   }, []);
 
-  useEffect(() => {
-    setName(profileDetails.name);
-    setProfileInfo(profileDetails);
-  }, [profileDetails]);
-
-  const updateName = () => {
+  const updateName = async () => {
     if (name.trim() === "" || name.trim() === profileDetails.name.trim()) {
       setName(userData.name);
       return;
@@ -46,16 +41,18 @@ export default function Profile({ userData }: { userData: User }) {
         showAlert("Ім'я профілю не має перевищувати 80 символів", "error");
         return;
       }
-      updateField("name", name.trim());
+      const response = await updateField("name", name.trim());
+      if (!response) setName(userData.name);
     }
   };
 
   return (
     <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile'>
       <section className='md:flex md:p-2 items-center justify-between'>
+        {loadingProfile && <div className='loading-bar'></div>}
         <div className='flex space-x-3 w-full items-center min-w-0'>
           <ProfilePicture picture={profileInfo.picture} />
-          <div className='w-full min-w-0'>
+          <div className='w-full min-w-0 md:mr-4'>
             <textarea
               className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full resize-none overflow-hidden'
               value={name}
