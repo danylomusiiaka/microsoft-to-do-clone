@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
       if (err.name === "TokenExpiredError") {
         return res.status(401).send("Термін дії токена закінчився. Будь ласка, залогуйтесь знову");
       }
-      return res.status(403).send("Ви не є авторизованим");
+      return res.status(401).send("Ви не є авторизованим");
     }
     
     req.userId = decoded.id;
