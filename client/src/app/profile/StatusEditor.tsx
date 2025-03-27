@@ -29,15 +29,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
     const newStatuses = [...updatedStatuses, status];
     setStatus({ ...status, name: "" });
 
-    const responseSuccesful = await updateField("statuses", newStatuses);
-
-    if (responseSuccesful) {
-      setStatusOptions([...STATUS_OPTIONS, ...newStatuses]);
-      setProfileDetails({
-        ...profileDetails,
-        statuses: newStatuses,
-      });
-    }
+    await updateField("statuses", newStatuses);
   };
 
   const deleteStatus = (statusName: string) => {
@@ -69,7 +61,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
         }
       } catch (error: any) {
         if (error.response) {
-          showAlert(error.response.data, 'error');
+          showAlert(error.response.data, "error");
         }
       }
     };

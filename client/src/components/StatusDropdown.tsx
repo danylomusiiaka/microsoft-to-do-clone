@@ -58,7 +58,7 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenCategories(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2 cursor-pointer '
+          className='rounded p-2'
           title='Стан завдання'
         >
           <div
@@ -75,7 +75,7 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2 cursor-pointer'
+          className='rounded p-2'
           title='До якого списку належить завдання'
         >
           <div className='text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text'>
@@ -89,7 +89,7 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenCategories(false);
           }}
-          className='rounded p-2 cursor-pointer '
+          className='rounded p-2'
         >
           <div
             className='text-sm rounded-xl h-5 space-x-2'

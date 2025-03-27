@@ -28,17 +28,14 @@ export const useProfileFunctions = () => {
       if (response.status === 200) {
         setProfileDetails({ ...profileDetails, [userfieldName]: userfieldValue });
         showAlert("Ваші дані були успішно оновлені", "success");
-        setLoadingProfile(false);
-        return true;
       }
     } catch (error: any) {
       if (error.status === 401) {
         window.location.href = "/auth";
       }
       showAlert(error.response.data, "error");
-      setLoadingProfile(false);
-      return false;
     }
+    setLoadingProfile(false);
   };
 
   const addCategory = async (category: string) => {
@@ -234,6 +231,7 @@ export const useProfileFunctions = () => {
       );
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: code }));
+        showAlert("Ви успішно вступили в команду", "success");
       }
     } catch (error: any) {
       if (error.response.status === 401) {

@@ -141,7 +141,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           <Calendar currentTodo={currentTodo!} />
           {profileDetails.team && (
             <button
-              className='button description-sidebar-input space-y-3 cursor-pointer text-left'
+              className='button description-sidebar-input space-y-3 text-left'
               onClick={() => setAsigneeMenu(!asigneeMenu)}
               disabled={!!loading}
             >

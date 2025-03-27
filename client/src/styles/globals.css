@@ -20,6 +20,10 @@ body {
   overflow: hidden;
 }
 
+button {
+  cursor: pointer;
+}
+
 @media (max-width: 800px) {
   html,
   body {

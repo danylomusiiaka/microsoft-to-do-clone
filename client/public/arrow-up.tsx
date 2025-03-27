@@ -5,7 +5,6 @@ export default function ArrowUp() {
       viewBox='0 -4.5 20 20'
       version='1.1'
       xmlns='http://www.w3.org/2000/svg'
-      className='cursor-pointer'
     >
       <g id='Page-1' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
         <g

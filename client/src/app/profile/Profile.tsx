@@ -22,6 +22,10 @@ export default function Profile({ userData }: { userData: User }) {
   const nameRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    setProfileInfo(profileDetails);
+  }, [profileDetails]);
+
+  useEffect(() => {
     const handleResize = () => adjustHeight(nameRef, "auto");
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -41,8 +45,7 @@ export default function Profile({ userData }: { userData: User }) {
         showAlert("Ім'я профілю не має перевищувати 80 символів", "error");
         return;
       }
-      const response = await updateField("name", name.trim());
-      if (!response) setName(userData.name);
+      await updateField("name", name.trim());
     }
   };
 

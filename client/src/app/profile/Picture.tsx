@@ -20,8 +20,7 @@ export default function ProfilePicture({ picture }: { picture: string }) {
     if (file) {
       try {
         const base64Image = await convertToBase64(file);
-        const response = await updateField("picture", base64Image);
-        if (response) setProfilePicture(base64Image);
+        await updateField("picture", base64Image);
       } catch (error) {
         showAlert("Не вдалось загрузити зображення. Спробуйте ще раз", "error");
         return;
