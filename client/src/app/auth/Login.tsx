@@ -1,8 +1,7 @@
 import Axios from "axios";
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 export default function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -17,7 +16,7 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const response = await Axios.post(`${webUrl}/user/login`, {
+      const response = await Axios.post(`${backendUrl}/user/login`, {
         email: emailRef.current?.value || "",
         password: passwordRef.current?.value || "",
       });

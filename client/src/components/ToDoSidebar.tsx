@@ -4,13 +4,13 @@ import "@/styles/sidebar.css";
 import { useState, useEffect, useRef } from "react";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
-import Cross from "../../public/cross";
+import Cross from "../../public/icons/cross.svg";
 import StatusDropdown from "./ToDoSidebar/StatusDropdown";
 import { adjustHeight } from "@/functions/adjustHeight";
-import Star from "../../public/star";
+import Star from "../../public/icons/star.svg";
 import Calendar from "./ToDoSidebar/Calendar";
 import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
-import Delete from "../../public/delete";
+import Delete from "../../public/icons/delete.svg";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatText } from "@/functions/formatFields";
@@ -117,7 +117,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
               }}
               disabled={!!loading}
             >
-              <Star isImportant={isImportant} />
+              <Star style={{ width: "30px", height: "30px" }} color={isImportant ? "#FFD700" : "#fff"} fill={isImportant ? "#FFD700" : "none"} />
             </button>
           </div>
           <StatusDropdown {...(currentTodo || todo)} />
@@ -127,7 +127,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             <button className='button description-sidebar-input space-y-3 text-left' onClick={() => setAsigneeMenu(!asigneeMenu)} disabled={!!loading}>
               <p>Призначено</p>
               <div className='flex items-center space-x-3 text-lg '>
-                <img src={assignee.picture || `/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
+                <img src={assignee.picture || `/icons/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
                 <p className='truncate'>{assignee.name}</p>
               </div>
               {asigneeMenu && (
@@ -143,7 +143,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                         }}
                         className='flex items-center space-x-3 text-lg'
                       >
-                        <img src={member.picture || `/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
+                        <img src={member.picture || `/icons/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
                         <p className='truncate'>{member.name}</p>
                       </div>
                     ))}
@@ -154,7 +154,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
         </main>
 
         <button className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full' onClick={handleDeleteTodo} disabled={!!loading}>
-          <Delete color='#b91c1c' width='30px' />
+          <Delete color='#b91c1c' strokeWidth={2} style={{ width: "25px", marginLeft: "0.4rem" }} />
           <p className='text-red-700'>Видалити завдання</p>
         </button>
       </div>

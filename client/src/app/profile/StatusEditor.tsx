@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import Plus from "../../../public/plus";
-import Delete from "../../../public/delete";
-import Pencil from "../../../public/pencil";
+import Plus from "../../../public/icons/plus.svg";
+import Delete from "../../../public/icons/delete.svg";
+import Pencil from "../../../public/icons/pencil.svg";
 import { STATUS_OPTIONS } from "../../constants/statuses";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
@@ -10,8 +10,7 @@ import { Status, User } from "@/interfaces/UserInterface";
 import Cookies from "js-cookie";
 import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 export default function StatusEditor({ userData }: { userData: User }) {
   const [isChangingStatuses, setChangingStatuses] = useState(false);
@@ -50,7 +49,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
     const fetchStatuses = async () => {
       const token = Cookies.get("token");
       try {
-        const response = await Axios.get(`${webUrl}/user/statuses`, {
+        const response = await Axios.get(`${backendUrl}/user/statuses`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.status === 200) {
@@ -80,7 +79,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
         <div className='flex items-center space-x-2'>
           <p>Відредагувати стани завдань</p>
           <button onClick={() => setChangingStatuses(!isChangingStatuses)}>
-            <Pencil />
+            <Pencil className='fill-svg'/>
           </button>
         </div>
 
@@ -106,7 +105,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
                   deleteStatus(option.name);
                 }}
               >
-                <Delete color='#fff' width='18px' />
+                <Delete color='#fff' style={{ width: "18px", marginLeft: "5px" }} />
               </button>
             )}
           </div>

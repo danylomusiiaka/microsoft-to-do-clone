@@ -3,12 +3,11 @@ import { cookies } from "next/headers";
 import React, { Suspense } from "react";
 import Loading from "../loading";
 import Dashboard from "./Dashboard";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 async function fetchUserData(token: string) {
   try {
-    const userResponse = await Axios.get(`${webUrl}/user/details`, {
+    const userResponse = await Axios.get(`${backendUrl}/user/details`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
@@ -20,7 +19,7 @@ async function fetchUserData(token: string) {
 
 async function fetchTodos(token: string, teamOrEmail: string) {
   try {
-    const todosResponse = await Axios.get(`${webUrl}/task/all`, {
+    const todosResponse = await Axios.get(`${backendUrl}/task/all`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { author: teamOrEmail },
     });

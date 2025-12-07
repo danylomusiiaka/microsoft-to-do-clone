@@ -1,6 +1,5 @@
-import { useTodos } from "@/contexts/TodosContext";
-import ArrowDown from "../../../public/arrow-down";
-import ArrowUp from "../../../public/arrow-up";
+import ArrowDown from "../../../public/icons/arrow-down.svg";
+import ArrowUp from "../../../public/icons/arrow-up.svg";
 import { useEffect, useState } from "react";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";

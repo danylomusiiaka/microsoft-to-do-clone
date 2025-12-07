@@ -5,7 +5,7 @@ import { Status } from "@/interfaces/UserInterface";
 import Axios from "axios";
 import Cookies from "js-cookie";
 import { revalidateHomePage } from "../revalidate";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 export const useProfileFunctions = () => {
   const { profileDetails, setProfileDetails, setUserQuest, setLoadingProfile } = useUserDetails();
@@ -17,7 +17,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
       setLoadingProfile(true);
       const response = await Axios.put(
-        `${webUrl}/user/update-field`,
+        `${backendUrl}/user/update-field`,
         {
           fieldName: userfieldName,
           fieldValue: userfieldValue,
@@ -61,7 +61,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const result = await Axios.post(
-        `${webUrl}/category/create`,
+        `${backendUrl}/category/create`,
         { category },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -100,7 +100,7 @@ export const useProfileFunctions = () => {
     try {
       const token = Cookies.get("token");
 
-      const response = await Axios.delete(`${webUrl}/category/${encodeURIComponent(category)}`, {
+      const response = await Axios.delete(`${backendUrl}/category/${encodeURIComponent(category)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTodoChoosed(null);
@@ -139,7 +139,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.put(
-        `${webUrl}/category/${oldCategory}`,
+        `${backendUrl}/category/${oldCategory}`,
         { newCategory },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -167,7 +167,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/team/create`,
+        `${backendUrl}/team/create`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -201,7 +201,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/team/exit`,
+        `${backendUrl}/team/exit`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -226,7 +226,7 @@ export const useProfileFunctions = () => {
       const token = Cookies.get("token");
 
       const response = await Axios.post(
-        `${webUrl}/team/join`,
+        `${backendUrl}/team/join`,
         { teamCode: code },
         {
           headers: { Authorization: `Bearer ${token}` },

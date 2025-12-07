@@ -24,6 +24,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.0.14",
     "@types/canvas-confetti": "^1.9.0",
     "@types/js-cookie": "^3.0.6",

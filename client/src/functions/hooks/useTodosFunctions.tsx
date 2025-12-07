@@ -6,8 +6,7 @@ import Axios from "axios";
 import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/constants/statuses";
 import Cookies from "js-cookie";
 import { User } from "@/interfaces/UserInterface";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 export const useTodoFunctions = () => {
   const { todos, setTodos, setLoading } = useTodos();
@@ -49,7 +48,7 @@ export const useTodoFunctions = () => {
     try {
       const token = Cookies.get("token");
 
-      const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
+      const response = await Axios.post(`${backendUrl}/task/create`, newTodo, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -106,7 +105,7 @@ export const useTodoFunctions = () => {
       const token = Cookies.get("token");
       setLoading(todo._id);
 
-      const response = await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
+      const response = await Axios.put(`${backendUrl}/task/${todo._id}`, updatedTodo, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
@@ -146,7 +145,7 @@ export const useTodoFunctions = () => {
     try {
       const token = Cookies.get("token");
 
-      const response = await Axios.delete(`${webUrl}/task/${id}`, {
+      const response = await Axios.delete(`${backendUrl}/task/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {

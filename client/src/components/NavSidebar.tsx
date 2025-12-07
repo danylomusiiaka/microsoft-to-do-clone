@@ -1,8 +1,8 @@
 "use client";
 import NavigationButton from "./NavSidebar/NavigationButton";
-import Plus from "@/../public/plus";
-import Delete from "@/../public/delete";
-import { useState, useRef, useEffect } from "react";
+import Plus from "@/../public/icons/plus.svg";
+import Delete from "@/../public/icons/delete.svg";
+import { useState, useRef, useEffect, Fragment } from "react";
 import { useTodos } from "@/contexts/TodosContext";
 import { User } from "@/interfaces/UserInterface";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
@@ -12,9 +12,12 @@ import Cookies from "js-cookie";
 import { Task } from "@/interfaces/TaskInterface";
 import Link from "next/link";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
-const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+import { backendUrl, wsUrl } from "@/constants/app-config";
+import HomeIcon from "../../public/icons/home.svg";
+import MyDayIcon from "../../public/icons/sun.svg";
+import ListIcon from "../../public/icons/list.svg";
+import DashboardIcon from "../../public/icons/star.svg";
+import AssignmentIcon from "../../public/icons/assignment.svg";
 
 export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
@@ -92,7 +95,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
     const fetchCategories = async () => {
       const token = Cookies.get("token");
       try {
-        const response = await Axios.get(`${webUrl}/category/all`, {
+        const response = await Axios.get(`${backendUrl}/category/all`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.status === 200) {
@@ -129,6 +132,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  console.log(profileData.categories);
 
   return (
     <>
@@ -141,7 +145,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
       <section ref={sidebarRef} className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 w-80 p-3 rounded-md'>
         <div className='space-y-4'>
           <Link href='/profile' onClick={() => ((document.getElementById("nav_check") as HTMLInputElement).checked = false)} className='flex space-x-3 profile items-center rounded-md p-2 pl-1'>
-            <img src={profileData.picture || `/default-picture.svg`} alt='photo' className='w-12 h-12 object-cover rounded-full aspect-square' />
+            <img src={profileData.picture || `/icons/default-picture.svg`} alt='photo' className='w-12 h-12 object-cover rounded-full aspect-square' />
             <div className='min-w-0'>
               <h1 className='font-bold truncate'>{profileData.name}</h1>
               <p className='text-sm truncate'>{profileData.email}</p>
@@ -151,32 +155,36 @@ export default function NavSidebar({ userData }: { userData: User }) {
             <input type='text' placeholder='Пошук' className='search-input' onChange={(e) => setSearch(e.target.value)} />
           </div>
 
-          <NavigationButton icon='/home.svg' href='/' text='Завдання' />
-          <NavigationButton icon='/sun.svg' href='/list/Мій день' text='Мій день' />
-          <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
-          <NavigationButton icon='/assignment.svg' href='/list/Призначено мені' text='Призначено мені' />
+          <NavigationButton Icon={HomeIcon} href='/' text='Завдання' />
+          <NavigationButton Icon={MyDayIcon} href='/list/Мій день' text='Мій день' />
+          <NavigationButton Icon={DashboardIcon} href='/dashboard' text='Статистика' />
+          <NavigationButton Icon={AssignmentIcon} href='/list/Призначено мені' text='Призначено мені' />
 
           <hr className='divider' />
+
           <div className='scroll-container-nav'>
             {profileData.categories?.map((category, i) => (
-              <div
-                className='flex justify-between rounded-md button listname-link'
-                style={{
-                  opacity: category == loading ? 0.5 : 1,
-                }}
-                key={i}
-              >
-                <NavigationButton icon='/list.svg' href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
+              <Fragment key={i}>
+                {category !== "" && (
+                  <div
+                    className='flex justify-between rounded-md button listname-link'
+                    style={{
+                      opacity: category == loading ? 0.5 : 1,
+                    }}
+                  >
+                    <NavigationButton Icon={ListIcon} href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
 
-                <button
-                  className='nav-delete pr-3'
-                  onClick={() => {
-                    deleteCategory(category);
-                  }}
-                >
-                  <Delete color='#6b7280' width='25px' />
-                </button>
-              </div>
+                    <button
+                      className='nav-delete pr-3'
+                      onClick={() => {
+                        deleteCategory(category);
+                      }}
+                    >
+                      <Delete color='#6b7280' strokeWidth={2} style={{ width: "25px", marginLeft: "0.4rem" }} />
+                    </button>
+                  </div>
+                )}
+              </Fragment>
             ))}
           </div>
         </div>
@@ -190,7 +198,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
               }}
               disabled={!!loading}
             >
-              <Plus name='plus-2' />
+              <Plus />
             </button>
             <input type='text' placeholder='Створити список' className='create-list-input' value={category} onChange={(e) => setCategory(e.target.value)} onKeyDown={handleKeyDown} />
           </div>

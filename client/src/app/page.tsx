@@ -3,12 +3,11 @@ import Loading from "./loading";
 import TodoList from "@/components/TodoList";
 import axios from "axios";
 import { cookies } from "next/headers";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 async function fetchUserData(token: string) {
   try {
-    const userResponse = await axios.get(`${webUrl}/user/details`, {
+    const userResponse = await axios.get(`${backendUrl}/user/details`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -23,7 +22,7 @@ async function fetchTodos(token: string) {
   try {
     const { team, email } = await fetchUserData(token);
 
-    const todosResponse = await axios.get(`${webUrl}/task/all`, {
+    const todosResponse = await axios.get(`${backendUrl}/task/all`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { author: team || email },
     });

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "./constants/app-config";
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -19,7 +18,7 @@ export async function middleware(req: NextRequest) {
 
   if (token) {
     try {
-      const result = await fetch(`${webUrl}/user/details`, {
+      const result = await fetch(`${backendUrl}/user/details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

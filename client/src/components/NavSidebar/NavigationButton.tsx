@@ -1,13 +1,14 @@
 import Link from "next/link";
+import { FC, SVGProps } from "react";
 
 interface NavigationButtonProps {
-  icon: string;
+  Icon: FC<SVGProps<SVGSVGElement>>;
   href: string;
   text: string;
   disabled?: boolean;
 }
 
-export default function NavigationButton({ icon, href, text, disabled = false }: NavigationButtonProps) {
+export default function NavigationButton({ Icon, href, text, disabled = false }: NavigationButtonProps) {
   const handleItemClick = () => {
     (document.getElementById("nav_check") as HTMLInputElement).checked = false;
   };
@@ -15,7 +16,7 @@ export default function NavigationButton({ icon, href, text, disabled = false }:
   if (disabled) {
     return (
       <div onClick={(e) => e.preventDefault()} className='flex items-center space-x-3 w-full p-3 rounded-md button opacity-50 cursor-not-allowed'>
-        <img src={`${icon}`} className='w-6' />
+        <Icon style={{ width: "24px", height: "24px" }} color='#BCC5D1' />
         <p className='truncated-text'>{text}</p>
       </div>
     );
@@ -23,7 +24,7 @@ export default function NavigationButton({ icon, href, text, disabled = false }:
 
   return (
     <Link href={href} onClick={handleItemClick} className='flex items-center space-x-3 w-full p-3 rounded-md button'>
-      <img src={`${icon}`} className='w-6' />
+      <Icon style={{ width: "24px", height: "24px" }} className='fill-svg'/>
       <p className='truncated-text'>{text}</p>
     </Link>
   );

@@ -89,7 +89,7 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
     <>
       {isCompleted !== null && (
         <section className='w-fit p-3 rounded-md md:flex' style={{ backgroundColor: "var(--secondary-background-color)" }}>
-          <img src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"} alt={!isCompleted ? "hi-cherry" : "clapping-cherry"} className='w-52 h-52' />
+          <img src={!isCompleted ? "gifs/educational-cherry.gif" : "gifs/congradulations.gif"} alt={!isCompleted ? "hi-cherry" : "clapping-cherry"} className='w-52 h-52' />
           <div className='space-y-3'>
             <div className='h-fit rounded-md p-3 text-lg' style={{ backgroundColor: "var(--sidebar-block-color)" }}>
               {!isCompleted ? (

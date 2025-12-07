@@ -3,12 +3,11 @@ import Axios from "axios";
 import Loading from "../loading";
 import { cookies } from "next/headers";
 import Profile from "./Profile";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 async function fetchUserData(token: string) {
   try {
-    const userResponse = await Axios.get(`${webUrl}/user/details`, {
+    const userResponse = await Axios.get(`${backendUrl}/user/details`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

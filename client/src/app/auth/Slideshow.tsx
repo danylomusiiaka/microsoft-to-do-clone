@@ -17,17 +17,17 @@ export default function Slideshow() {
       <div className='text-slider'>
         <div className='images-wrapper'>
           <img
-            src='image1.png'
+            src='images/image1.png'
             className={`image img-1 ${activeSlide === 1 ? "show" : ""}`}
             alt='Slide 1'
           />
           <img
-            src='image2.png'
+            src='images/image2.png'
             className={`image img-2 ${activeSlide === 2 ? "show" : ""}`}
             alt='Slide 2'
           />
           <img
-            src='image3.png'
+            src='images/image3.png'
             className={`image img-3 ${activeSlide === 3 ? "show" : ""}`}
             alt='Slide 3'
           />

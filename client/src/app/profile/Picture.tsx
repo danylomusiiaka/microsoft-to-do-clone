@@ -53,7 +53,7 @@ export default function ProfilePicture({ picture }: { picture: string }) {
     <div className='w-25 sm:w-20 '>
       {loadingProfile && <div className='loading-bar'></div>}
       <label htmlFor='img-upload' className='w-20 h-20 rounded-full overflow-hidden block'>
-        <img src={profilePicture || "default-picture.svg"} alt='Profile' className='w-full h-full object-cover rounded-full cursor-pointer' />
+        <img src={profilePicture || "/icons/default-picture.svg"} alt='Profile' className='w-full h-full object-cover rounded-full cursor-pointer' />
       </label>
       <input type='file' id='img-upload' className='hidden' accept='image/*' onChange={handleFileUpload} />
     </div>

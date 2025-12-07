@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import ThreeDots from "../../../public/three-dots";
-import SortByAlphabetIcon from "../../../public/sort-by-alphabet";
-import SortByDateIcon from "../../../public/sort-by-date";
-import SortByPriorityIcon from "../../../public/sort-by-priority";
-import CloseCircle from "../../../public/close-circle";
-import SortAsc from "../../../public/sort-up";
-import SortDesc from "../../../public/sort-down";
+import ThreeDots from "../../../public/icons/three-dots.svg";
+import SortByAlphabetIcon from "../../../public/icons/sort-by-alphabet.svg";
+import SortByDateIcon from "../../../public/icons/sort-by-date.svg";
+import SortByPriorityIcon from "../../../public/icons/sort-by-priority.svg";
+import CloseCircle from "../../../public/icons/close-circle.svg";
+import SortAsc from "../../../public/icons/sort-up.svg";
+import SortDesc from "../../../public/icons/sort-down.svg";
 import { useTodos } from "@/contexts/TodosContext";
-import Delete from "../../../public/delete";
+import Delete from "../../../public/icons/delete.svg";
 import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
 import Cookies from "js-cookie";
-import Propositions from "../../../public/Idea";
+import Propositions from "../../../public/icons/idea.svg";
 import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { formatDate } from "@/functions/formatFields";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 interface MenuProps {
   listName: string;
@@ -66,7 +66,7 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
     setLoading(true);
     try {
       const token = Cookies.get("token");
-      const response = await Axios.delete(`${webUrl}/task/all`, {
+      const response = await Axios.delete(`${backendUrl}/task/all`, {
         params: { category: listName },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -145,7 +145,7 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
                 <p>За пріорітетністю</p>
               </button>
               <button className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap' onClick={handleDeleteAll}>
-                {loading ? <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div> : <Delete color='#b91c1c' width='25px' />}
+                {loading ? <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div> : <Delete color='#b91c1c' strokeWidth={2} style={{ width: "25px", marginLeft: "0.4rem" }} />}
                 <p className='text-red-600'> Видалити всі завдання</p>
               </button>
             </section>

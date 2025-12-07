@@ -5,8 +5,7 @@ import Axios from "axios";
 import { User } from "@/interfaces/UserInterface";
 import { useAlert } from "./AlertContext";
 import Cookies from "js-cookie";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 interface UserContextType {
   profileDetails: User;
@@ -44,7 +43,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
       const fetchTeamMembers = async () => {
         try {
           const token = Cookies.get("token");
-          const response = await Axios.get(`${webUrl}/team/all-members`, {
+          const response = await Axios.get(`${backendUrl}/team/all-members`, {
             params: { teamCode: profileDetails.team },
             headers: { Authorization: `Bearer ${token}` },
           });

@@ -1,8 +1,8 @@
-import Checkmark from "../../../public/checkmark";
+import Checkmark from "../../../public/icons/checkmark";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
 import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "../../constants/statuses";
-import Star from "../../../public/star";
+import Star from "../../../public/icons/star.svg";
 import { Status } from "@/interfaces/UserInterface";
 import { useEffect, useState } from "react";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
@@ -105,7 +105,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
         <td className=''>
           {todo.isImportant && (
             <div className='flex justify-end items-end md:block'>
-              <Star isImportant={todo.isImportant} />
+              <Star style={{ width: "30px", height: "30px" }} color={todo.isImportant ? "#FFD700" : "#fff"} fill={todo.isImportant ? "#FFD700" : "#fff"} />
             </div>
           )}
         </td>
