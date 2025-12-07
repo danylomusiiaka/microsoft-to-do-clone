@@ -4,16 +4,16 @@ import { useTodos } from "@/contexts/TodosContext";
 import { Task } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
 import React, { useEffect, useMemo, useState } from "react";
-import Todo from "../Todo";
-import Plus from "../../../public/plus";
-import Menu from "../Menu";
+import Todo from "./TodoList/Todo";
+import Plus from "../../public/plus";
+import Menu from "./ToDoSidebar/Menu";
 import ToDoSidebar from "./ToDoSidebar";
-import { useTodoFunctions } from "../functions/todosFunctions";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import StartScreen from "../StartScreen";
-import NoAssignments from "../NoAssignments";
 import Loading from "@/app/loading";
-import Propositions from "../Propositions";
+import Propositions from "./Placeholders/Propositions";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import NoAssignments from "./Placeholders/NoAssignments";
+import StartScreen from "./Placeholders/StartScreen";
 
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 
@@ -57,6 +57,8 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
         setTodos((prevTodos) => prevTodos.map((todo) => (todo._id === message.task._id ? message.task : todo)));
       } else if (message.event === "taskDeleted") {
         setTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== message.taskId));
+      } else if (message.event === "taskAllDeleted") {
+        setTodos([]);
       }
     };
 

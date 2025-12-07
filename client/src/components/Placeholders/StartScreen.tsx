@@ -1,4 +1,4 @@
-import ThreeDots from "../../public/three-dots";
+import ThreeDots from "../../../public/three-dots";
 
 export default function StartScreen() {
   return (

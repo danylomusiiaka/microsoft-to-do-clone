@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import Loading from "./loading";
-import TodoList from "@/components/structure/TodoList";
+import TodoList from "@/components/TodoList";
 import axios from "axios";
 import { cookies } from "next/headers";
 

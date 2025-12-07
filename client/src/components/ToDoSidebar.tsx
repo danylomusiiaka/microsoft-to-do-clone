@@ -4,16 +4,16 @@ import "@/styles/sidebar.css";
 import { useState, useEffect, useRef } from "react";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
-import Cross from "../../../public/cross";
-import StatusDropdown from "../StatusDropdown";
-import { adjustHeight } from "../functions/adjustHeight";
-import Star from "../../../public/star";
-import Calendar from "../Calendar";
-import { useTodoFunctions } from "../functions/todosFunctions";
-import Delete from "../../../public/delete";
+import Cross from "../../public/cross";
+import StatusDropdown from "./ToDoSidebar/StatusDropdown";
+import { adjustHeight } from "@/functions/adjustHeight";
+import Star from "../../public/star";
+import Calendar from "./ToDoSidebar/Calendar";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import Delete from "../../public/delete";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useAlert } from "@/contexts/AlertContext";
-import { formatText } from "../functions/formatFields";
+import { formatText } from "@/functions/formatFields";
 import Cookies from "js-cookie";
 
 export default function ToDoSidebar({ todo }: { todo: Task }) {
@@ -104,15 +104,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             </button>
           </div>
           <div className='flex text-sidebar-input items-center justify-between profile '>
-            <textarea
-              ref={textareaRef}
-              value={taskText}
-              onChange={(e) => setTaskText(e.target.value)}
-              onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })}
-              placeholder='Введіть назву...'
-              className='bg-transparent outline-none resize-none pt-1'
-              disabled={!!loading}
-            />
+            <textarea ref={textareaRef} value={taskText} onChange={(e) => setTaskText(e.target.value)} onBlur={() => currentTodo && updateField(currentTodo, { text: taskText })} placeholder='Введіть назву...' className='bg-transparent outline-none resize-none pt-1' disabled={!!loading} />
             <button
               className='self-start mt-2'
               onClick={() => {
@@ -129,30 +121,14 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
             </button>
           </div>
           <StatusDropdown {...(currentTodo || todo)} />
-          <textarea
-            ref={descriptionRef}
-            value={taskDescription}
-            onBlur={() => currentTodo && updateField(currentTodo, { description: taskDescription })}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            className='description-sidebar-input button'
-            placeholder='Введіть опис...'
-            disabled={!!loading}
-          />
+          <textarea ref={descriptionRef} value={taskDescription} onBlur={() => currentTodo && updateField(currentTodo, { description: taskDescription })} onChange={(e) => setTaskDescription(e.target.value)} className='description-sidebar-input button' placeholder='Введіть опис...' disabled={!!loading} />
           <Calendar currentTodo={currentTodo!} />
           {profileDetails.team && (
-            <button
-              className='button description-sidebar-input space-y-3 text-left'
-              onClick={() => setAsigneeMenu(!asigneeMenu)}
-              disabled={!!loading}
-            >
+            <button className='button description-sidebar-input space-y-3 text-left' onClick={() => setAsigneeMenu(!asigneeMenu)} disabled={!!loading}>
               <p>Призначено</p>
               <div className='flex items-center space-x-3 text-lg '>
-                <img
-                  src={assignee.picture || `/default-picture.svg`}
-                  className='w-10 h-10 object-cover rounded-full aspect-square'
-                  alt='profile-photo'
-                />
-                <p className="truncate">{assignee.name}</p>
+                <img src={assignee.picture || `/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
+                <p className='truncate'>{assignee.name}</p>
               </div>
               {asigneeMenu && (
                 <>
@@ -167,12 +143,8 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
                         }}
                         className='flex items-center space-x-3 text-lg'
                       >
-                        <img
-                          src={member.picture || `/default-picture.svg`}
-                          className='w-10 h-10 object-cover rounded-full aspect-square'
-                          alt='profile-photo'
-                        />
-                        <p className="truncate">{member.name}</p>
+                        <img src={member.picture || `/default-picture.svg`} className='w-10 h-10 object-cover rounded-full aspect-square' alt='profile-photo' />
+                        <p className='truncate'>{member.name}</p>
                       </div>
                     ))}
                 </>
@@ -181,11 +153,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
           )}
         </main>
 
-        <button
-          className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full'
-          onClick={handleDeleteTodo}
-          disabled={!!loading}
-        >
+        <button className='flex button items-center space-x-2 pl-0 p-2 rounded-md w-full' onClick={handleDeleteTodo} disabled={!!loading}>
           <Delete color='#b91c1c' width='30px' />
           <p className='text-red-700'>Видалити завдання</p>
         </button>

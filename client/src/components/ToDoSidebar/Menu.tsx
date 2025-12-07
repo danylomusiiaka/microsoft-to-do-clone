@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import ThreeDots from "../../public/three-dots";
-import SortByAlphabetIcon from "../../public/sort-by-alphabet";
-import SortByDateIcon from "../../public/sort-by-date";
-import SortByPriorityIcon from "../../public/sort-by-priority";
-import { useTodoFunctions } from "./functions/todosFunctions";
-import CloseCircle from "../../public/close-circle";
-import SortAsc from "../../public/sort-up";
-import SortDesc from "../../public/sort-down";
+import ThreeDots from "../../../public/three-dots";
+import SortByAlphabetIcon from "../../../public/sort-by-alphabet";
+import SortByDateIcon from "../../../public/sort-by-date";
+import SortByPriorityIcon from "../../../public/sort-by-priority";
+import CloseCircle from "../../../public/close-circle";
+import SortAsc from "../../../public/sort-up";
+import SortDesc from "../../../public/sort-down";
 import { useTodos } from "@/contexts/TodosContext";
-import Delete from "../../public/delete";
+import Delete from "../../../public/delete";
 import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
-import { useProfileFunctions } from "./functions/userFunctions";
 import Cookies from "js-cookie";
-import { formatDate } from "./functions/formatFields";
-import Propositions from "../../public/Idea";
+import Propositions from "../../../public/Idea";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+import { formatDate } from "@/functions/formatFields";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 interface MenuProps {
@@ -24,12 +24,7 @@ interface MenuProps {
   setOpenSuggestions: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Menu({
-  listName,
-  sortOptions,
-  setSortOptions,
-  setOpenSuggestions,
-}: MenuProps) {
+export default function Menu({ listName, sortOptions, setSortOptions, setOpenSuggestions }: MenuProps) {
   const { todos, setTodos, setTodoChoosed, todoChoosed } = useTodos();
   const { sortBy } = useTodoFunctions();
   const [desc, setDesc] = useState(false);
@@ -119,8 +114,8 @@ export default function Menu({
           <div className='flex space-x-3'>
             {listName == "Мій день" && (
               <button
-                style={{ backgroundColor: 'var(--secondary-background-color)' }}
-                className="p-2 rounded-md"
+                style={{ backgroundColor: "var(--secondary-background-color)" }}
+                className='p-2 rounded-md'
                 onClick={() => {
                   setTodoChoosed(null);
                   setOpenSuggestions((prev) => !prev);
@@ -137,39 +132,20 @@ export default function Menu({
           {openMenu && (
             <section className='absolute right-0 mt-2 menu shadow-lg rounded-md p-3'>
               <p className='p-2 pl-1'>Відсортувати:</p>
-              <button
-                className='flex space-x-2 w-full items-center profile p-2'
-                onClick={() => handleSort("За алфавітом")}
-              >
+              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За алфавітом")}>
                 <SortByAlphabetIcon />
                 <p>За алфавітом</p>
               </button>
-              <button
-                className='flex space-x-2 w-full items-center profile p-2'
-                onClick={() => handleSort("За терміном")}
-              >
+              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За терміном")}>
                 <SortByDateIcon />
                 <p>За терміном</p>
               </button>
-              <button
-                className='flex space-x-2 w-full items-center profile p-2'
-                onClick={() => handleSort("За пріорітетністю")}
-              >
+              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За пріорітетністю")}>
                 <SortByPriorityIcon />
                 <p>За пріорітетністю</p>
               </button>
-              <button
-                className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap'
-                onClick={handleDeleteAll}
-              >
-                {loading ? (
-                  <div
-                    className='spinner'
-                    style={{ borderTopColor: "red", marginLeft: "0.5rem" }}
-                  ></div>
-                ) : (
-                  <Delete color='#b91c1c' width='25px' />
-                )}
+              <button className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap' onClick={handleDeleteAll}>
+                {loading ? <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div> : <Delete color='#b91c1c' width='25px' />}
                 <p className='text-red-600'> Видалити всі завдання</p>
               </button>
             </section>

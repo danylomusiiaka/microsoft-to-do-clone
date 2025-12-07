@@ -1,4 +1,4 @@
-import { useProfileFunctions } from "@/components/functions/userFunctions";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { User } from "@/interfaces/UserInterface";
 import React, { useState } from "react";
 import TeamAdd from "../../../public/team-add";
@@ -24,10 +24,7 @@ export default function TeamButtons({ profileInfo }: { profileInfo: User }) {
     <>
       {profileInfo.team ? (
         <div className='sm:flex sm:space-x-3 sm:space-y-0 space-y-3 items-center'>
-          <p
-            className='w-full sm:w-fit rounded-md p-1 px-6 flex items-center justify-center text-nowrap'
-            style={{ backgroundColor: "var(--sidebar-block-color)" }}
-          >
+          <p className='w-full sm:w-fit rounded-md p-1 px-6 flex items-center justify-center text-nowrap' style={{ backgroundColor: "var(--sidebar-block-color)" }}>
             Ваш код команди: {profileInfo.team}
           </p>
           <div className='flex items-center space-x-3 '>
@@ -58,12 +55,7 @@ export default function TeamButtons({ profileInfo }: { profileInfo: User }) {
 
           {isJoin ? (
             <div className='flex items-center space-x-3 '>
-              <input
-                className='w-full sm:w-fit bg-transparent border rounded-md text-sm p-1 pl-2 px-4'
-                placeholder='Введіть код команди'
-                autoFocus
-                onChange={(e) => setCodeInput(e.target.value)}
-              />
+              <input className='w-full sm:w-fit bg-transparent border rounded-md text-sm p-1 pl-2 px-4' placeholder='Введіть код команди' autoFocus onChange={(e) => setCodeInput(e.target.value)} />
               <button onClick={() => handleTeamAction(joinTeam, codeInput)}>
                 <TeamAdd />
               </button>

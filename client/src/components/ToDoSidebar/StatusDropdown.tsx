@@ -1,9 +1,9 @@
 import { Task } from "@/interfaces/TaskInterface";
 import { useState, useEffect } from "react";
-import { useTodoFunctions } from "./functions/todosFunctions";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import Options from "./Options";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "./constants/statuses";
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../../constants/statuses";
 
 export default function StatusDropdown(todo: Task) {
   const [isOpenStatuses, setIsOpenStatuses] = useState(false);
@@ -18,12 +18,9 @@ export default function StatusDropdown(todo: Task) {
   const [selectedCategory, setSelectedCategory] = useState(todo.category);
   const [selectedPriority, setSelectedPriority] = useState(todo.priority);
 
-  const color =
-    [...STATUS_OPTIONS, ...(profileDetails?.statuses || [])].find((option) => option.name === selectedStatus)
-      ?.color || "#a8a29e";
+  const color = [...STATUS_OPTIONS, ...(profileDetails?.statuses || [])].find((option) => option.name === selectedStatus)?.color || "#a8a29e";
 
-  const color2 =
-    PRIORITY_OPTIONS.find((option) => option.name === selectedPriority)?.color || "#a8a29e";
+  const color2 = PRIORITY_OPTIONS.find((option) => option.name === selectedPriority)?.color || "#a8a29e";
 
   useEffect(() => {
     setSelectedStatus(todo.status);
@@ -61,10 +58,7 @@ export default function StatusDropdown(todo: Task) {
           className='rounded p-2'
           title='Стан завдання'
         >
-          <div
-            className='text-sm rounded-xl h-5 space-x-2 truncated-text'
-            style={{ backgroundColor: `${color}` }}
-          >
+          <div className='text-sm rounded-xl h-5 space-x-2 truncated-text' style={{ backgroundColor: `${color}` }}>
             {selectedStatus}
           </div>
         </button>
@@ -78,9 +72,7 @@ export default function StatusDropdown(todo: Task) {
           className='rounded p-2'
           title='До якого списку належить завдання'
         >
-          <div className='text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text'>
-            {selectedCategory}
-          </div>
+          <div className='text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text'>{selectedCategory}</div>
         </button>
 
         <button
@@ -91,28 +83,15 @@ export default function StatusDropdown(todo: Task) {
           }}
           className='rounded p-2'
         >
-          <div
-            className='text-sm rounded-xl h-5 space-x-2'
-            style={{ backgroundColor: `${color2}` }}
-          >
+          <div className='text-sm rounded-xl h-5 space-x-2' style={{ backgroundColor: `${color2}` }}>
             {selectedPriority}
           </div>
         </button>
       </section>
 
-      {isOpenStatuses && (
-        <Options
-          options={[...STATUS_OPTIONS, ...(profileDetails?.statuses || [])]}
-          handleClick={handleOptionClick}
-        />
-      )}
+      {isOpenStatuses && <Options options={[...STATUS_OPTIONS, ...(profileDetails?.statuses || [])]} handleClick={handleOptionClick} />}
 
-      {isOpenCategories && (
-        <Options
-          options={[...(profileDetails?.categories || []), "Завдання"]}
-          handleClick={handleCategoryClick}
-        />
-      )}
+      {isOpenCategories && <Options options={[...(profileDetails?.categories || []), "Завдання"]} handleClick={handleCategoryClick} />}
 
       {isOpenPriority && <Options options={PRIORITY_OPTIONS} handleClick={handlePriorityClick} />}
     </main>

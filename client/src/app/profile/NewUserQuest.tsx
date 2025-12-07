@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import confetti from "canvas-confetti";
-import { useProfileFunctions } from "@/components/functions/userFunctions";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { useEffect, useState } from "react";
 
 const LinearProgress = dynamic(() => import("@mui/material/LinearProgress"), { ssr: false });
@@ -57,20 +57,9 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
       };
       Cookies.set("newUserQuest", JSON.stringify(initialCookieValue));
     } else {
-      const {
-        listCreated,
-        completedThreeTasks,
-        teamCreated,
-        participantJoined,
-        profilePictureChanged,
-        authorAssignedTask,
-      } = JSON.parse(cookienewUserQuest);
+      const { listCreated, completedThreeTasks, teamCreated, participantJoined, profilePictureChanged, authorAssignedTask } = JSON.parse(cookienewUserQuest);
 
-      const values = [
-        listCreated + completedThreeTasks,
-        teamCreated + participantJoined,
-        profilePictureChanged + authorAssignedTask,
-      ];
+      const values = [listCreated + completedThreeTasks, teamCreated + participantJoined, profilePictureChanged + authorAssignedTask];
       setUserQuest(values);
     }
     setIsCompleted(false);
@@ -99,44 +88,23 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
   return (
     <>
       {isCompleted !== null && (
-        <section
-          className='w-fit p-3 rounded-md md:flex'
-          style={{ backgroundColor: "var(--secondary-background-color)" }}
-        >
-          <img
-            src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"}
-            alt={!isCompleted ? "hi-cherry" : "clapping-cherry"}
-            className='w-52 h-52'
-          />
+        <section className='w-fit p-3 rounded-md md:flex' style={{ backgroundColor: "var(--secondary-background-color)" }}>
+          <img src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"} alt={!isCompleted ? "hi-cherry" : "clapping-cherry"} className='w-52 h-52' />
           <div className='space-y-3'>
-            <div
-              className='h-fit rounded-md p-3 text-lg'
-              style={{ backgroundColor: "var(--sidebar-block-color)" }}
-            >
+            <div className='h-fit rounded-md p-3 text-lg' style={{ backgroundColor: "var(--sidebar-block-color)" }}>
               {!isCompleted ? (
                 <p>
-                  Привіт! Я бачу ти новенький. <br /> Виконай пару квестів, щоб краще ознайомитись з
-                  додатком
+                  Привіт! Я бачу ти новенький. <br /> Виконай пару квестів, щоб краще ознайомитись з додатком
                 </p>
               ) : (
                 <p>
-                  Ура! Ти пройшов усі завдання! <br /> Тепер ти повноцінно навчився користуватись
-                  додатком
+                  Ура! Ти пройшов усі завдання! <br /> Тепер ти повноцінно навчився користуватись додатком
                 </p>
               )}
             </div>
-            <LinearProgressWithTask
-              value={userQuest[0]}
-              task={"Створи список і заверши 3 завдання"}
-            />
-            <LinearProgressWithTask
-              value={userQuest[1]}
-              task={"Створи команду та запроси туди одного учасника"}
-            />
-            <LinearProgressWithTask
-              value={userQuest[2]}
-              task={"Зміни аватарку та признач комусь завдання в команді"}
-            />
+            <LinearProgressWithTask value={userQuest[0]} task={"Створи список і заверши 3 завдання"} />
+            <LinearProgressWithTask value={userQuest[1]} task={"Створи команду та запроси туди одного учасника"} />
+            <LinearProgressWithTask value={userQuest[2]} task={"Зміни аватарку та признач комусь завдання в команді"} />
           </div>
         </section>
       )}

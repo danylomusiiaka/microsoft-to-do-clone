@@ -3,7 +3,7 @@ import { TodosProvider } from "@/contexts/TodosContext";
 import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import { cookies } from "next/headers";
-import NavSidebar from "@/components/structure/NavSidebar";
+import NavSidebar from "@/components/NavSidebar";
 import axios from "axios";
 
 export const metadata = {

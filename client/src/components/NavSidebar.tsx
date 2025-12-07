@@ -1,5 +1,5 @@
 "use client";
-import NavigationButton from "../NavigationButton";
+import NavigationButton from "./NavSidebar/NavigationButton";
 import Plus from "@/../public/plus";
 import Delete from "@/../public/delete";
 import { useState, useRef, useEffect } from "react";
@@ -7,11 +7,11 @@ import { useTodos } from "@/contexts/TodosContext";
 import { User } from "@/interfaces/UserInterface";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import Axios from "axios";
-import { useProfileFunctions } from "../functions/userFunctions";
 import { useAlert } from "@/contexts/AlertContext";
 import Cookies from "js-cookie";
 import { Task } from "@/interfaces/TaskInterface";
 import Link from "next/link";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -19,7 +19,7 @@ const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
   const { setSearch, setTodos, loading } = useTodos();
-  const { profileDetails, setProfileDetails } = useUserDetails();
+  const { profileDetails, setProfileDetails, teamMembers, setTeamMembers } = useUserDetails();
   const { addCategory, deleteCategory } = useProfileFunctions();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [profileData, setProfileData] = useState(userData);
@@ -72,6 +72,14 @@ export default function NavSidebar({ userData }: { userData: User }) {
           statuses: message.newStatuses,
         }));
         setTodos((prevTodos) => prevTodos.map((todo) => message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo));
+      } else if (message.event === "teamMemberJoined") {
+        console.log(teamMembers);
+        console.log(message.participant);
+        showAlert(message.participant);
+      } else if (message.event === "teamMemberExited") {
+        console.log(teamMembers);
+        console.log(message.participant);
+        showAlert(message.participant);
       }
     };
 

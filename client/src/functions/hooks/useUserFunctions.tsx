@@ -4,7 +4,7 @@ import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Status } from "@/interfaces/UserInterface";
 import Axios from "axios";
 import Cookies from "js-cookie";
-import { revalidateHomePage } from "@/app/actions/revalidate";
+import { revalidateHomePage } from "../revalidate";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useProfileFunctions = () => {

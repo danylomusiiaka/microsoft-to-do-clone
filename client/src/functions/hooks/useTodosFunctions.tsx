@@ -3,7 +3,7 @@ import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Task } from "@/interfaces/TaskInterface";
 import Axios from "axios";
-import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/components/constants/statuses";
+import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/constants/statuses";
 import Cookies from "js-cookie";
 import { User } from "@/interfaces/UserInterface";
 
@@ -54,9 +54,7 @@ export const useTodoFunctions = () => {
       });
 
       if (response.status === 201) {
-        const updatedTodos = temporaryTodos.map((todo) =>
-          todo.text === newTodoText && !todo._id ? { ...todo, _id: response.data.id } : todo
-        );
+        const updatedTodos = temporaryTodos.map((todo) => (todo.text === newTodoText && !todo._id ? { ...todo, _id: response.data.id } : todo));
         setTodos(updatedTodos);
         setLoading(undefined);
 
@@ -86,11 +84,7 @@ export const useTodoFunctions = () => {
       ...updatedFields,
     };
 
-    if (
-      (updatedFields.text !== undefined && updatedFields.text.trim() === todo.text.trim()) ||
-      (updatedFields.description !== undefined &&
-        updatedFields.description.trim() === todo.description.trim())
-    ) {
+    if ((updatedFields.text !== undefined && updatedFields.text.trim() === todo.text.trim()) || (updatedFields.description !== undefined && updatedFields.description.trim() === todo.description.trim())) {
       return;
     }
 
@@ -171,15 +165,9 @@ export const useTodoFunctions = () => {
   const sortBy = (name: string, desc: boolean, todosList: Task[]) => {
     const sortedTodos = [...todosList];
     if (name === "За алфавітом") {
-      sortedTodos.sort((a, b) =>
-        desc ? b.text.localeCompare(a.text) : a.text.localeCompare(b.text)
-      );
+      sortedTodos.sort((a, b) => (desc ? b.text.localeCompare(a.text) : a.text.localeCompare(b.text)));
     } else if (name === "За терміном") {
-      sortedTodos.sort((a, b) =>
-        desc
-          ? new Date(b.date).getTime() - new Date(a.date).getTime()
-          : new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
+      sortedTodos.sort((a, b) => (desc ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime()));
     } else if (name === "За пріорітетністю") {
       sortedTodos.sort((a, b) => {
         const priorityA = PRIORITY_RATING.find((option) => option.name === a.priority)?.number || 4;
@@ -193,8 +181,7 @@ export const useTodoFunctions = () => {
   };
 
   const formatForChart = (todos: Task[], type: "status" | "priority", userData: User) => {
-    const options =
-      type === "status" ? [...STATUS_OPTIONS, ...userData.statuses] : PRIORITY_OPTIONS;
+    const options = type === "status" ? [...STATUS_OPTIONS, ...userData.statuses] : PRIORITY_OPTIONS;
 
     const chartData: { labels: string[]; data: number[]; colors: string[] } = {
       labels: [],

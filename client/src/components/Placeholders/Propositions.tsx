@@ -1,8 +1,8 @@
 import React from "react";
-import Cross from "../../public/cross";
+import Cross from "../../../public/cross";
 import { useTodos } from "@/contexts/TodosContext";
 import { Task } from "@/interfaces/TaskInterface";
-import { useTodoFunctions } from "./functions/todosFunctions";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 
 interface PropositionsProps {
   category: string;

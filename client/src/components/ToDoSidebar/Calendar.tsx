@@ -1,10 +1,10 @@
 import { useTodos } from "@/contexts/TodosContext";
-import ArrowDown from "../../public/arrow-down";
-import ArrowUp from "../../public/arrow-up";
-import { formatDate } from "@/components/functions/formatFields";
+import ArrowDown from "../../../public/arrow-down";
+import ArrowUp from "../../../public/arrow-up";
 import { useEffect, useState } from "react";
-import { useTodoFunctions } from "./functions/todosFunctions";
 import { Task } from "@/interfaces/TaskInterface";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import { formatDate } from "@/functions/formatFields";
 
 export default function Calendar({ currentTodo }: { currentTodo: Task }) {
   const [showDateEdit, setDateEdit] = useState(false);

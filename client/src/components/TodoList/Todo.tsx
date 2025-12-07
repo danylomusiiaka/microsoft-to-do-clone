@@ -1,13 +1,13 @@
-import Checkmark from "../../public/checkmark";
+import Checkmark from "../../../public/checkmark";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodos } from "@/contexts/TodosContext";
-import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "./constants/statuses";
-import { formatDate } from "./functions/formatFields";
-import Star from "../../public/star";
-import { useTodoFunctions } from "./functions/todosFunctions";
+import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "../../constants/statuses";
+import Star from "../../../public/star";
 import { Status } from "@/interfaces/UserInterface";
 import { useEffect, useState } from "react";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import { formatDate } from "@/functions/formatFields";
 
 interface TodoProps {
   todo: Task;
@@ -53,28 +53,18 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
             <span
               className='rounded-xl text-sm text-nowrap px-3'
               style={{
-                backgroundColor: `${
-                  PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
-                  "#a8a29e"
-                }`,
+                backgroundColor: `${PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || "#a8a29e"}`,
               }}
             >
               {todo.priority}
             </span>
           )}
-          {sortName === "За терміном" && (
-            <span className='bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4'>
-              {formatDate(todo.date)}
-            </span>
-          )}
+          {sortName === "За терміном" && <span className='bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4'>{formatDate(todo.date)}</span>}
           {(sortName === "За алфавітом" || sortName === "") && (
             <div
               className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
               style={{
-                backgroundColor: `${
-                  [...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)
-                    ?.color || "#a8a29e"
-                }`,
+                backgroundColor: `${[...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)?.color || "#a8a29e"}`,
               }}
             >
               {todo.status}
@@ -83,22 +73,9 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
         </td>
       </tr>
 
-      <tr
-        className='task'
-        onClick={
-          (!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleToDoSidebar
-        }
-        style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}
-      >
+      <tr className='task' onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleToDoSidebar} style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}>
         <td className='p-3 flex items-center'>
-          <button
-            className='circle-btn mr-5'
-            onClick={
-              (!todo._id && loading == "no id") || todo._id == loading
-                ? undefined
-                : toggleCompletion
-            }
-          >
+          <button className='circle-btn mr-5' onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleCompletion}>
             <Checkmark status={todo.status} />
           </button>
           <p className='truncated-text-todo'>{todo.text}</p>
@@ -108,10 +85,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
             <span
               className='rounded-xl text-sm text-nowrap px-3'
               style={{
-                backgroundColor: `${
-                  PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color ||
-                  "#a8a29e"
-                }`,
+                backgroundColor: `${PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || "#a8a29e"}`,
               }}
             >
               {todo.priority}
@@ -120,10 +94,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
             <div
               className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
               style={{
-                backgroundColor: `${
-                  [...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)
-                    ?.color || "#a8a29e"
-                }`,
+                backgroundColor: `${[...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)?.color || "#a8a29e"}`,
               }}
             >
               {todo.status}

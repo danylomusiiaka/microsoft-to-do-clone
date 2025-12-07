@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import Loading from "@/app/loading";
 import axios from "axios";
 import { cookies } from "next/headers";
-import TodoList from "@/components/structure/TodoList";
+import TodoList from "@/components/TodoList";
 import Link from "next/link";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;

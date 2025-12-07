@@ -12,6 +12,7 @@ interface UserContextType {
   profileDetails: User;
   setProfileDetails: React.Dispatch<React.SetStateAction<User>>;
   teamMembers: { email: string; picture?: string; name: string }[];
+  setTeamMembers: React.Dispatch<React.SetStateAction<{ email: string; picture?: string; name: string }[]>>;
   userQuest: number[];
   setUserQuest: React.Dispatch<React.SetStateAction<number[]>>;
   loadingProfile: boolean;
@@ -33,9 +34,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
 
   const [loadingProfile, setLoadingProfile] = useState(false);
 
-  const [teamMembers, setTeamMembers] = useState<
-    { email: string; picture?: string; name: string }[]
-  >([]);
+  const [teamMembers, setTeamMembers] = useState<{ email: string; picture?: string; name: string }[]>([]);
   const [userQuest, setUserQuest] = useState([0, 0, 0]);
 
   const { showAlert } = useAlert();
@@ -56,11 +55,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
               const userQuest = JSON.parse(cookiesUserQuest);
               if (response.data.length > 1 && userQuest.participantJoined != 50) {
                 userQuest.participantJoined += 50;
-                setUserQuest((prevQuest) => [
-                  prevQuest[0],
-                  prevQuest[1] + 50,
-                  ...prevQuest.slice(2),
-                ]);
+                setUserQuest((prevQuest) => [prevQuest[0], prevQuest[1] + 50, ...prevQuest.slice(2)]);
                 Cookies.set("newUserQuest", JSON.stringify(userQuest));
               }
             }
@@ -80,10 +75,11 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
         profileDetails,
         setProfileDetails,
         teamMembers,
+        setTeamMembers,
         userQuest,
         setUserQuest,
         loadingProfile,
-        setLoadingProfile
+        setLoadingProfile,
       }}
     >
       {children}
