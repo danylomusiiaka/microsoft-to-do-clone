@@ -70,7 +70,6 @@
   .scroll-container-todos {
     height: 65vh;
   }
-  
 }
 
 .scroll-container::-webkit-scrollbar,
@@ -141,9 +140,13 @@ select {
   .todo-content {
     height: 100vh;
   }
+
+  /* Fix for iOS Safari URL bar - make input sticky at bottom */
+  .scroll-container-todos {
+    height: calc(100vh - 180px);
+    padding-bottom: 80px;
+  }
 }
-
-
 
 .truncated-text {
   overflow: hidden;

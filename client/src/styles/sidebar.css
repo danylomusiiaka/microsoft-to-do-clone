@@ -70,6 +70,16 @@
   background-color: var(--secondary-background-color);
 }
 
+/* Fix for iOS Safari - make input sticky on mobile */
+@media (max-width: 800px) {
+  .search-input {
+    position: sticky;
+    bottom: 10px;
+    background-color: var(--primary-background-color);
+    z-index: 10;
+  }
+}
+
 .sidebar {
   height: 97vh;
   background-color: var(--secondary-background-color);

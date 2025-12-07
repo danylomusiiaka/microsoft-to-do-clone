@@ -114,8 +114,8 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
 
   return (
     <>
-      <main className='flex flex-col justify-between md:p-12 w-full'>
-        <section className='md:mt-0'>
+      <main className='flex flex-col md:justify-between md:p-12 w-full min-h-screen'>
+        <section className='md:mt-0 flex-1'>
           <Menu listName={category} sortOptions={sortOptions} setSortOptions={setSortOptions} setOpenSuggestions={setOpenSuggestions} />
 
           <div className='scroll-container-todos'>
