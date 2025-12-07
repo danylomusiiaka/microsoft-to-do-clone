@@ -4,6 +4,7 @@ import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Status } from "@/interfaces/UserInterface";
 import Axios from "axios";
 import Cookies from "js-cookie";
+import { revalidateHomePage } from "@/app/actions/revalidate";
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export const useProfileFunctions = () => {
@@ -184,6 +185,7 @@ export const useProfileFunctions = () => {
             Cookies.set("newUserQuest", JSON.stringify(userQuest));
           }
         }
+        await revalidateHomePage();
       }
     } catch (error: any) {
       if (error.response.status === 401) {
@@ -208,6 +210,7 @@ export const useProfileFunctions = () => {
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: response.data }));
         showAlert("Ви вийшли з команди", "info");
+        await revalidateHomePage();
       }
     } catch (error: any) {
       showAlert(error.response.data, "error");
@@ -232,6 +235,7 @@ export const useProfileFunctions = () => {
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: code }));
         showAlert("Ви успішно вступили в команду", "success");
+        await revalidateHomePage();
       }
     } catch (error: any) {
       if (error.response.status === 401) {

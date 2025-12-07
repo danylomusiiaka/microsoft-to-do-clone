@@ -63,7 +63,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
     return () => {
       ws.close();
     };
-  }, [todos]);
+  }, [profileDetails.team]);
 
   useEffect(() => {
     setTodoChoosed(null);
@@ -116,41 +116,19 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
     <>
       <main className='flex flex-col justify-between md:p-12 w-full'>
         <section className='md:mt-0'>
-          <Menu
-            listName={category}
-            sortOptions={sortOptions}
-            setSortOptions={setSortOptions}
-            setOpenSuggestions={setOpenSuggestions}
-          />
+          <Menu listName={category} sortOptions={sortOptions} setSortOptions={setSortOptions} setOpenSuggestions={setOpenSuggestions} />
 
           <div className='scroll-container-todos'>
-            {!dataReady ? (
-              <Loading />
-            ) : category === "Призначено мені" ? (
-              todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && <NoAssignments />
-            ) : (
-              todos.filter((todo: Task) => category === "Завдання" || todo.category === category).length === 0 && (
-                <StartScreen />
-              )
-            )}
+            {!dataReady ? <Loading /> : category === "Призначено мені" ? todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && <NoAssignments /> : todos.filter((todo: Task) => category === "Завдання" || todo.category === category).length === 0 && <StartScreen />}
             <table className='w-full text-left'>
               <tbody>
                 {incompleteTodos.map((todo: Task) => (
                   <React.Fragment key={todo._id || todos.length + 1}>
-                    <Todo
-                      todo={todo}
-                      sortName={sortOptions.name}
-                      userStatuses={userData.statuses}
-                      setOpenSuggestions={setOpenSuggestions}
-                    />
+                    <Todo todo={todo} sortName={sortOptions.name} userStatuses={userData.statuses} setOpenSuggestions={setOpenSuggestions} />
                   </React.Fragment>
                 ))}
 
-                {completedTodos.filter(
-                  (todo: Task) =>
-                    (search ? todo.text.toLowerCase().startsWith(search.toLowerCase()) : true) &&
-                    (category === "Завдання" || todo.category === category)
-                ).length > 0 && (
+                {completedTodos.filter((todo: Task) => (search ? todo.text.toLowerCase().startsWith(search.toLowerCase()) : true) && (category === "Завдання" || todo.category === category)).length > 0 && (
                   <tr>
                     <td colSpan={4} className='pt-6 pb-3 font-semibold'>
                       Завершені
@@ -160,12 +138,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
 
                 {completedTodos.map((todo: Task) => (
                   <React.Fragment key={todo._id}>
-                    <Todo
-                      todo={todo}
-                      sortName={sortOptions.name}
-                      userStatuses={userData.statuses}
-                      setOpenSuggestions={setOpenSuggestions}
-                    />
+                    <Todo todo={todo} sortName={sortOptions.name} userStatuses={userData.statuses} setOpenSuggestions={setOpenSuggestions} />
                   </React.Fragment>
                 ))}
               </tbody>
@@ -177,15 +150,7 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
             <button onClick={handleAddTodo} disabled={!!loading}>
               <Plus />
             </button>
-            <input
-              type='text'
-              value={newTodoText}
-              placeholder='Додайте завдання'
-              className='task-input '
-              autoFocus
-              onChange={(e) => setNewTodoText(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
+            <input type='text' value={newTodoText} placeholder='Додайте завдання' className='task-input ' autoFocus onChange={(e) => setNewTodoText(e.target.value)} onKeyDown={handleKeyDown} />
           </section>
         )}
       </main>

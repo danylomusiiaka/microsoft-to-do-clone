@@ -2,8 +2,8 @@ import React, { Suspense } from "react";
 import Loading from "@/app/loading";
 import axios from "axios";
 import { cookies } from "next/headers";
-const TodoList = React.lazy(() => import("@/components/structure/TodoList"));
-const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
+import TodoList from "@/components/structure/TodoList";
+import Link from "next/link";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -49,9 +49,7 @@ export default async function Category({ params }: { params: Promise<{ category:
   return (
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
-        <NavSidebar userData={userData} />
-        {!userData.categories?.includes(decodedCategory) &&
-        !["Мій день", "Призначено мені"].includes(decodedCategory) ? (
+        {!userData.categories?.includes(decodedCategory) && !["Мій день", "Призначено мені"].includes(decodedCategory) ? (
           <div className='md:flex items-center space-x-6 justify-center w-full'>
             <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
             <div className='space-y-4'>
@@ -62,12 +60,9 @@ export default async function Category({ params }: { params: Promise<{ category:
                 <li>чи в тому Ви контексті, в якому створений список</li>
               </ul>
               <div className='pt-3 w-fit'>
-                <a
-                  href='/'
-                  className='bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
-                >
+                <Link href='/' className='bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'>
                   Повернутись на головну
-                </a>
+                </Link>
               </div>
             </div>
           </div>

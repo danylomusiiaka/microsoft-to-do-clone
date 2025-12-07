@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import React, { Suspense } from "react";
 import Loading from "../loading";
 import Dashboard from "./Dashboard";
-const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -42,7 +41,6 @@ export default async function DashboardPage() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <NavSidebar userData={userData} />
       <Dashboard allTodos={allTodos} userData={userData} />
     </Suspense>
   );

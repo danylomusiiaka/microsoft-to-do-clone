@@ -11,6 +11,7 @@ import { useProfileFunctions } from "../functions/userFunctions";
 import { useAlert } from "@/contexts/AlertContext";
 import Cookies from "js-cookie";
 import { Task } from "@/interfaces/TaskInterface";
+import Link from "next/link";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -60,30 +61,24 @@ export default function NavSidebar({ userData }: { userData: User }) {
           };
         });
 
-        if (
-          message.remainingCategories.some((cat: string) => window.location.pathname === `/${encodeURIComponent(cat)}`)
-        ) {
+        if (message.remainingCategories.some((cat: string) => window.location.pathname === `/${encodeURIComponent(cat)}`)) {
           window.location.href = "/";
         }
 
         setTodos(message.remainingTasks);
       } else if (message.event === "statusesUpdated") {
-        setProfileDetails({
-          ...profileDetails,
+        setProfileDetails((prevDetails) => ({
+          ...prevDetails,
           statuses: message.newStatuses,
-        });
-        setTodos((prevTodos) =>
-          prevTodos.map(
-            (todo) => message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo
-          )
-        );
+        }));
+        setTodos((prevTodos) => prevTodos.map((todo) => message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo));
       }
     };
 
     return () => {
       ws.close();
     };
-  }, [profileDetails]);
+  }, [profileDetails.team]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -135,53 +130,35 @@ export default function NavSidebar({ userData }: { userData: User }) {
         <div></div>
         <div></div>
       </label>
-      <section
-        ref={sidebarRef}
-        className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 w-80 p-3 rounded-md'
-      >
+      <section ref={sidebarRef} className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 w-80 p-3 rounded-md'>
         <div className='space-y-4'>
-          <a href='/profile' className='flex space-x-3 profile items-center rounded-md p-2 pl-1'>
-            <img
-              src={profileData.picture || `/default-picture.svg`}
-              alt='photo'
-              className='w-12 h-12 object-cover rounded-full aspect-square'
-            />
+          <Link href='/profile' onClick={() => ((document.getElementById("nav_check") as HTMLInputElement).checked = false)} className='flex space-x-3 profile items-center rounded-md p-2 pl-1'>
+            <img src={profileData.picture || `/default-picture.svg`} alt='photo' className='w-12 h-12 object-cover rounded-full aspect-square' />
             <div className='min-w-0'>
               <h1 className='font-bold truncate'>{profileData.name}</h1>
               <p className='text-sm truncate'>{profileData.email}</p>
             </div>
-          </a>
+          </Link>
           <div className='search-container'>
-            <input
-              type='text'
-              placeholder='Пошук'
-              className='search-input'
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <input type='text' placeholder='Пошук' className='search-input' onChange={(e) => setSearch(e.target.value)} />
           </div>
 
           <NavigationButton icon='/home.svg' href='/' text='Завдання' />
           <NavigationButton icon='/sun.svg' href='/list/Мій день' text='Мій день' />
           <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
-
           <NavigationButton icon='/assignment.svg' href='/list/Призначено мені' text='Призначено мені' />
 
           <hr className='divider' />
           <div className='scroll-container-nav'>
-            {profileData.categories?.map((category) => (
+            {profileData.categories?.map((category, i) => (
               <div
                 className='flex justify-between rounded-md button listname-link'
                 style={{
                   opacity: category == loading ? 0.5 : 1,
                 }}
-                key={category}
+                key={i}
               >
-                <NavigationButton
-                  icon='/list.svg'
-                  href={`/list/${encodeURIComponent(category)}`}
-                  text={category}
-                  disabled={!!loading}
-                />
+                <NavigationButton icon='/list.svg' href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
 
                 <button
                   className='nav-delete pr-3'
@@ -207,14 +184,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
             >
               <Plus name='plus-2' />
             </button>
-            <input
-              type='text'
-              placeholder='Створити список'
-              className='create-list-input'
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
+            <input type='text' placeholder='Створити список' className='create-list-input' value={category} onChange={(e) => setCategory(e.target.value)} onKeyDown={handleKeyDown} />
           </div>
         </div>
       </section>

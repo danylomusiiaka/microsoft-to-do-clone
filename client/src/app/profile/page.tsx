@@ -2,8 +2,8 @@ import React, { Suspense } from "react";
 import Axios from "axios";
 import Loading from "../loading";
 import { cookies } from "next/headers";
-const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
-const Profile = React.lazy(() => import("./Profile"));
+import Profile from "./Profile";
+
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 async function fetchUserData(token: string) {
@@ -28,7 +28,6 @@ export default async function ProfilePage() {
   return (
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
-        <NavSidebar userData={userData} />
         <Profile userData={userData} />
       </Suspense>
     </section>

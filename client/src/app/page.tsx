@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import Loading from "./loading";
-const TodoList = React.lazy(() => import("@/components/structure/TodoList"));
-const NavSidebar = React.lazy(() => import("@/components/structure/NavSidebar"));
+import TodoList from "@/components/structure/TodoList";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -47,8 +46,7 @@ export default async function Home() {
   return (
     <section className='md:flex w-full'>
       <Suspense fallback={<Loading />}>
-        <NavSidebar userData={userData} />
-        <TodoList allTodos={allTodos.reverse()} userData={userData} category="Завдання" />
+        <TodoList allTodos={allTodos.reverse()} userData={userData} category='Завдання' />
       </Suspense>
     </section>
   );

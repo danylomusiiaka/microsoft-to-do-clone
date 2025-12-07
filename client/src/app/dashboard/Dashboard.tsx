@@ -4,6 +4,7 @@ import DonutChart from "./DonutChart";
 import { Task } from "@/interfaces/TaskInterface";
 import { useTodoFunctions } from "@/components/functions/todosFunctions";
 import { User } from "@/interfaces/UserInterface";
+import Link from "next/link";
 
 interface ChartData {
   labels: string[];
@@ -108,12 +109,12 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
                   <li>чи в тому Ви контексті, де створені завдання</li>
                 </ul>
                 <div className='pt-3 w-fit'>
-                  <a
+                  <Link
                     href='/'
                     className='bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
                   >
                     Повернутись на головну
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface NavigationButtonProps {
   icon: string;
   href: string;
@@ -9,14 +11,20 @@ export default function NavigationButton({ icon, href, text, disabled = false }:
   const handleItemClick = () => {
     (document.getElementById("nav_check") as HTMLInputElement).checked = false;
   };
+
+  if (disabled) {
+    return (
+      <div onClick={(e) => e.preventDefault()} className='flex items-center space-x-3 w-full p-3 rounded-md button opacity-50 cursor-not-allowed'>
+        <img src={`${icon}`} className='w-6' />
+        <p className='truncated-text'>{text}</p>
+      </div>
+    );
+  }
+
   return (
-    <a
-      href={disabled ? undefined : href}
-      onClick={disabled ? (e) => e.preventDefault() : handleItemClick}
-      className='flex items-center space-x-3 w-full p-3 rounded-md button'
-    >
+    <Link href={href} onClick={handleItemClick} className='flex items-center space-x-3 w-full p-3 rounded-md button'>
       <img src={`${icon}`} className='w-6' />
       <p className='truncated-text'>{text}</p>
-    </a>
+    </Link>
   );
 }
