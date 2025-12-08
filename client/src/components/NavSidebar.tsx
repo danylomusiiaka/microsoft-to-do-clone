@@ -19,9 +19,9 @@ import { api } from "@/services/api";
 import { Task } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
 
-import NavigationButton from "./NavSidebar/NavigationButton";
 import { wsUrl } from "@/constants/app-config";
 
+import NavigationButton from "./NavSidebar/NavigationButton";
 
 export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
@@ -81,14 +81,10 @@ export default function NavSidebar({ userData }: { userData: User }) {
         }));
         setTodos((prevTodos) => prevTodos.map((todo) => message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo));
       } else if (message.event === "teamMemberJoined") {
-        console.log(message.participant);
-
         if (userData._id !== message.participant.id) {
           showAlert(message.participant.name + " приєднався до команди");
         }
       } else if (message.event === "teamMemberExited") {
-        console.log(message.participant);
-
         if (userData._id !== message.participant.id) {
           showAlert(message.participant.name + " вийшов з команди");
         }

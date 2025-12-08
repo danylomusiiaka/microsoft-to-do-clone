@@ -43,8 +43,10 @@ class ApiService {
             const { token: newToken } = refreshResponse.data;
 
             Cookies.set("token", newToken, {
-              secure: true,
               sameSite: "None",
+              secure: true,
+              path: "/",
+              expires: 14,
             });
 
             return await this.request<T>(method, url, data, config);

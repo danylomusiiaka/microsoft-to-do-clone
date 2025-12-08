@@ -204,8 +204,6 @@ router.get("/refresh", async (req, res) => {
     if (err) {
       if (err.name === "TokenExpiredError") {
         const token = await generateTokens(user.id);
-        console.log("refreshed!!");
-
         return res.json({ token });
       }
       return res.status(401).send("Термін дії токена закінчився. Будь ласка, залогуйтесь знову");
@@ -228,8 +226,6 @@ router.delete("/delete", async (req, res) => {
 
 router.get("/details", verifyToken, async (req, res) => {
   try {
-    console.log(req.userId);
-
     const user = await userModel.findById(req.userId).select("-password");
     const { team } = user;
 

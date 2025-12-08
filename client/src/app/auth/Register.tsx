@@ -47,9 +47,10 @@ export default function Register() {
       if (response.status === 200) {
         const { token } = response.data;
         Cookies.set("token", token, {
-          expires: 7,
-          secure: true,
           sameSite: "None",
+          secure: true,
+          path: "/",
+          expires: 14,
         });
         window.location.href = "/profile";
       }
