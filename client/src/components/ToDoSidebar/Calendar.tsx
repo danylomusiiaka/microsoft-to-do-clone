@@ -1,12 +1,9 @@
+import ArrowDown from "../../../public/icons/arrow-down.svg";
+import ArrowUp from "../../../public/icons/arrow-up.svg";
 import { useEffect, useState } from "react";
-
-import { formatDate } from "@/functions/formatFields";
-import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
-
 import { Task } from "@/interfaces/TaskInterface";
-
-import ArrowDown from "../../../public/arrow-down";
-import ArrowUp from "../../../public/arrow-up";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import { formatDate } from "@/functions/formatFields";
 
 export default function Calendar({ currentTodo }: { currentTodo: Task }) {
   const [showDateEdit, setDateEdit] = useState(false);

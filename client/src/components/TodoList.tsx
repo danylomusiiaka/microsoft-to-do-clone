@@ -13,15 +13,14 @@ import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import { Task } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
 
-import Plus from "../../public/plus";
+import Plus from "../../public/icons/plus.svg";
 import NoAssignments from "./Placeholders/NoAssignments";
 import Propositions from "./Placeholders/Propositions";
 import StartScreen from "./Placeholders/StartScreen";
 import ToDoSidebar from "./ToDoSidebar";
 import Menu from "./ToDoSidebar/Menu";
 import Todo from "./TodoList/Todo";
-
-const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+import { wsUrl } from "@/constants/app-config";
 
 interface TodoListProps {
   allTodos: Task[];

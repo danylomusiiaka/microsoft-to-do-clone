@@ -95,7 +95,7 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
       {isCompleted !== null && (
         <section className="w-fit p-3 rounded-md md:flex" style={{ backgroundColor: "var(--secondary-background-color)" }}>
           <img
-            src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"}
+            src={!isCompleted ? "gifs/educational-cherry.gif" : "gifs/congradulations.gif"}
             alt={!isCompleted ? "hi-cherry" : "clapping-cherry"}
             className="w-52 h-52"
           />

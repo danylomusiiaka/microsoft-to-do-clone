@@ -4,7 +4,7 @@ import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 
 import { User } from "@/interfaces/UserInterface";
 
-import TeamAdd from "../../../public/team-add";
+import TeamAdd from "../../../public/icons/team-add.svg";
 
 export default function TeamButtons({ profileInfo }: { profileInfo: User }) {
   const { joinTeam, exitTeam, createTeam } = useProfileFunctions();

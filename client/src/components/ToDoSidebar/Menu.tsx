@@ -10,15 +10,15 @@ import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 
 import { api } from "@/services/api";
 
-import Propositions from "../../../public/Idea";
-import CloseCircle from "../../../public/close-circle";
-import Delete from "../../../public/delete";
-import SortByAlphabetIcon from "../../../public/sort-by-alphabet";
-import SortByDateIcon from "../../../public/sort-by-date";
-import SortByPriorityIcon from "../../../public/sort-by-priority";
-import SortDesc from "../../../public/sort-down";
-import SortAsc from "../../../public/sort-up";
-import ThreeDots from "../../../public/three-dots";
+import CloseCircle from "../../../public/icons/close-circle.svg";
+import Delete from "../../../public/icons/delete.svg";
+import Propositions from "../../../public/icons/idea.svg";
+import SortByAlphabetIcon from "../../../public/icons/sort-by-alphabet.svg";
+import SortByDateIcon from "../../../public/icons/sort-by-date.svg";
+import SortByPriorityIcon from "../../../public/icons/sort-by-priority.svg";
+import SortDesc from "../../../public/icons/sort-down.svg";
+import SortAsc from "../../../public/icons/sort-up.svg";
+import ThreeDots from "../../../public/icons/three-dots.svg";
 
 interface MenuProps {
   listName: string;

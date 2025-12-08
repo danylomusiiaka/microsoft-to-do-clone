@@ -6,7 +6,7 @@ import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 
 import { Task } from "@/interfaces/TaskInterface";
 
-import Cross from "../../../public/cross";
+import Cross from "../../../public/icons/cross.svg";
 
 interface PropositionsProps {
   category: string;
@@ -36,6 +36,7 @@ export default function Propositions({ category, setOpenSuggestions }: Propositi
                 .map((todo: Task) => (
                   <div
                     className="proposition p-3"
+                    key={todo._id}
                     onClick={() => {
                       updateField(todo, {
                         category: category,
@@ -54,7 +55,7 @@ export default function Propositions({ category, setOpenSuggestions }: Propositi
             <div className="special-offers p-2 space-y-2 rounded-md mb-4">
               <p className="text-2xl">Наразі більше для Вас нема пропозицій</p>
             </div>
-            <img src="/not-found.gif" alt="no-tasks-cherry" className="w-60 h-60" />
+            <img src="/gifs/not-found.gif" alt="no-tasks-cherry" className="w-60 h-60" />
           </>
         )}
       </main>

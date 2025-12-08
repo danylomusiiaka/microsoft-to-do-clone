@@ -10,8 +10,6 @@ import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
 
 import NavSidebar from "@/components/NavSidebar";
 
-import { handleError } from "@/functions/handleError";
-
 import { backendUrl } from "@/constants/app-config";
 
 export const metadata = {
@@ -28,10 +26,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       const userResponse = await axios.get(`${backendUrl}/user/details`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       return userResponse.data;
-    } catch (error) {
-      handleError(error);
+    } catch (error: any) {
+      console.error("Layout page: ", error.response?.data || error.message);
       return {};
     }
   }

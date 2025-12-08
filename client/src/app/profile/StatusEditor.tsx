@@ -1,20 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-
-import { useAlert } from "@/contexts/AlertContext";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
-
-import { handleError } from "@/functions/handleError";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-
-import { api } from "@/services/api";
-
-import { Status, User } from "@/interfaces/UserInterface";
-
-import Delete from "../../../public/delete";
-import Pencil from "../../../public/pencil";
-import Plus from "../../../public/plus";
+import Plus from "../../../public/icons/plus.svg";
+import Delete from "../../../public/icons/delete.svg";
+import Pencil from "../../../public/icons/pencil.svg";
 import { STATUS_OPTIONS } from "../../constants/statuses";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { Status, User } from "@/interfaces/UserInterface";
+import { useAlert } from "@/contexts/AlertContext";
+import { api } from "@/services/api";
+import { handleError } from "@/functions/handleError";
 
 export default function StatusEditor({ userData }: { userData: User }) {
   const [isChangingStatuses, setChangingStatuses] = useState(false);
@@ -78,7 +73,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
         <div className="flex items-center space-x-2">
           <p>Відредагувати стани завдань</p>
           <button onClick={() => setChangingStatuses(!isChangingStatuses)}>
-            <Pencil />
+            <Pencil className='fill-svg'/>
           </button>
         </div>
 
@@ -120,7 +115,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
                   deleteStatus(option.name);
                 }}
               >
-                <Delete color="#fff" width="18px" />
+                <Delete color='#fff' style={{ width: "18px", marginLeft: "5px" }} />
               </button>
             )}
           </div>

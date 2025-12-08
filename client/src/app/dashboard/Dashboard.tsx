@@ -87,7 +87,7 @@ export default function Dashboard({ allTodos, userData }: { allTodos: Task[]; us
             </section>
           ) : (
             <div className="md:flex justify-center items-center w-full space-x-6 h-4/6">
-              <img src="/not-found.gif" alt="cat-not-found" className="w-60 h-60" />
+              <img src="gifs/not-found.gif" alt="cat-not-found" className="w-60 h-60" />
               <div className="space-y-4">
                 <h1 className="text-3xl font-semibold">Отакої! Схоже статистики не було знайдено</h1>
                 <p>Зверніть увагу на наступні кроки:</p>

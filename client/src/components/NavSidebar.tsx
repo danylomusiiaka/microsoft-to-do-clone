@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
@@ -8,19 +7,23 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 
-import Delete from "@/../public/delete";
-import Plus from "@/../public/plus";
+import Delete from "@/../public/icons/delete.svg";
+import Plus from "@/../public/icons/plus.svg";
 
 import { handleError } from "@/functions/handleError";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 
 import { api } from "@/services/api";
 
-import { Task } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
 
 import { wsUrl } from "@/constants/app-config";
 
+import AssignmentIcon from "../../public/icons/assignment.svg";
+import HomeIcon from "../../public/icons/home.svg";
+import ListIcon from "../../public/icons/list.svg";
+import DashboardIcon from "../../public/icons/star.svg";
+import MyDayIcon from "../../public/icons/sun.svg";
 import NavigationButton from "./NavSidebar/NavigationButton";
 
 export default function NavSidebar({ userData }: { userData: User }) {
@@ -148,7 +151,11 @@ export default function NavSidebar({ userData }: { userData: User }) {
             onClick={() => ((document.getElementById("nav_check") as HTMLInputElement).checked = false)}
             className="flex space-x-3 profile items-center rounded-md p-2 pl-1"
           >
-            <img src={profileData.picture || `/default-picture.svg`} alt="photo" className="w-12 h-12 object-cover rounded-full aspect-square" />
+            <img
+              src={profileData.picture || `/icons/default-picture.svg`}
+              alt="photo"
+              className="w-12 h-12 object-cover rounded-full aspect-square"
+            />
             <div className="min-w-0">
               <h1 className="font-bold truncate">{profileData.name}</h1>
               <p className="text-sm truncate">{profileData.email}</p>
@@ -158,10 +165,10 @@ export default function NavSidebar({ userData }: { userData: User }) {
             <input type="text" placeholder="Пошук" className="search-input" onChange={(e) => setSearch(e.target.value)} />
           </div>
 
-          <NavigationButton icon="/home.svg" href="/" text="Завдання" />
-          <NavigationButton icon="/sun.svg" href="/list/Мій день" text="Мій день" />
-          <NavigationButton icon="/star.svg" href="/dashboard" text="Статистика" />
-          <NavigationButton icon="/assignment.svg" href="/list/Призначено мені" text="Призначено мені" />
+          <NavigationButton Icon={HomeIcon} href="/" text="Завдання" />
+          <NavigationButton Icon={MyDayIcon} href="/list/Мій день" text="Мій день" />
+          <NavigationButton Icon={DashboardIcon} href="/dashboard" text="Статистика" />
+          <NavigationButton Icon={AssignmentIcon} href="/list/Призначено мені" text="Призначено мені" />
 
           <hr className="divider" />
           <div className="scroll-container-nav">
@@ -173,7 +180,7 @@ export default function NavSidebar({ userData }: { userData: User }) {
                 }}
                 key={i}
               >
-                <NavigationButton icon="/list.svg" href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
+                <NavigationButton Icon={ListIcon} href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
 
                 <button
                   className="nav-delete pr-3"

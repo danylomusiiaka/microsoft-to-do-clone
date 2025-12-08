@@ -10,12 +10,11 @@ import Loading from "@/app/loading";
 import TodoList from "@/components/TodoList";
 
 import { handleError } from "@/functions/handleError";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
 
 async function fetchUserData(token: string) {
   try {
-    const userResponse = await axios.get(`${webUrl}/user/details`, {
+    const userResponse = await axios.get(`${backendUrl}/user/details`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
@@ -27,7 +26,7 @@ async function fetchUserData(token: string) {
 
 async function fetchTodos(token: string, teamOrEmail: string) {
   try {
-    const todosResponse = await axios.get(`${webUrl}/task/all`, {
+    const todosResponse = await axios.get(`${backendUrl}/task/all`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { author: teamOrEmail },
     });
@@ -56,10 +55,10 @@ export default async function Category({ params }: { params: Promise<{ category:
     <section className="md:flex w-full">
       <Suspense fallback={<Loading />}>
         {!userData.categories?.includes(decodedCategory) && !["Мій день", "Призначено мені"].includes(decodedCategory) ? (
-          <div className="md:flex items-center space-x-6 justify-center w-full">
-            <img src="/not-found.gif" alt="cat-not-found" className="w-60 h-60" />
-            <div className="space-y-4">
-              <h1 className="text-2xl font-semibold">Ми чесно шукали, але нічого не змогли знайти..</h1>
+          <div className='md:flex items-center space-x-6 justify-center w-full'>
+            <img src='gifs/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
+            <div className='space-y-4'>
+              <h1 className='text-2xl font-semibold'>Ми чесно шукали, але нічого не змогли знайти..</h1>
               <p>Зверніть увагу на наступні кроки: </p>
               <ul className="list-disc pl-5 space-y-2">
                 <li>чи створений список, який ви шукаєте</li>

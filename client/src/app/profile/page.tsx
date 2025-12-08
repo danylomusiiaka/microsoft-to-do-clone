@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
 import { cookies } from "next/headers";
 

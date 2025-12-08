@@ -9,8 +9,8 @@ import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import { Task } from "@/interfaces/TaskInterface";
 import { Status } from "@/interfaces/UserInterface";
 
-import Checkmark from "../../../public/checkmark";
-import Star from "../../../public/star";
+import Checkmark from "../../../public/icons/checkmark";
+import Star from "../../../public/icons/star.svg";
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../../constants/statuses";
 
 interface TodoProps {
@@ -113,7 +113,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
         <td className="">
           {todo.isImportant && (
             <div className="flex justify-end items-end md:block">
-              <Star isImportant={todo.isImportant} />
+              <Star style={{ width: "30px", height: "30px" }} className={todo.isImportant ? "star-filled" : "star"} />
             </div>
           )}
         </td>
