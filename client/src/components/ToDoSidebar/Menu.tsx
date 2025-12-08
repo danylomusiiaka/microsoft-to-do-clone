@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
-import ThreeDots from "../../../public/three-dots";
+
+import { useAlert } from "@/contexts/AlertContext";
+import { useTodos } from "@/contexts/TodosContext";
+
+import { formatDate } from "@/functions/formatFields";
+import { handleError } from "@/functions/handleError";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+
+import { api } from "@/services/api";
+
+import Propositions from "../../../public/Idea";
+import CloseCircle from "../../../public/close-circle";
+import Delete from "../../../public/delete";
 import SortByAlphabetIcon from "../../../public/sort-by-alphabet";
 import SortByDateIcon from "../../../public/sort-by-date";
 import SortByPriorityIcon from "../../../public/sort-by-priority";
-import CloseCircle from "../../../public/close-circle";
-import SortAsc from "../../../public/sort-up";
 import SortDesc from "../../../public/sort-down";
-import { useTodos } from "@/contexts/TodosContext";
-import Delete from "../../../public/delete";
-import Axios from "axios";
-import { useAlert } from "@/contexts/AlertContext";
-import Cookies from "js-cookie";
-import Propositions from "../../../public/Idea";
-import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-import { formatDate } from "@/functions/formatFields";
-import { backendUrl } from "@/constants/app-config";
-import { api } from "@/services/api";
-import { handleError } from "@/functions/handleError";
+import SortAsc from "../../../public/sort-up";
+import ThreeDots from "../../../public/three-dots";
 
 interface MenuProps {
   listName: string;
@@ -85,7 +86,7 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
 
   return (
     <>
-      <section className='flex justify-between items-center'>
+      <section className="flex justify-between items-center">
         {!["Завдання", "Мій день", "Призначено мені"].includes(listName) ? (
           <input
             value={name}
@@ -98,20 +99,20 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
 
               updateCategory(listName, name);
             }}
-            className='bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input'
+            className="bg-transparent text-5xl font-bold mb-5 h-14 pb-2 truncated-input"
           />
         ) : (
-          <div className='space-y-3 mb-5 items-center'>
-            <h2 className='text-5xl font-bold mt-3 md:mt-0'>{name}</h2>
+          <div className="space-y-3 mb-5 items-center">
+            <h2 className="text-5xl font-bold mt-3 md:mt-0">{name}</h2>
             {listName === "Мій день" && <div>{formatDate(`${new Date()}`)}</div>}
           </div>
         )}
-        <section className='relative'>
-          <div className='flex space-x-3'>
+        <section className="relative">
+          <div className="flex space-x-3">
             {listName == "Мій день" && (
               <button
                 style={{ backgroundColor: "var(--secondary-background-color)" }}
-                className='p-2 rounded-md'
+                className="p-2 rounded-md"
                 onClick={() => {
                   setTodoChoosed(null);
                   setOpenSuggestions((prev) => !prev);
@@ -126,30 +127,34 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
           </div>
 
           {openMenu && (
-            <section className='absolute right-0 mt-2 menu shadow-lg rounded-md p-3'>
-              <p className='p-2 pl-1'>Відсортувати:</p>
-              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За алфавітом")}>
+            <section className="absolute right-0 mt-2 menu shadow-lg rounded-md p-3">
+              <p className="p-2 pl-1">Відсортувати:</p>
+              <button className="flex space-x-2 w-full items-center profile p-2" onClick={() => handleSort("За алфавітом")}>
                 <SortByAlphabetIcon />
                 <p>За алфавітом</p>
               </button>
-              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За терміном")}>
+              <button className="flex space-x-2 w-full items-center profile p-2" onClick={() => handleSort("За терміном")}>
                 <SortByDateIcon />
                 <p>За терміном</p>
               </button>
-              <button className='flex space-x-2 w-full items-center profile p-2' onClick={() => handleSort("За пріорітетністю")}>
+              <button className="flex space-x-2 w-full items-center profile p-2" onClick={() => handleSort("За пріорітетністю")}>
                 <SortByPriorityIcon />
                 <p>За пріорітетністю</p>
               </button>
-              <button className='flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap' onClick={handleDeleteAll}>
-                {loading ? <div className='spinner' style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div> : <Delete color='#b91c1c' width='25px' />}
-                <p className='text-red-600'> Видалити всі завдання</p>
+              <button className="flex space-x-2 w-full items-center profile p-2 pl-0 text-nowrap" onClick={handleDeleteAll}>
+                {loading ? (
+                  <div className="spinner" style={{ borderTopColor: "red", marginLeft: "0.5rem" }}></div>
+                ) : (
+                  <Delete color="#b91c1c" width="25px" />
+                )}
+                <p className="text-red-600"> Видалити всі завдання</p>
               </button>
             </section>
           )}
         </section>
       </section>
       {sortOptions.name && (
-        <div className='flex items-center space-x-2 mb-3'>
+        <div className="flex items-center space-x-2 mb-3">
           <button onClick={handleSortOrder}>{!desc ? <SortDesc /> : <SortAsc />}</button>
           <button onClick={() => handleSort("")}>
             <CloseCircle />

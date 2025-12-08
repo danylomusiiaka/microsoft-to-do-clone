@@ -1,20 +1,25 @@
 "use client";
-import NavigationButton from "./NavSidebar/NavigationButton";
-import Plus from "@/../public/plus";
-import Delete from "@/../public/delete";
-import { useState, useRef, useEffect } from "react";
-import { useTodos } from "@/contexts/TodosContext";
-import { User } from "@/interfaces/UserInterface";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
-import Axios from "axios";
-import { useAlert } from "@/contexts/AlertContext";
-import Cookies from "js-cookie";
-import { Task } from "@/interfaces/TaskInterface";
+
+import { useEffect, useRef, useState } from "react";
+
 import Link from "next/link";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-import { backendUrl } from "@/constants/app-config";
-import { api } from "@/services/api";
+
+import { useAlert } from "@/contexts/AlertContext";
+import { useTodos } from "@/contexts/TodosContext";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
+import Delete from "@/../public/delete";
+import Plus from "@/../public/plus";
+
 import { handleError } from "@/functions/handleError";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+
+import { api } from "@/services/api";
+
+import { Task } from "@/interfaces/TaskInterface";
+import { User } from "@/interfaces/UserInterface";
+
+import NavigationButton from "./NavSidebar/NavigationButton";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -126,57 +131,61 @@ export default function NavSidebar({ userData }: { userData: User }) {
 
   return (
     <>
-      <input type='checkbox' id='nav_check' hidden />
-      <label htmlFor='nav_check' className='hamburger'>
+      <input type="checkbox" id="nav_check" hidden />
+      <label htmlFor="nav_check" className="hamburger">
         <div></div>
         <div></div>
         <div></div>
       </label>
-      <section ref={sidebarRef} className='flex flex-col justify-between sidebar sidebar-hamburg min-w-72 w-80 p-3 rounded-md'>
-        <div className='space-y-4'>
-          <Link href='/profile' onClick={() => ((document.getElementById("nav_check") as HTMLInputElement).checked = false)} className='flex space-x-3 profile items-center rounded-md p-2 pl-1'>
-            <img src={profileData.picture || `/default-picture.svg`} alt='photo' className='w-12 h-12 object-cover rounded-full aspect-square' />
-            <div className='min-w-0'>
-              <h1 className='font-bold truncate'>{profileData.name}</h1>
-              <p className='text-sm truncate'>{profileData.email}</p>
+      <section ref={sidebarRef} className="flex flex-col justify-between sidebar sidebar-hamburg min-w-72 w-80 p-3 rounded-md">
+        <div className="space-y-4">
+          <Link
+            href="/profile"
+            onClick={() => ((document.getElementById("nav_check") as HTMLInputElement).checked = false)}
+            className="flex space-x-3 profile items-center rounded-md p-2 pl-1"
+          >
+            <img src={profileData.picture || `/default-picture.svg`} alt="photo" className="w-12 h-12 object-cover rounded-full aspect-square" />
+            <div className="min-w-0">
+              <h1 className="font-bold truncate">{profileData.name}</h1>
+              <p className="text-sm truncate">{profileData.email}</p>
             </div>
           </Link>
-          <div className='search-container'>
-            <input type='text' placeholder='Пошук' className='search-input' onChange={(e) => setSearch(e.target.value)} />
+          <div className="search-container">
+            <input type="text" placeholder="Пошук" className="search-input" onChange={(e) => setSearch(e.target.value)} />
           </div>
 
-          <NavigationButton icon='/home.svg' href='/' text='Завдання' />
-          <NavigationButton icon='/sun.svg' href='/list/Мій день' text='Мій день' />
-          <NavigationButton icon='/star.svg' href='/dashboard' text='Статистика' />
-          <NavigationButton icon='/assignment.svg' href='/list/Призначено мені' text='Призначено мені' />
+          <NavigationButton icon="/home.svg" href="/" text="Завдання" />
+          <NavigationButton icon="/sun.svg" href="/list/Мій день" text="Мій день" />
+          <NavigationButton icon="/star.svg" href="/dashboard" text="Статистика" />
+          <NavigationButton icon="/assignment.svg" href="/list/Призначено мені" text="Призначено мені" />
 
-          <hr className='divider' />
-          <div className='scroll-container-nav'>
+          <hr className="divider" />
+          <div className="scroll-container-nav">
             {profileData.categories?.map((category, i) => (
               <div
-                className='flex justify-between rounded-md button listname-link'
+                className="flex justify-between rounded-md button listname-link"
                 style={{
                   opacity: category == loading ? 0.5 : 1,
                 }}
                 key={i}
               >
-                <NavigationButton icon='/list.svg' href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
+                <NavigationButton icon="/list.svg" href={`/list/${encodeURIComponent(category)}`} text={category} disabled={!!loading} />
 
                 <button
-                  className='nav-delete pr-3'
+                  className="nav-delete pr-3"
                   onClick={() => {
                     deleteCategory(category);
                   }}
                 >
-                  <Delete color='#6b7280' width='25px' />
+                  <Delete color="#6b7280" width="25px" />
                 </button>
               </div>
             ))}
           </div>
         </div>
 
-        <div className='space-y-2 '>
-          <div className='search-input flex '>
+        <div className="space-y-2 ">
+          <div className="search-input flex ">
             <button
               onClick={() => {
                 addCategory(category);
@@ -184,9 +193,16 @@ export default function NavSidebar({ userData }: { userData: User }) {
               }}
               disabled={!!loading}
             >
-              <Plus name='plus-2' />
+              <Plus name="plus-2" />
             </button>
-            <input type='text' placeholder='Створити список' className='create-list-input' value={category} onChange={(e) => setCategory(e.target.value)} onKeyDown={handleKeyDown} />
+            <input
+              type="text"
+              placeholder="Створити список"
+              className="create-list-input"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
           </div>
         </div>
       </section>

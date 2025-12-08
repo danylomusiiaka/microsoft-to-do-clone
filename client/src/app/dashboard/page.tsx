@@ -1,6 +1,11 @@
 import Axios from "axios";
-import { cookies } from "next/headers";
+
 import React, { Suspense } from "react";
+
+import { cookies } from "next/headers";
+
+import { handleError } from "@/functions/handleError";
+
 import Loading from "../loading";
 import Dashboard from "./Dashboard";
 
@@ -12,8 +17,8 @@ async function fetchUserData(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching user details:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return {};
   }
 }
@@ -26,8 +31,8 @@ async function fetchTodos(token: string, teamOrEmail: string) {
     });
 
     return todosResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching todos:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return [];
   }
 }

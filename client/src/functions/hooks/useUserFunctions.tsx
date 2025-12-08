@@ -1,11 +1,15 @@
+import Cookies from "js-cookie";
+
 import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import { Status } from "@/interfaces/UserInterface";
-import Cookies from "js-cookie";
-import { revalidateHomePage } from "../revalidate";
+
 import { api } from "@/services/api";
+
+import { Status } from "@/interfaces/UserInterface";
+
 import { handleError } from "../handleError";
+import { revalidateHomePage } from "../revalidate";
 
 export const useProfileFunctions = () => {
   const { profileDetails, setProfileDetails, setUserQuest, setLoadingProfile } = useUserDetails();

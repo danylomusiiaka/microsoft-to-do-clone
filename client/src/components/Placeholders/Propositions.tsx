@@ -1,8 +1,12 @@
 import React from "react";
-import Cross from "../../../public/cross";
+
 import { useTodos } from "@/contexts/TodosContext";
-import { Task } from "@/interfaces/TaskInterface";
+
 import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+
+import { Task } from "@/interfaces/TaskInterface";
+
+import Cross from "../../../public/cross";
 
 interface PropositionsProps {
   category: string;
@@ -13,17 +17,17 @@ export default function Propositions({ category, setOpenSuggestions }: Propositi
   const { todos } = useTodos();
   const { updateField } = useTodoFunctions();
   return (
-    <section className='flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md '>
-      <main className='space-y-3 scroll-container'>
-        <div className='flex justify-end items-center'>
+    <section className="flex flex-col justify-between sidebar todo-sidebar-hamburg min-w-80 p-3 rounded-md ">
+      <main className="space-y-3 scroll-container">
+        <div className="flex justify-end items-center">
           <button onClick={() => setOpenSuggestions(false)}>
             <Cross />
           </button>
         </div>
         {todos.filter((todo: Task) => todo.category !== category).length !== 0 ? (
           <>
-            <div className='special-offers p-2 space-y-2 rounded-md mb-4'>
-              <p className='text-2xl'>Це спеціальні пропозиції для Вас</p>
+            <div className="special-offers p-2 space-y-2 rounded-md mb-4">
+              <p className="text-2xl">Це спеціальні пропозиції для Вас</p>
               <p>Натисніть на завдання, щоб додати його в Мій день</p>
             </div>
             <>
@@ -31,7 +35,7 @@ export default function Propositions({ category, setOpenSuggestions }: Propositi
                 .filter((todo: Task) => todo.category !== category)
                 .map((todo: Task) => (
                   <div
-                    className='proposition p-3'
+                    className="proposition p-3"
                     onClick={() => {
                       updateField(todo, {
                         category: category,
@@ -39,18 +43,18 @@ export default function Propositions({ category, setOpenSuggestions }: Propositi
                       });
                     }}
                   >
-                    <p className='truncated-text-todo'>{todo.text}</p>
-                    <p className='text-gray-400'>{todo.category}</p>
+                    <p className="truncated-text-todo">{todo.text}</p>
+                    <p className="text-gray-400">{todo.category}</p>
                   </div>
                 ))}
             </>
           </>
         ) : (
           <>
-            <div className='special-offers p-2 space-y-2 rounded-md mb-4'>
-              <p className='text-2xl'>Наразі більше для Вас нема пропозицій</p>
+            <div className="special-offers p-2 space-y-2 rounded-md mb-4">
+              <p className="text-2xl">Наразі більше для Вас нема пропозицій</p>
             </div>
-            <img src='/not-found.gif' alt='no-tasks-cherry' className='w-60 h-60' />
+            <img src="/not-found.gif" alt="no-tasks-cherry" className="w-60 h-60" />
           </>
         )}
       </main>

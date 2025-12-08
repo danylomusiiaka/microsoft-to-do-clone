@@ -1,19 +1,25 @@
 "use client";
 import "@/styles/task.css";
+
+import React, { useEffect, useMemo, useState } from "react";
+
+import Loading from "@/app/loading";
+
 import { useTodos } from "@/contexts/TodosContext";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+
 import { Task } from "@/interfaces/TaskInterface";
 import { User } from "@/interfaces/UserInterface";
-import React, { useEffect, useMemo, useState } from "react";
-import Todo from "./TodoList/Todo";
+
 import Plus from "../../public/plus";
-import Menu from "./ToDoSidebar/Menu";
-import ToDoSidebar from "./ToDoSidebar";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
-import Loading from "@/app/loading";
-import Propositions from "./Placeholders/Propositions";
-import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import NoAssignments from "./Placeholders/NoAssignments";
+import Propositions from "./Placeholders/Propositions";
 import StartScreen from "./Placeholders/StartScreen";
+import ToDoSidebar from "./ToDoSidebar";
+import Menu from "./ToDoSidebar/Menu";
+import Todo from "./TodoList/Todo";
 
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
 
@@ -115,13 +121,19 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
 
   return (
     <>
-      <main className='flex flex-col md:justify-between md:p-12 w-full min-h-screen'>
-        <section className='md:mt-0 flex-1'>
+      <main className="flex flex-col md:justify-between md:p-12 w-full min-h-screen">
+        <section className="md:mt-0 flex-1">
           <Menu listName={category} sortOptions={sortOptions} setSortOptions={setSortOptions} setOpenSuggestions={setOpenSuggestions} />
 
-          <div className='scroll-container-todos'>
-            {!dataReady ? <Loading /> : category === "Призначено мені" ? todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && <NoAssignments /> : todos.filter((todo: Task) => category === "Завдання" || todo.category === category).length === 0 && <StartScreen />}
-            <table className='w-full text-left'>
+          <div className="scroll-container-todos">
+            {!dataReady ? (
+              <Loading />
+            ) : category === "Призначено мені" ? (
+              todos.filter((todo: Task) => todo.assignee === userData.email).length === 0 && <NoAssignments />
+            ) : (
+              todos.filter((todo: Task) => category === "Завдання" || todo.category === category).length === 0 && <StartScreen />
+            )}
+            <table className="w-full text-left">
               <tbody>
                 {incompleteTodos.map((todo: Task) => (
                   <React.Fragment key={todo._id || todos.length + 1}>
@@ -129,9 +141,13 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
                   </React.Fragment>
                 ))}
 
-                {completedTodos.filter((todo: Task) => (search ? todo.text.toLowerCase().startsWith(search.toLowerCase()) : true) && (category === "Завдання" || todo.category === category)).length > 0 && (
+                {completedTodos.filter(
+                  (todo: Task) =>
+                    (search ? todo.text.toLowerCase().startsWith(search.toLowerCase()) : true) &&
+                    (category === "Завдання" || todo.category === category)
+                ).length > 0 && (
                   <tr>
-                    <td colSpan={4} className='pt-6 pb-3 font-semibold'>
+                    <td colSpan={4} className="pt-6 pb-3 font-semibold">
                       Завершені
                     </td>
                   </tr>
@@ -147,11 +163,19 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
           </div>
         </section>
         {category !== "Призначено мені" && (
-          <section className='flex search-input'>
+          <section className="flex search-input">
             <button onClick={handleAddTodo} disabled={!!loading}>
               <Plus />
             </button>
-            <input type='text' value={newTodoText} placeholder='Додайте завдання' className='task-input ' autoFocus onChange={(e) => setNewTodoText(e.target.value)} onKeyDown={handleKeyDown} />
+            <input
+              type="text"
+              value={newTodoText}
+              placeholder="Додайте завдання"
+              className="task-input "
+              autoFocus
+              onChange={(e) => setNewTodoText(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
           </section>
         )}
       </main>

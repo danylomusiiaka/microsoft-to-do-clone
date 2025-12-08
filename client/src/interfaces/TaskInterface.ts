@@ -11,5 +11,3 @@ export interface Task {
   priority: string;
   assignee?: string;
 }
-
-

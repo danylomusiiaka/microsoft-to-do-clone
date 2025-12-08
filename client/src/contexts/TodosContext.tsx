@@ -1,7 +1,8 @@
 "use client";
 
+import { ReactNode, createContext, useContext, useState } from "react";
+
 import { Task } from "@/interfaces/TaskInterface";
-import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 
 interface TodosContextType {
   todos: Task[];

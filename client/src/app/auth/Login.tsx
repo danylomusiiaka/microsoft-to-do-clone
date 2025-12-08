@@ -1,6 +1,7 @@
-import Axios from "axios";
-import { useRef, useState } from "react";
+import Axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
+
+import { useRef, useState } from "react";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -30,9 +31,9 @@ export default function Login() {
 
         window.location.href = "/";
       }
-    } catch (error: any) {
-      if (error.response) {
-        setErrorMessage(error.response.data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data);
       }
       setIsLoading(false);
     }
@@ -40,20 +41,20 @@ export default function Login() {
 
   return (
     <>
-      <div className='input-wrap'>
-        <input type='email' id='email2' ref={emailRef} autoComplete='email' placeholder=' ' />
-        <label htmlFor='email2'>Пошта</label>
+      <div className="input-wrap">
+        <input type="email" id="email2" ref={emailRef} autoComplete="email" placeholder=" " />
+        <label htmlFor="email2">Пошта</label>
       </div>
 
-      <div className='input-wrap'>
-        <input type='password' id='password2' ref={passwordRef} placeholder=' ' />
-        <label htmlFor='password2'>Пароль</label>
+      <div className="input-wrap">
+        <input type="password" id="password2" ref={passwordRef} placeholder=" " />
+        <label htmlFor="password2">Пароль</label>
       </div>
 
-      <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? <span className='spinner'></span> : "Увійти"}
+      <button className="sign-btn" onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? <span className="spinner"></span> : "Увійти"}
       </button>
-      {errorMessage && <p className='text-red-600 text-sm mt-2'>{errorMessage}</p>}
+      {errorMessage && <p className="text-red-600 text-sm mt-2">{errorMessage}</p>}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
+
 import { backendUrl } from "@/constants/app-config";
 
 class ApiService {
@@ -11,7 +12,12 @@ class ApiService {
     };
   }
 
-  private async request<T>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, data: any = null, config: AxiosRequestConfig = {}): Promise<AxiosResponse<any>> {
+  private async request<T>(
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    url: string,
+    data: any = null,
+    config: AxiosRequestConfig = {}
+  ): Promise<AxiosResponse<any>> {
     try {
       const response = await Axios({
         method,
@@ -44,7 +50,7 @@ class ApiService {
             return await this.request<T>(method, url, data, config);
           }
         } catch (refreshError) {
-          console.error("Session expired, redirecting...");
+          console.error("Session expired, redirecting...", refreshError);
           Cookies.remove("token");
           window.location.href = "/auth";
         }

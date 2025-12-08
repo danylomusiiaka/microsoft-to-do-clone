@@ -1,15 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import Plus from "../../../public/plus";
+
+import { useAlert } from "@/contexts/AlertContext";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
+import { handleError } from "@/functions/handleError";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+
+import { api } from "@/services/api";
+
+import { Status, User } from "@/interfaces/UserInterface";
+
 import Delete from "../../../public/delete";
 import Pencil from "../../../public/pencil";
+import Plus from "../../../public/plus";
 import { STATUS_OPTIONS } from "../../constants/statuses";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
-import { Status, User } from "@/interfaces/UserInterface";
-import { useAlert } from "@/contexts/AlertContext";
-import { api } from "@/services/api";
-import { handleError } from "@/functions/handleError";
 
 export default function StatusEditor({ userData }: { userData: User }) {
   const [isChangingStatuses, setChangingStatuses] = useState(false);
@@ -54,7 +59,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
             statuses: response.data,
           }));
         }
-      } catch (error: any) {
+      } catch (error) {
         handleError(error, showAlert);
       }
     };
@@ -69,8 +74,8 @@ export default function StatusEditor({ userData }: { userData: User }) {
 
   return (
     <>
-      <div className='md:flex items-center space-y-2 md:space-y-0 md:space-x-2'>
-        <div className='flex items-center space-x-2'>
+      <div className="md:flex items-center space-y-2 md:space-y-0 md:space-x-2">
+        <div className="flex items-center space-x-2">
           <p>Відредагувати стани завдань</p>
           <button onClick={() => setChangingStatuses(!isChangingStatuses)}>
             <Pencil />
@@ -78,9 +83,21 @@ export default function StatusEditor({ userData }: { userData: User }) {
         </div>
 
         {isChangingStatuses && (
-          <div className='space-x-2 flex items-center '>
-            <input type='color' className='bg-transparent theme-option w-8 h-6' value={status.color} onChange={(e) => setStatus({ ...status, color: e.target.value })} />
-            <input type='text' value={status.name} className='bg-transparent border rounded-md text-sm p-1' placeholder='Введіть назву статусу..' onChange={(e) => setStatus({ ...status, name: e.target.value })} onKeyDown={handleKeyDown} />
+          <div className="space-x-2 flex items-center ">
+            <input
+              type="color"
+              className="bg-transparent theme-option w-8 h-6"
+              value={status.color}
+              onChange={(e) => setStatus({ ...status, color: e.target.value })}
+            />
+            <input
+              type="text"
+              value={status.name}
+              className="bg-transparent border rounded-md text-sm p-1"
+              placeholder="Введіть назву статусу.."
+              onChange={(e) => setStatus({ ...status, name: e.target.value })}
+              onKeyDown={handleKeyDown}
+            />
 
             <button onClick={addStatus}>
               <Plus />
@@ -88,10 +105,14 @@ export default function StatusEditor({ userData }: { userData: User }) {
           </div>
         )}
       </div>
-      <div className='grid sm:grid-cols-5 grid-cols-3 w-fit'>
+      <div className="grid sm:grid-cols-5 grid-cols-3 w-fit">
         {statusOptions.map((option: Status) => (
-          <div key={option.name} className='flex p-2 mr-2 justify-center rounded-xl text-sm h-5 items-center mb-2 max-w-24' style={{ backgroundColor: `${option.color}` }}>
-            <p className='truncated-text'>{option.name}</p>
+          <div
+            key={option.name}
+            className="flex p-2 mr-2 justify-center rounded-xl text-sm h-5 items-center mb-2 max-w-24"
+            style={{ backgroundColor: `${option.color}` }}
+          >
+            <p className="truncated-text">{option.name}</p>
 
             {isChangingStatuses && !STATUS_OPTIONS.some((o: Status) => o.name === option.name) && (
               <button
@@ -99,7 +120,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
                   deleteStatus(option.name);
                 }}
               >
-                <Delete color='#fff' width='18px' />
+                <Delete color="#fff" width="18px" />
               </button>
             )}
           </div>

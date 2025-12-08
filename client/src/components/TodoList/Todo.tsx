@@ -1,13 +1,17 @@
-import Checkmark from "../../../public/checkmark";
-import { Task } from "@/interfaces/TaskInterface";
-import { useTodos } from "@/contexts/TodosContext";
-import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "../../constants/statuses";
-import Star from "../../../public/star";
-import { Status } from "@/interfaces/UserInterface";
 import { useEffect, useState } from "react";
+
+import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+
 import { formatDate } from "@/functions/formatFields";
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+
+import { Task } from "@/interfaces/TaskInterface";
+import { Status } from "@/interfaces/UserInterface";
+
+import Checkmark from "../../../public/checkmark";
+import Star from "../../../public/star";
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../../constants/statuses";
 
 interface TodoProps {
   todo: Task;
@@ -48,10 +52,10 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
   return (
     <>
       <tr style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}>
-        <td className='p-3 pl-0 md:hidden truncated-text'>
+        <td className="p-3 pl-0 md:hidden truncated-text">
           {sortName == "За пріорітетністю" && (
             <span
-              className='rounded-xl text-sm text-nowrap px-3'
+              className="rounded-xl text-sm text-nowrap px-3"
               style={{
                 backgroundColor: `${PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || "#a8a29e"}`,
               }}
@@ -59,10 +63,10 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
               {todo.priority}
             </span>
           )}
-          {sortName === "За терміном" && <span className='bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4'>{formatDate(todo.date)}</span>}
+          {sortName === "За терміном" && <span className="bg-stone-500 rounded-xl text-sm text-nowrap px-3 pl-4">{formatDate(todo.date)}</span>}
           {(sortName === "За алфавітом" || sortName === "") && (
             <div
-              className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
+              className="rounded-xl text-sm text-nowrap px-3 w-fit truncated-text"
               style={{
                 backgroundColor: `${[...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)?.color || "#a8a29e"}`,
               }}
@@ -73,17 +77,21 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
         </td>
       </tr>
 
-      <tr className='task' onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleToDoSidebar} style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}>
-        <td className='p-3 flex items-center'>
-          <button className='circle-btn mr-5' onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleCompletion}>
+      <tr
+        className="task"
+        onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleToDoSidebar}
+        style={{ opacity: (!todo._id && loading == "no id") || todo._id == loading ? 0.5 : 1 }}
+      >
+        <td className="p-3 flex items-center">
+          <button className="circle-btn mr-5" onClick={(!todo._id && loading == "no id") || todo._id == loading ? undefined : toggleCompletion}>
             <Checkmark status={todo.status} />
           </button>
-          <p className='truncated-text-todo'>{todo.text}</p>
+          <p className="truncated-text-todo">{todo.text}</p>
         </td>
-        <td className='md:p-3 align-text-top table-field'>
+        <td className="md:p-3 align-text-top table-field">
           {sortName == "За пріорітетністю" ? (
             <span
-              className='rounded-xl text-sm text-nowrap px-3'
+              className="rounded-xl text-sm text-nowrap px-3"
               style={{
                 backgroundColor: `${PRIORITY_OPTIONS.find((option) => option.name === todo.priority)?.color || "#a8a29e"}`,
               }}
@@ -92,7 +100,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
             </span>
           ) : (
             <div
-              className='rounded-xl text-sm text-nowrap px-3 w-fit truncated-text'
+              className="rounded-xl text-sm text-nowrap px-3 w-fit truncated-text"
               style={{
                 backgroundColor: `${[...STATUS_OPTIONS, ...statuses].find((option) => option.name === todo.status)?.color || "#a8a29e"}`,
               }}
@@ -101,10 +109,10 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
             </div>
           )}
         </td>
-        <td className='md:p-3 table-field'>{formatDate(todo.date)}</td>
-        <td className=''>
+        <td className="md:p-3 table-field">{formatDate(todo.date)}</td>
+        <td className="">
           {todo.isImportant && (
-            <div className='flex justify-end items-end md:block'>
+            <div className="flex justify-end items-end md:block">
               <Star isImportant={todo.isImportant} />
             </div>
           )}

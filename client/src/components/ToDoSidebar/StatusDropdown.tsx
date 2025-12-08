@@ -1,9 +1,13 @@
-import { Task } from "@/interfaces/TaskInterface";
-import { useState, useEffect } from "react";
-import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
-import Options from "./Options";
+import { useEffect, useState } from "react";
+
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+
+import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
+
+import { Task } from "@/interfaces/TaskInterface";
+
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../../constants/statuses";
+import Options from "./Options";
 
 export default function StatusDropdown(todo: Task) {
   const [isOpenStatuses, setIsOpenStatuses] = useState(false);
@@ -47,18 +51,18 @@ export default function StatusDropdown(todo: Task) {
   };
 
   return (
-    <main className='w-full'>
-      <section className='grid grid-cols-3'>
+    <main className="w-full">
+      <section className="grid grid-cols-3">
         <button
           onClick={() => {
             setIsOpenStatuses((prev) => !prev);
             setIsOpenCategories(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2'
-          title='Стан завдання'
+          className="rounded p-2"
+          title="Стан завдання"
         >
-          <div className='text-sm rounded-xl h-5 space-x-2 truncated-text' style={{ backgroundColor: `${color}` }}>
+          <div className="text-sm rounded-xl h-5 space-x-2 truncated-text" style={{ backgroundColor: `${color}` }}>
             {selectedStatus}
           </div>
         </button>
@@ -69,10 +73,10 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenPriority(false);
           }}
-          className='rounded p-2'
-          title='До якого списку належить завдання'
+          className="rounded p-2"
+          title="До якого списку належить завдання"
         >
-          <div className='text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text'>{selectedCategory}</div>
+          <div className="text-sm bg-stone-400 rounded-xl h-5 space-x-2 truncated-text">{selectedCategory}</div>
         </button>
 
         <button
@@ -81,9 +85,9 @@ export default function StatusDropdown(todo: Task) {
             setIsOpenStatuses(false);
             setIsOpenCategories(false);
           }}
-          className='rounded p-2'
+          className="rounded p-2"
         >
-          <div className='text-sm rounded-xl h-5 space-x-2' style={{ backgroundColor: `${color2}` }}>
+          <div className="text-sm rounded-xl h-5 space-x-2" style={{ backgroundColor: `${color2}` }}>
             {selectedPriority}
           </div>
         </button>

@@ -13,38 +13,23 @@ export default function Slideshow() {
   }, []);
 
   return (
-    <section className='carousel'>
-      <div className='text-slider'>
-        <div className='images-wrapper'>
-          <img
-            src='image1.png'
-            className={`image img-1 ${activeSlide === 1 ? "show" : ""}`}
-            alt='Slide 1'
-          />
-          <img
-            src='image2.png'
-            className={`image img-2 ${activeSlide === 2 ? "show" : ""}`}
-            alt='Slide 2'
-          />
-          <img
-            src='image3.png'
-            className={`image img-3 ${activeSlide === 3 ? "show" : ""}`}
-            alt='Slide 3'
-          />
+    <section className="carousel">
+      <div className="text-slider">
+        <div className="images-wrapper">
+          <img src="image1.png" className={`image img-1 ${activeSlide === 1 ? "show" : ""}`} alt="Slide 1" />
+          <img src="image2.png" className={`image img-2 ${activeSlide === 2 ? "show" : ""}`} alt="Slide 2" />
+          <img src="image3.png" className={`image img-3 ${activeSlide === 3 ? "show" : ""}`} alt="Slide 3" />
         </div>
 
-        <div className='text-wrap'>
-          <div
-            className='text-group'
-            style={{ transform: `translateY(${-(activeSlide - 1) * 2.2}rem)` }}
-          >
+        <div className="text-wrap">
+          <div className="text-group" style={{ transform: `translateY(${-(activeSlide - 1) * 2.2}rem)` }}>
             <h2>Плануйте свій день разом з нами</h2>
             <h2>Кастомізуйте списки як Вам зручно</h2>
             <h2>Ефективно менеджіть в команді</h2>
           </div>
         </div>
 
-        <div className='bullets'>
+        <div className="bullets">
           {Array.from({ length: slideCount }, (_, index) => (
             <span
               key={index}

@@ -1,6 +1,7 @@
-import { useState } from "react";
-import Axios from "axios";
+import Axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
+
+import { useState } from "react";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -25,9 +26,9 @@ export default function Register() {
         setHashedKey(response.data.hashedKey);
         setIsVerification(true);
       }
-    } catch (error: any) {
-      if (error.response) {
-        setErrorMessage(error.response.data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data);
       }
     } finally {
       setIsLoading(false);
@@ -52,9 +53,9 @@ export default function Register() {
         });
         window.location.href = "/profile";
       }
-    } catch (error: any) {
-      if (error.response) {
-        setErrorMessage(error.response.data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data);
       }
       setIsLoading(false);
     }
@@ -82,72 +83,63 @@ export default function Register() {
 
   return !isVerification ? (
     <>
-      <div className='input-wrap'>
+      <div className="input-wrap">
         <input
-          type='text'
-          id='name'
+          type="text"
+          id="name"
           value={registerForm.name}
           onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
-          placeholder=' '
+          placeholder=" "
         />
-        <label htmlFor='name'>Ім'я користувача</label>
+        <label htmlFor="name">Ім'я користувача</label>
       </div>
 
-      <div className='input-wrap'>
+      <div className="input-wrap">
         <input
-          type='email'
-          id='email'
+          type="email"
+          id="email"
           onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
           value={registerForm.email}
-          placeholder=' '
+          placeholder=" "
         />
-        <label htmlFor='email'>Пошта</label>
+        <label htmlFor="email">Пошта</label>
       </div>
 
-      <div className='input-wrap'>
+      <div className="input-wrap">
         <input
-          type='password'
-          id='password'
+          type="password"
+          id="password"
           onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
           value={registerForm.password}
-          placeholder=' '
+          placeholder=" "
         />
-        <label htmlFor='password'>Пароль</label>
+        <label htmlFor="password">Пароль</label>
       </div>
 
-      <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? <span className='spinner'></span> : "Зареєструватись"}
+      <button className="sign-btn" onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? <span className="spinner"></span> : "Зареєструватись"}
       </button>
-      {errorMessage && <p className='text-red-600 text-sm mt-2'>{errorMessage}</p>}
+      {errorMessage && <p className="text-red-600 text-sm mt-2">{errorMessage}</p>}
     </>
   ) : (
     <>
       <div>
-        <div className='input-wrap'>
-          <input
-            type='password'
-            id='verification'
-            onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })}
-            placeholder=' '
-          />
-          <label htmlFor='verification'>Верифікаційний код</label>
+        <div className="input-wrap">
+          <input type="password" id="verification" onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })} placeholder=" " />
+          <label htmlFor="verification">Верифікаційний код</label>
         </div>
-        <button className='sign-btn' onClick={handleSubmit} disabled={isLoading}>
-          {isLoading ? <span className='spinner'></span> : "Підтвердити"}
+        <button className="sign-btn" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? <span className="spinner"></span> : "Підтвердити"}
         </button>
-        {errorMessage && <p className='text-red-600 text-sm mt-2'>{errorMessage}</p>}
+        {errorMessage && <p className="text-red-600 text-sm mt-2">{errorMessage}</p>}
       </div>
-      <div className='mt-7 text-sm'>
-        На пошту <span className='text-blue-400'>{registerForm.email} </span>
+      <div className="mt-7 text-sm">
+        На пошту <span className="text-blue-400">{registerForm.email} </span>
         було надіслано лист з кодом
       </div>
-      <div className='mt-4 text-sm' style={{ color: "var(--secondary-text-color)" }}>
+      <div className="mt-4 text-sm" style={{ color: "var(--secondary-text-color)" }}>
         Ввели не ту пошту?{" "}
-        <button
-          className='toggle'
-          style={{ fontSize: "14px" }}
-          onClick={() => setIsVerification(false)}
-        >
+        <button className="toggle" style={{ fontSize: "14px" }} onClick={() => setIsVerification(false)}>
           Повернутись назад
         </button>
       </div>

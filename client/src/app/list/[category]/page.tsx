@@ -1,9 +1,15 @@
-import React, { Suspense } from "react";
-import Loading from "@/app/loading";
 import axios from "axios";
+
+import React, { Suspense } from "react";
+
 import { cookies } from "next/headers";
-import TodoList from "@/components/TodoList";
 import Link from "next/link";
+
+import Loading from "@/app/loading";
+
+import TodoList from "@/components/TodoList";
+
+import { handleError } from "@/functions/handleError";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -13,8 +19,8 @@ async function fetchUserData(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching user details:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return {};
   }
 }
@@ -27,8 +33,8 @@ async function fetchTodos(token: string, teamOrEmail: string) {
     });
 
     return todosResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching todos:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return [];
   }
 }
@@ -47,20 +53,23 @@ export default async function Category({ params }: { params: Promise<{ category:
   }
 
   return (
-    <section className='md:flex w-full'>
+    <section className="md:flex w-full">
       <Suspense fallback={<Loading />}>
         {!userData.categories?.includes(decodedCategory) && !["Мій день", "Призначено мені"].includes(decodedCategory) ? (
-          <div className='md:flex items-center space-x-6 justify-center w-full'>
-            <img src='/not-found.gif' alt='cat-not-found' className='w-60 h-60' />
-            <div className='space-y-4'>
-              <h1 className='text-2xl font-semibold'>Ми чесно шукали, але нічого не змогли знайти..</h1>
+          <div className="md:flex items-center space-x-6 justify-center w-full">
+            <img src="/not-found.gif" alt="cat-not-found" className="w-60 h-60" />
+            <div className="space-y-4">
+              <h1 className="text-2xl font-semibold">Ми чесно шукали, але нічого не змогли знайти..</h1>
               <p>Зверніть увагу на наступні кроки: </p>
-              <ul className='list-disc pl-5 space-y-2'>
+              <ul className="list-disc pl-5 space-y-2">
                 <li>чи створений список, який ви шукаєте</li>
                 <li>чи в тому Ви контексті, в якому створений список</li>
               </ul>
-              <div className='pt-3 w-fit'>
-                <Link href='/' className='bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'>
+              <div className="pt-3 w-fit">
+                <Link
+                  href="/"
+                  className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
                   Повернутись на головну
                 </Link>
               </div>

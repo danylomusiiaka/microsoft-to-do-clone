@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode, lazy, Suspense } from "react";
 import { SlideProps } from "@mui/material/Slide";
+
+import React, { ReactNode, Suspense, createContext, lazy, useContext, useState } from "react";
 
 interface AlertState {
   key: number;
@@ -11,11 +12,7 @@ interface AlertState {
 }
 
 interface AlertContextType {
-  showAlert: (
-    message: string,
-    severity?: AlertState["severity"],
-    variant?: AlertState["variant"]
-  ) => void;
+  showAlert: (message: string, severity?: AlertState["severity"], variant?: AlertState["variant"]) => void;
 }
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
@@ -29,18 +26,14 @@ const Alert = lazy(() => import("@mui/material/Alert"));
 const Slide = lazy(() => import("@mui/material/Slide"));
 
 function SlideTransition(props: SlideProps) {
-  return <Slide {...props} direction='left' />;
+  return <Slide {...props} direction="left" />;
 }
 
 export function AlertProvider({ children }: AlertProviderProps) {
   const [alert, setAlert] = useState<AlertState | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
-  const showAlert = (
-    message: string,
-    severity: AlertState["severity"] = "success",
-    variant: AlertState["variant"] = "filled"
-  ) => {
+  const showAlert = (message: string, severity: AlertState["severity"] = "success", variant: AlertState["variant"] = "filled") => {
     setAlert({ key: Date.now(), message, severity, variant });
     setOpenSnackbar(true);
   };
@@ -63,11 +56,7 @@ export function AlertProvider({ children }: AlertProviderProps) {
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           sx={{ pointerEvents: "none" }}
         >
-          <Alert
-            severity={alert?.severity || "success"}
-            variant={alert?.variant}
-            sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}
-          >
+          <Alert severity={alert?.severity || "success"} variant={alert?.variant} sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}>
             {alert?.message}
           </Alert>
         </Snackbar>

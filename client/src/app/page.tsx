@@ -1,8 +1,14 @@
-import React, { Suspense } from "react";
-import Loading from "./loading";
-import TodoList from "@/components/TodoList";
 import axios from "axios";
+
+import React, { Suspense } from "react";
+
 import { cookies } from "next/headers";
+
+import TodoList from "@/components/TodoList";
+
+import { handleError } from "@/functions/handleError";
+
+import Loading from "./loading";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
@@ -13,8 +19,8 @@ async function fetchUserData(token: string) {
     });
 
     return userResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching todos:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return {};
   }
 }
@@ -29,8 +35,8 @@ async function fetchTodos(token: string) {
     });
 
     return todosResponse.data;
-  } catch (error: any) {
-    console.error("Error fetching todos:", error.response?.data || error.message);
+  } catch (error) {
+    handleError(error);
     return [];
   }
 }
@@ -44,9 +50,9 @@ export default async function Home() {
   const userData = token ? await fetchUserData(token) : {};
 
   return (
-    <section className='md:flex w-full'>
+    <section className="md:flex w-full">
       <Suspense fallback={<Loading />}>
-        <TodoList allTodos={allTodos.reverse()} userData={userData} category='Завдання' />
+        <TodoList allTodos={allTodos.reverse()} userData={userData} category="Завдання" />
       </Suspense>
     </section>
   );

@@ -1,6 +1,8 @@
+import Axios from "axios";
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import Axios from "axios";
+
 import { backendUrl } from "./constants/app-config";
 
 export async function middleware(req: NextRequest) {

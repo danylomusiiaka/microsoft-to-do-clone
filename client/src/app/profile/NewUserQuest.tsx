@@ -1,9 +1,13 @@
-import dynamic from "next/dynamic";
-import Cookies from "js-cookie";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
 import confetti from "canvas-confetti";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+import Cookies from "js-cookie";
+
 import { useEffect, useState } from "react";
+
+import dynamic from "next/dynamic";
+
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 
 const LinearProgress = dynamic(() => import("@mui/material/LinearProgress"), { ssr: false });
 const Typography = dynamic(() => import("@mui/material/Typography"), { ssr: false });
@@ -11,12 +15,12 @@ const Box = dynamic(() => import("@mui/material/Box"), { ssr: false });
 
 function LinearProgressWithTask(props: { value: number; task: string }) {
   return (
-    <div className='ml-3'>
+    <div className="ml-3">
       <p>{props.task}</p>
       <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
         <Box sx={{ width: "80%", mr: 1 }}>
           <LinearProgress
-            variant='determinate'
+            variant="determinate"
             value={props.value}
             sx={{
               "& .MuiLinearProgress-bar": {
@@ -26,7 +30,7 @@ function LinearProgressWithTask(props: { value: number; task: string }) {
           />
         </Box>
         <Box sx={{ minWidth: 35 }}>
-          <Typography variant='body2' sx={{ color: "var(--primary-text-color)" }}>
+          <Typography variant="body2" sx={{ color: "var(--primary-text-color)" }}>
             {`${Math.round(props.value)}%`}
           </Typography>
         </Box>
@@ -57,7 +61,8 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
       };
       Cookies.set("newUserQuest", JSON.stringify(initialCookieValue));
     } else {
-      const { listCreated, completedThreeTasks, teamCreated, participantJoined, profilePictureChanged, authorAssignedTask } = JSON.parse(cookienewUserQuest);
+      const { listCreated, completedThreeTasks, teamCreated, participantJoined, profilePictureChanged, authorAssignedTask } =
+        JSON.parse(cookienewUserQuest);
 
       const values = [listCreated + completedThreeTasks, teamCreated + participantJoined, profilePictureChanged + authorAssignedTask];
       setUserQuest(values);
@@ -88,10 +93,14 @@ export default function NewUserQuest({ isUserQuestDone }: { isUserQuestDone: boo
   return (
     <>
       {isCompleted !== null && (
-        <section className='w-fit p-3 rounded-md md:flex' style={{ backgroundColor: "var(--secondary-background-color)" }}>
-          <img src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"} alt={!isCompleted ? "hi-cherry" : "clapping-cherry"} className='w-52 h-52' />
-          <div className='space-y-3'>
-            <div className='h-fit rounded-md p-3 text-lg' style={{ backgroundColor: "var(--sidebar-block-color)" }}>
+        <section className="w-fit p-3 rounded-md md:flex" style={{ backgroundColor: "var(--secondary-background-color)" }}>
+          <img
+            src={!isCompleted ? "/educational-cherry.gif" : "/congradulations.gif"}
+            alt={!isCompleted ? "hi-cherry" : "clapping-cherry"}
+            className="w-52 h-52"
+          />
+          <div className="space-y-3">
+            <div className="h-fit rounded-md p-3 text-lg" style={{ backgroundColor: "var(--sidebar-block-color)" }}>
               {!isCompleted ? (
                 <p>
                   Привіт! Я бачу ти новенький. <br /> Виконай пару квестів, щоб краще ознайомитись з додатком

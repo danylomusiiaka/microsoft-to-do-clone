@@ -55,7 +55,7 @@ export default function DonutChart({ data, backgroundColors, inputLabels }: Donu
   }, [data, backgroundColors, inputLabels]);
 
   return (
-    <div className='md:w-96 w-full'>
+    <div className="md:w-96 w-full">
       <canvas ref={chartRef} />
     </div>
   );

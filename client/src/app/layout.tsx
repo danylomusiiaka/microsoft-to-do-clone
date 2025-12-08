@@ -1,10 +1,17 @@
+import axios from "axios";
+
 import "@/styles/globals.css";
+
+import { cookies } from "next/headers";
+
+import { AlertProvider } from "@/contexts/AlertContext";
 import { TodosProvider } from "@/contexts/TodosContext";
 import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
-import { AlertProvider } from "@/contexts/AlertContext";
-import { cookies } from "next/headers";
+
 import NavSidebar from "@/components/NavSidebar";
-import axios from "axios";
+
+import { handleError } from "@/functions/handleError";
+
 import { backendUrl } from "@/constants/app-config";
 
 export const metadata = {
@@ -23,8 +30,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       });
 
       return userResponse.data;
-    } catch (error: any) {
-      console.error("Error fetching todos:", error.response?.data || error.message);
+    } catch (error) {
+      handleError(error);
       return {};
     }
   }
@@ -35,8 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const userData = token ? await fetchUserData(token) : null;
 
   return (
-    <html lang='en'>
-      <body className='m-2 flex flex-col lg:flex-row' data-theme={result}>
+    <html lang="en">
+      <body className="m-2 flex flex-col lg:flex-row" data-theme={result}>
         <AlertProvider>
           <UserDetailsProvider>
             <TodosProvider>

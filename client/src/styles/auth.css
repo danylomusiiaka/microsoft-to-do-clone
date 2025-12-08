@@ -105,7 +105,7 @@ form.sign-up-form {
   background-color: transparent;
   border-bottom: var(--primary-text-color) 1px solid;
   transition: 0.3s ease;
-  border-radius: 0; 
+  border-radius: 0;
 }
 
 label {
@@ -117,15 +117,14 @@ label {
 }
 
 .input-wrap input:focus + label,
-.input-wrap input:not(:placeholder-shown)  + label {
+.input-wrap input:not(:placeholder-shown) + label {
   height: 30px;
   line-height: 30px;
   width: 100%;
   background-color: var(--secondary-background-color);
   transform: translateY(-20px);
-  font-size: 0.8rem; 
+  font-size: 0.8rem;
 }
-
 
 .sign-btn {
   display: inline-block;
@@ -212,7 +211,9 @@ main.sign-up-mode .carousel {
   grid-column: 1/2;
   grid-row: 1/2;
   opacity: 0;
-  transition: opacity 0.3s, transform 0.5s;
+  transition:
+    opacity 0.3s,
+    transform 0.5s;
 }
 
 .img-1 {
@@ -308,7 +309,9 @@ main.sign-up-mode .carousel {
   form {
     max-width: revert;
     padding: 1.5rem 2.5rem 2rem;
-    transition: transform 0.8s ease-in-out, opacity 0.45s linear;
+    transition:
+      transform 0.8s ease-in-out,
+      opacity 0.45s linear;
   }
 
   .heading {

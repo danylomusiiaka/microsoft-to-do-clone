@@ -9,7 +9,7 @@ function ThemeOption({ theme }: { theme: string }) {
     Cookies.set("theme", theme);
   };
 
-  return <div onClick={setTheme} className='theme-option mr-2 ' id={`theme-${theme}`}></div>;
+  return <div onClick={setTheme} className="theme-option mr-2 " id={`theme-${theme}`}></div>;
 }
 
 export default ThemeOption;

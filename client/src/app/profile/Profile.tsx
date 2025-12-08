@@ -1,17 +1,23 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
-import ProfilePicture from "./Picture";
-import Controls from "../profile/Controls";
-import { useUserDetails } from "@/contexts/UserDetailsContext";
+
 import ThemeOption from "@/app/profile/ThemeOption";
-import { User } from "@/interfaces/UserInterface";
+
 import { useAlert } from "@/contexts/AlertContext";
-const themes = ["dark", "light", "purple"];
-import TeamButtons from "./TeamButtons";
-import NewUserQuest from "./NewUserQuest";
-import StatusEditor from "./StatusEditor";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
 import { adjustHeight } from "@/functions/adjustHeight";
+import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+
+import { User } from "@/interfaces/UserInterface";
+
+import Controls from "../profile/Controls";
+import NewUserQuest from "./NewUserQuest";
+import ProfilePicture from "./Picture";
+import StatusEditor from "./StatusEditor";
+import TeamButtons from "./TeamButtons";
+
+const themes = ["dark", "light", "purple"];
 
 export default function Profile({ userData }: { userData: User }) {
   const { updateField } = useProfileFunctions();
@@ -50,27 +56,34 @@ export default function Profile({ userData }: { userData: User }) {
   };
 
   return (
-    <main className='p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile'>
-      <section className='md:flex md:p-2 items-center justify-between'>
-        {loadingProfile && <div className='loading-bar'></div>}
-        <div className='flex space-x-3 w-full items-center min-w-0'>
+    <main className="p-4 md:p-12 w-full space-y-5 md:pb-0 scroll-container-profile">
+      <section className="md:flex md:p-2 items-center justify-between">
+        {loadingProfile && <div className="loading-bar"></div>}
+        <div className="flex space-x-3 w-full items-center min-w-0">
           <ProfilePicture picture={profileInfo.picture} />
-          <div className='w-full min-w-0 md:mr-4'>
-            <textarea className='bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full resize-none overflow-hidden' value={name} ref={nameRef} onChange={(e) => setName(e.target.value)} onBlur={updateName} rows={1} />
-            <p className='md:text-2xl pl-1 break-words'>{profileInfo.email}</p>
+          <div className="w-full min-w-0 md:mr-4">
+            <textarea
+              className="bg-transparent font-bold text-2xl hover:outline hover:outline-white hover:rounded-md p-1 w-full resize-none overflow-hidden"
+              value={name}
+              ref={nameRef}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={updateName}
+              rows={1}
+            />
+            <p className="md:text-2xl pl-1 break-words">{profileInfo.email}</p>
           </div>
         </div>
         <Controls />
       </section>
-      <hr className='divider' />
-      <section className='space-y-4'>
+      <hr className="divider" />
+      <section className="space-y-4">
         <TeamButtons profileInfo={profileInfo} />
 
         <NewUserQuest isUserQuestDone={profileInfo.isUserQuestDone} />
 
-        <h2 className='text-2xl'>Загальні налаштування</h2>
+        <h2 className="text-2xl">Загальні налаштування</h2>
         <p>Обрати тему для додатка</p>
-        <div className='flex'>
+        <div className="flex">
           {themes.map((theme) => (
             <ThemeOption theme={theme} key={theme} />
           ))}

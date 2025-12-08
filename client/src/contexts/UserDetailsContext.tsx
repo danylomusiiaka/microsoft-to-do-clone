@@ -1,11 +1,16 @@
 "use client";
 
-import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { User } from "@/interfaces/UserInterface";
-import { useAlert } from "./AlertContext";
 import Cookies from "js-cookie";
+
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+
 import { handleError } from "@/functions/handleError";
+
 import { api } from "@/services/api";
+
+import { User } from "@/interfaces/UserInterface";
+
+import { useAlert } from "./AlertContext";
 
 interface UserContextType {
   profileDetails: User;
@@ -57,7 +62,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
               }
             }
           }
-        } catch (error: any) {
+        } catch (error) {
           handleError(error, showAlert);
         }
       };

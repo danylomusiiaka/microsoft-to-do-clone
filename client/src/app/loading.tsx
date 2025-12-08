@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 export default function Loading() {
   return (
-    <div className='loading-container flex flex-col'>
-      <div className='loader'>
+    <div className="loading-container flex flex-col">
+      <div className="loader">
         <div></div>
         <div></div>
         <div></div>

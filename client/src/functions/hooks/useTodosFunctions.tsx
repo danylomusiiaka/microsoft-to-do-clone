@@ -1,11 +1,17 @@
+import Cookies from "js-cookie";
+
 import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
-import { Task } from "@/interfaces/TaskInterface";
-import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/constants/statuses";
-import Cookies from "js-cookie";
-import { User } from "@/interfaces/UserInterface";
+
 import { api } from "@/services/api";
+
+import { Task } from "@/interfaces/TaskInterface";
+import { User } from "@/interfaces/UserInterface";
+
+import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/constants/statuses";
+
+import { handleError } from "../handleError";
 
 export const useTodoFunctions = () => {
   const { todos, setTodos, setLoading } = useTodos();
@@ -60,10 +66,10 @@ export const useTodoFunctions = () => {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       setTodos(todos.filter((todo) => todo.text !== newTodo.text));
       setLoading(undefined);
-      showAlert(error.response.data, "error");
+      handleError(error, showAlert);
     }
   };
 
@@ -73,7 +79,10 @@ export const useTodoFunctions = () => {
       ...updatedFields,
     };
 
-    if ((updatedFields.text !== undefined && updatedFields.text.trim() === todo.text.trim()) || (updatedFields.description !== undefined && updatedFields.description.trim() === todo.description.trim())) {
+    if (
+      (updatedFields.text !== undefined && updatedFields.text.trim() === todo.text.trim()) ||
+      (updatedFields.description !== undefined && updatedFields.description.trim() === todo.description.trim())
+    ) {
       return;
     }
 
@@ -119,8 +128,8 @@ export const useTodoFunctions = () => {
         }
         return updatedTodo;
       }
-    } catch (error: any) {
-      showAlert(error.response.data, "error");
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
@@ -128,11 +137,11 @@ export const useTodoFunctions = () => {
     try {
       const response = await api.delete(`/task/${id}`);
       if (response.status === 200) {
-        setTodos(todos.filter((o: any) => o._id !== id));
+        setTodos(todos.filter((o: Task) => o._id !== id));
         showAlert(`Завдання було успішно видалено`);
       }
-    } catch (error: any) {
-      showAlert(error.response.data, "error");
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
@@ -141,7 +150,9 @@ export const useTodoFunctions = () => {
     if (name === "За алфавітом") {
       sortedTodos.sort((a, b) => (desc ? b.text.localeCompare(a.text) : a.text.localeCompare(b.text)));
     } else if (name === "За терміном") {
-      sortedTodos.sort((a, b) => (desc ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime()));
+      sortedTodos.sort((a, b) =>
+        desc ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
     } else if (name === "За пріорітетністю") {
       sortedTodos.sort((a, b) => {
         const priorityA = PRIORITY_RATING.find((option) => option.name === a.priority)?.number || 4;
