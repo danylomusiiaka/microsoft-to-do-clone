@@ -19,19 +19,19 @@
   transition: border-color 0.3s ease;
 }
 
-.star,
-.star-filled {
+.star path,
+.star-filled path {
   stroke: var(--primary-text-color);
   align-self: flex-start;
   cursor: pointer;
   fill: none;
 }
 
-.star:hover {
+.star:hover path {
   stroke: #eab308;
 }
 
-.star-filled {
+.star-filled path {
   stroke: #eab308;
   fill: #eab308;
 }

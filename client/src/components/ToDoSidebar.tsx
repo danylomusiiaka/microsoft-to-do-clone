@@ -117,7 +117,7 @@ export default function ToDoSidebar({ todo }: { todo: Task }) {
               }}
               disabled={!!loading}
             >
-              <Star style={{ width: "30px", height: "30px" }} color={isImportant ? "#FFD700" : "#fff"} fill={isImportant ? "#FFD700" : "none"} />
+              <Star style={{ width: "30px", height: "30px" }} className={isImportant ? "star-filled" : "star"} />
             </button>
           </div>
           <StatusDropdown {...(currentTodo || todo)} />

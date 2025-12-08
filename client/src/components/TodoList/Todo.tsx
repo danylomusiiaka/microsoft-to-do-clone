@@ -105,7 +105,7 @@ export default function Todo({ todo, sortName, userStatuses, setOpenSuggestions 
         <td className=''>
           {todo.isImportant && (
             <div className='flex justify-end items-end md:block'>
-              <Star style={{ width: "30px", height: "30px" }} color={todo.isImportant ? "#FFD700" : "#fff"} fill={todo.isImportant ? "#FFD700" : "#fff"} />
+              <Star style={{ width: "30px", height: "30px" }} className={todo.isImportant ? "star-filled" : "star"} />
             </div>
           )}
         </td>
