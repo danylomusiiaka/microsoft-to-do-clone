@@ -27,8 +27,6 @@ export default function Login() {
         Cookies.set("token", token, {
           sameSite: "None",
           secure: true,
-          path: "/",
-          expires: 14,
         });
 
         window.location.href = "/";
