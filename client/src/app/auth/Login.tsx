@@ -24,7 +24,6 @@ export default function Login() {
       if (response.status === 200) {
         const { token } = response.data;
         Cookies.set("token", token, {
-          expires: 7,
           secure: true,
           sameSite: "None",
         });

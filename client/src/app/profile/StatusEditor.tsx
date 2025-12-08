@@ -7,11 +7,9 @@ import { STATUS_OPTIONS } from "../../constants/statuses";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Status, User } from "@/interfaces/UserInterface";
-import Cookies from "js-cookie";
-import Axios from "axios";
 import { useAlert } from "@/contexts/AlertContext";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { api } from "@/services/api";
+import { handleError } from "@/functions/handleError";
 
 export default function StatusEditor({ userData }: { userData: User }) {
   const [isChangingStatuses, setChangingStatuses] = useState(false);
@@ -48,11 +46,8 @@ export default function StatusEditor({ userData }: { userData: User }) {
 
   useEffect(() => {
     const fetchStatuses = async () => {
-      const token = Cookies.get("token");
       try {
-        const response = await Axios.get(`${webUrl}/user/statuses`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get(`/user/statuses`);
         if (response.status === 200) {
           setProfileDetails((prevDetails) => ({
             ...prevDetails,
@@ -60,9 +55,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
           }));
         }
       } catch (error: any) {
-        if (error.response) {
-          showAlert(error.response.data, "error");
-        }
+        handleError(error, showAlert);
       }
     };
     fetchStatuses();
@@ -80,7 +73,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
         <div className='flex items-center space-x-2'>
           <p>Відредагувати стани завдань</p>
           <button onClick={() => setChangingStatuses(!isChangingStatuses)}>
-            <Pencil />
+            <Pencil className='fill-svg' />
           </button>
         </div>
 

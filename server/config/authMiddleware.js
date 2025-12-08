@@ -1,10 +1,22 @@
 import pkg from "jsonwebtoken";
+import userModel from "../models/userModel.js";
 const { sign, verify } = pkg;
 
-const generateToken = (id) => {
+const generateAccess = (id) => {
   return sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "15m",
+  });
+};
+
+const generateTokens = async (id) => {
+  const accessToken = sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "15m",
+  });
+  const refreshToken = sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
+  await userModel.findByIdAndUpdate(id, { refreshToken });
+  return accessToken;
 };
 
 const verifyToken = (req, res, next) => {
@@ -21,7 +33,7 @@ const verifyToken = (req, res, next) => {
       }
       return res.status(401).send("Ви не є авторизованим");
     }
-    
+
     req.userId = decoded.id;
     next();
   });
@@ -37,4 +49,4 @@ function generateRandomString(length = 6) {
   return result;
 }
 
-export { verifyToken, generateToken, generateRandomString };
+export { verifyToken, generateAccess, generateTokens, generateRandomString };

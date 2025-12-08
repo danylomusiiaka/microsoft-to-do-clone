@@ -39,13 +39,14 @@ router.delete("/all", verifyToken, async (req, res) => {
 
     const result = await taskModel.deleteMany(filter);
 
-    const message =
-      category && category !== "Завдання"
-        ? `Видалено ${result.deletedCount} завдань у списку ${category}`
-        : "Всі завдання видалено успішно";
+    const message = category && category !== "Завдання" ? `Видалено ${result.deletedCount} завдань у списку ${category}` : "Всі завдання видалено успішно";
+
+    broadcast({ event: "taskAllDeleted" }, author);
 
     res.status(200).json({ message });
   } catch (error) {
+    console.error(error);
+
     res.status(500).send("Сталася помилка у видаленні завдань");
   }
 });

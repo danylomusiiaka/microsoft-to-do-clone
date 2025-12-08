@@ -103,9 +103,8 @@ export default function TodoList({ allTodos, userData, category }: TodoListProps
       isImportant: false,
       priority: "no priority",
     };
-    const todoText = newTodoText;
     setNewTodoText("");
-    await addToDo(todoText, category, newTodo);
+    await addToDo(newTodo);
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {

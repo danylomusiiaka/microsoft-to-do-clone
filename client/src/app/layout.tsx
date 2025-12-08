@@ -5,6 +5,7 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { cookies } from "next/headers";
 import NavSidebar from "@/components/NavSidebar";
 import axios from "axios";
+import { backendUrl } from "@/constants/app-config";
 
 export const metadata = {
   title: "Microsoft To Do Clone",
@@ -13,12 +14,11 @@ export const metadata = {
     icon: "/microsoft-todo.ico",
   },
 };
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   async function fetchUserData(token: string) {
     try {
-      const userResponse = await axios.get(`${webUrl}/user/details`, {
+      const userResponse = await axios.get(`${backendUrl}/user/details`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

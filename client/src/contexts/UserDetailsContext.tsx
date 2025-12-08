@@ -1,12 +1,11 @@
 "use client";
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import Axios from "axios";
 import { User } from "@/interfaces/UserInterface";
 import { useAlert } from "./AlertContext";
 import Cookies from "js-cookie";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { handleError } from "@/functions/handleError";
+import { api } from "@/services/api";
 
 interface UserContextType {
   profileDetails: User;
@@ -43,10 +42,8 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
     if (profileDetails.team) {
       const fetchTeamMembers = async () => {
         try {
-          const token = Cookies.get("token");
-          const response = await Axios.get(`${webUrl}/team/all-members`, {
+          const response = await api.get(`/team/all-members`, {
             params: { teamCode: profileDetails.team },
-            headers: { Authorization: `Bearer ${token}` },
           });
           if (response.status === 200) {
             setTeamMembers(response.data);
@@ -61,7 +58,7 @@ export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
             }
           }
         } catch (error: any) {
-          showAlert(error.response.data, "error");
+          handleError(error, showAlert);
         }
       };
 

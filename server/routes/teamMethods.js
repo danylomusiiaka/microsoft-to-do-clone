@@ -6,6 +6,7 @@ import teamModel from "../models/teamModel.js";
 import taskModel from "../models/taskModel.js";
 import authAttemptsModel from "../models/authAttemptsModel.js";
 import { HALF_HOUR, TWO_DAYS, TEAM_JOIN_COUNT } from "../config/constants.js";
+import { broadcast } from "../config/websocket.js";
 
 router.post("/create", verifyToken, async (req, res) => {
   const teamCode = generateRandomString(12);
@@ -39,6 +40,7 @@ router.post("/exit", verifyToken, async (req, res) => {
     }
     user["team"] = "";
     await user.save();
+    broadcast({ event: "teamMemberExited", participant: user }, team);
     res.json("");
   } catch (error) {
     res.status(500).send("Error exiting team");
@@ -71,10 +73,7 @@ router.post("/join", verifyToken, async (req, res) => {
       await newAttempt.save();
     } else {
       existingAttempt.clearTime = new Date(Date.now() + TWO_DAYS);
-      if (
-        existingAttempt.waitUntilNextTeamJoin <= Date.now() ||
-        !existingAttempt.waitUntilNextTeamJoin
-      ) {
+      if (existingAttempt.waitUntilNextTeamJoin <= Date.now() || !existingAttempt.waitUntilNextTeamJoin) {
         existingAttempt.teamJoinCount = TEAM_JOIN_COUNT;
         existingAttempt.waitUntilNextTeamJoin = new Date(Date.now() + HALF_HOUR);
       } else {
@@ -105,9 +104,10 @@ router.post("/join", verifyToken, async (req, res) => {
     user.team = teamCode;
     await user.save();
 
+    broadcast({ event: "teamMemberJoined", participant: user }, team);
     res.status(200).send("Ви успішно приєдналися до команди");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send("Помилка приєднання до команди");
   }
 });
@@ -128,9 +128,7 @@ router.get("/all-members", verifyToken, async (req, res) => {
   const { teamCode } = req.query;
   try {
     const team = await teamModel.findOne({ code: teamCode });
-    const participants = await userModel
-      .find({ email: { $in: team.participants } })
-      .select("email name picture");
+    const participants = await userModel.find({ email: { $in: team.participants } }).select("email name picture");
     res.status(200).json(participants);
   } catch (error) {
     res.status(500).send("Помилка відображення учасників команди");

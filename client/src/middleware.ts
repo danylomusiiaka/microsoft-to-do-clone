@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import Axios from "axios";
+import { backendUrl } from "./constants/app-config";
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -19,16 +19,34 @@ export async function middleware(req: NextRequest) {
 
   if (token) {
     try {
-      const result = await fetch(`${webUrl}/user/details`, {
+      const result = await fetch(`${backendUrl}/user/details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if ([401, 500].includes(result.status)) {
-        const response = NextResponse.redirect(new URL("/auth", req.url));
-        response.cookies.delete("token");
-        response.cookies.set("session-expired", "true");
+        const response = NextResponse.next();
+        try {
+          const newTokenResponse = await Axios.get(`${backendUrl}/user/refresh`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (newTokenResponse.status === 200) {
+            const data = newTokenResponse.data;
+            response.cookies.set("token", data.token, {
+              secure: true,
+              sameSite: "none",
+            });
+          } else {
+            response.cookies.delete("token");
+            response.cookies.set("session-expired", "true");
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          response.cookies.delete("token");
+          response.cookies.set("session-expired", "true");
+        }
+
         return response;
       }
 

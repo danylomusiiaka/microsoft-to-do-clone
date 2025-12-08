@@ -2,10 +2,10 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Status } from "@/interfaces/UserInterface";
-import Axios from "axios";
 import Cookies from "js-cookie";
 import { revalidateHomePage } from "../revalidate";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { api } from "@/services/api";
+import { handleError } from "../handleError";
 
 export const useProfileFunctions = () => {
   const { profileDetails, setProfileDetails, setUserQuest, setLoadingProfile } = useUserDetails();
@@ -14,29 +14,20 @@ export const useProfileFunctions = () => {
 
   const updateField = async (userfieldName: string, userfieldValue: string | Status[] | boolean) => {
     try {
-      const token = Cookies.get("token");
       setLoadingProfile(true);
-      const response = await Axios.put(
-        `${webUrl}/user/update-field`,
-        {
-          fieldName: userfieldName,
-          fieldValue: userfieldValue,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.put(`/user/update-field`, {
+        fieldName: userfieldName,
+        fieldValue: userfieldValue,
+      });
       if (response.status === 200) {
         setProfileDetails({ ...profileDetails, [userfieldName]: userfieldValue });
         showAlert("Ваші дані були успішно оновлені", "success");
       }
-    } catch (error: any) {
-      if (error.status === 401) {
-        window.location.href = "/auth";
-      }
-      showAlert(error.response.data, "error");
+    } catch (error) {
+      handleError(error, showAlert);
+    } finally {
+      setLoadingProfile(false);
     }
-    setLoadingProfile(false);
   };
 
   const addCategory = async (category: string) => {
@@ -58,15 +49,7 @@ export const useProfileFunctions = () => {
     });
     setLoading(category);
     try {
-      const token = Cookies.get("token");
-
-      const result = await Axios.post(
-        `${webUrl}/category/create`,
-        { category },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const result = await api.post(`/category/create`, { category });
       if (result.status === 200) {
         setLoading(undefined);
         const cookienewUserQuest = Cookies.get("newUserQuest");
@@ -81,16 +64,8 @@ export const useProfileFunctions = () => {
 
         showAlert("Список успішно створено!", "success");
       }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-        setProfileDetails((prevDetails) => ({
-          ...prevDetails,
-          categories: prevDetails.categories.filter((cat) => cat !== category),
-        }));
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
@@ -98,11 +73,7 @@ export const useProfileFunctions = () => {
     setLoading(category);
 
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.delete(`${webUrl}/category/${encodeURIComponent(category)}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.delete(`/category/${encodeURIComponent(category)}`);
       setTodoChoosed(null);
 
       setTodos(response.data.remainingTasks);
@@ -118,12 +89,8 @@ export const useProfileFunctions = () => {
       } else {
         showAlert(response.data.message);
       }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
@@ -136,15 +103,7 @@ export const useProfileFunctions = () => {
       return;
     }
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.put(
-        `${webUrl}/category/${oldCategory}`,
-        { newCategory },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.put(`/category/${oldCategory}`, { newCategory });
       if (response.status === 200) {
         setTodos(response.data.updatedTodos);
         setProfileDetails((prevDetails) => ({
@@ -153,26 +112,14 @@ export const useProfileFunctions = () => {
         }));
         window.location.href = `/list/${newCategory}`;
       }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
   const createTeam = async () => {
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.post(
-        `${webUrl}/team/create`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.post(`/team/create`, {});
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: response.data }));
         showAlert("Ви успішно створили команду");
@@ -187,62 +134,36 @@ export const useProfileFunctions = () => {
         }
         await revalidateHomePage();
       }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
   const exitTeam = async () => {
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.post(
-        `${webUrl}/team/exit`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.post(`/team/exit`, {});
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: response.data }));
         showAlert("Ви вийшли з команди", "info");
         await revalidateHomePage();
       }
-    } catch (error: any) {
-      showAlert(error.response.data, "error");
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 
   const joinTeam = async (codeInput: string) => {
     const code = codeInput.trim();
-    if (code === "") {
-      return;
-    }
+    if (code === "") return;
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.post(
-        `${webUrl}/team/join`,
-        { teamCode: code },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.post(`/team/join`, { teamCode: code });
       if (response.status === 200) {
         setProfileDetails((prev) => ({ ...prev, team: code }));
         showAlert("Ви успішно вступили в команду", "success");
         await revalidateHomePage();
       }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     }
   };
 

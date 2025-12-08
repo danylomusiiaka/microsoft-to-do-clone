@@ -2,12 +2,10 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useTodos } from "@/contexts/TodosContext";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { Task } from "@/interfaces/TaskInterface";
-import Axios from "axios";
 import { PRIORITY_OPTIONS, PRIORITY_RATING, STATUS_OPTIONS } from "@/constants/statuses";
 import Cookies from "js-cookie";
 import { User } from "@/interfaces/UserInterface";
-
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { api } from "@/services/api";
 
 export const useTodoFunctions = () => {
   const { todos, setTodos, setLoading } = useTodos();
@@ -31,9 +29,9 @@ export const useTodoFunctions = () => {
     return [...importantTodos, ...nonImportantTodos];
   };
 
-  const addToDo = async (newTodoText: string, listName: string, newTodo: Task) => {
-    if (newTodoText.trim() === "") return;
-    if (newTodoText.length >= 200) {
+  const addToDo = async (newTodo: Task) => {
+    if (newTodo.text.trim() === "") return;
+    if (newTodo.text.length >= 200) {
       showAlert("Назва завдання не може перевищувати 200 символів", "error");
       return;
     }
@@ -47,14 +45,9 @@ export const useTodoFunctions = () => {
     setLoading("no id");
 
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.post(`${webUrl}/task/create`, newTodo, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const response = await api.post("/task/create", newTodo);
       if (response.status === 201) {
-        const updatedTodos = temporaryTodos.map((todo) => (todo.text === newTodoText && !todo._id ? { ...todo, _id: response.data.id } : todo));
+        const updatedTodos = temporaryTodos.map((todo) => (todo.text === newTodo.text && !todo._id ? { ...todo, _id: response.data.id } : todo));
         setTodos(updatedTodos);
         setLoading(undefined);
 
@@ -68,13 +61,9 @@ export const useTodoFunctions = () => {
         }
       }
     } catch (error: any) {
-      setTodos(todos.filter((todo) => todo.text !== newTodoText));
+      setTodos(todos.filter((todo) => todo.text !== newTodo.text));
       setLoading(undefined);
-      if (error.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response?.data, "error");
-      }
+      showAlert(error.response.data, "error");
     }
   };
 
@@ -103,12 +92,9 @@ export const useTodoFunctions = () => {
     }
 
     try {
-      const token = Cookies.get("token");
       setLoading(todo._id);
 
-      const response = await Axios.put(`${webUrl}/task/${todo._id}`, updatedTodo, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.put(`/task/${todo._id}`, updatedTodo);
       if (response.status === 200) {
         const updatedTodos = todos.map((t) => (t._id === todo._id ? updatedTodo : t));
         setTodos(updatedTodos);
@@ -134,31 +120,19 @@ export const useTodoFunctions = () => {
         return updatedTodo;
       }
     } catch (error: any) {
-      if (error.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+      showAlert(error.response.data, "error");
     }
   };
 
   const deleteTodo = async (id: string) => {
     try {
-      const token = Cookies.get("token");
-
-      const response = await Axios.delete(`${webUrl}/task/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.delete(`/task/${id}`);
       if (response.status === 200) {
         setTodos(todos.filter((o: any) => o._id !== id));
         showAlert(`Завдання було успішно видалено`);
       }
     } catch (error: any) {
-      if (error.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+      showAlert(error.response.data, "error");
     }
   };
 

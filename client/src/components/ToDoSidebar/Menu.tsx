@@ -15,7 +15,9 @@ import Propositions from "../../../public/Idea";
 import { useTodoFunctions } from "@/functions/hooks/useTodosFunctions";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
 import { formatDate } from "@/functions/formatFields";
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
+import { backendUrl } from "@/constants/app-config";
+import { api } from "@/services/api";
+import { handleError } from "@/functions/handleError";
 
 interface MenuProps {
   listName: string;
@@ -65,22 +67,16 @@ export default function Menu({ listName, sortOptions, setSortOptions, setOpenSug
   const handleDeleteAll = async () => {
     setLoading(true);
     try {
-      const token = Cookies.get("token");
-      const response = await Axios.delete(`${webUrl}/task/all`, {
+      const response = await api.delete(`/task/all`, {
         params: { category: listName },
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
         setTodoChoosed(null);
         setTodos(response.data.remainingTasks || []);
         showAlert(response.data.message);
       }
-    } catch (error: any) {
-      if (error.status === 401) {
-        window.location.href = "/auth";
-      } else {
-        showAlert(error.response.data, "error");
-      }
+    } catch (error) {
+      handleError(error, showAlert);
     } finally {
       setOpenMenu(false);
       setLoading(false);

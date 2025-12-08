@@ -77,9 +77,7 @@ router.put("/:name", verifyToken, async (req, res) => {
     const user = await userModel.findById(req.userId);
     const isTeam = Boolean(user.team);
     const userEntity = isTeam ? await teamModel.findOne({ code: user.team }) : user;
-    userEntity.categories = userEntity.categories.map((cat) =>
-      cat === oldCategory ? newCategory : cat
-    );
+    userEntity.categories = userEntity.categories.map((cat) => (cat === oldCategory ? newCategory : cat));
     await userEntity.save();
 
     await taskModel.updateMany({ category: oldCategory }, { category: newCategory });

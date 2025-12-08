@@ -17,6 +17,7 @@ const userSchema = new Schema(
       },
     ],
     isUserQuestDone: { type: Boolean, default: false },
+    refreshToken: { type: String },
   },
   { default: [] }
 );

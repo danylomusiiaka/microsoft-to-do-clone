@@ -12,6 +12,9 @@ import Cookies from "js-cookie";
 import { Task } from "@/interfaces/TaskInterface";
 import Link from "next/link";
 import { useProfileFunctions } from "@/functions/hooks/useUserFunctions";
+import { backendUrl } from "@/constants/app-config";
+import { api } from "@/services/api";
+import { handleError } from "@/functions/handleError";
 
 const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
 const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -73,12 +76,8 @@ export default function NavSidebar({ userData }: { userData: User }) {
         }));
         setTodos((prevTodos) => prevTodos.map((todo) => message.updatedTodos.find((updatedTodo: Task) => updatedTodo._id === todo._id) || todo));
       } else if (message.event === "teamMemberJoined") {
-        console.log(teamMembers);
-        console.log(message.participant);
         showAlert(message.participant);
       } else if (message.event === "teamMemberExited") {
-        console.log(teamMembers);
-        console.log(message.participant);
         showAlert(message.participant);
       }
     };
@@ -90,21 +89,16 @@ export default function NavSidebar({ userData }: { userData: User }) {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const token = Cookies.get("token");
       try {
-        const response = await Axios.get(`${webUrl}/category/all`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get(`/category/all`);
         if (response.status === 200) {
           setProfileDetails((prevDetails) => ({
             ...prevDetails,
             categories: response.data,
           }));
         }
-      } catch (error: any) {
-        if (error.response) {
-          showAlert(error.response.data, "error");
-        }
+      } catch (error) {
+        handleError(error, showAlert);
       }
     };
     fetchCategories();
