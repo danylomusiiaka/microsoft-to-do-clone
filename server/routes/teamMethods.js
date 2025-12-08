@@ -40,7 +40,7 @@ router.post("/exit", verifyToken, async (req, res) => {
     }
     user["team"] = "";
     await user.save();
-    broadcast({ event: "teamMemberExited", participant: user }, team);
+    broadcast({ event: "teamMemberExited", participant: { id: user.id, name: user.name } }, team.code);
     res.json("");
   } catch (error) {
     res.status(500).send("Error exiting team");
@@ -104,7 +104,7 @@ router.post("/join", verifyToken, async (req, res) => {
     user.team = teamCode;
     await user.save();
 
-    broadcast({ event: "teamMemberJoined", participant: user }, team);
+    broadcast({ event: "teamMemberJoined", participant: { id: user.id, name: user.name } }, user.team);
     res.status(200).send("Ви успішно приєдналися до команди");
   } catch (error) {
     console.error(error);

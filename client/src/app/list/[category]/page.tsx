@@ -19,8 +19,8 @@ async function fetchUserData(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("List category page: ", error.response?.data || error.message);
     return {};
   }
 }
@@ -33,8 +33,8 @@ async function fetchTodos(token: string, teamOrEmail: string) {
     });
 
     return todosResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("List category page: ", error.response?.data || error.message);
     return [];
   }
 }

@@ -19,8 +19,8 @@ async function fetchUserData(token: string) {
     });
 
     return userResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("Main page: ", error.response?.data || error.message);
     return {};
   }
 }
@@ -35,8 +35,8 @@ async function fetchTodos(token: string) {
     });
 
     return todosResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("Main page: ", error.response?.data || error.message);
     return [];
   }
 }

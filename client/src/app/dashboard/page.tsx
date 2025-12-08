@@ -17,8 +17,8 @@ async function fetchUserData(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
     return userResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("Dashboard page: ", error.response?.data || error.message);
     return {};
   }
 }

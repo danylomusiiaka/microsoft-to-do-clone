@@ -1,11 +1,14 @@
 "use client";
 
-import { SlideProps } from "@mui/material/Slide";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Slide from "@mui/material/Slide";
 
-import React, { ReactNode, Suspense, createContext, lazy, useContext, useState } from "react";
+import React, { ReactNode, createContext, useCallback, useContext, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
 
 interface AlertState {
-  key: number;
+  id: number;
   message: string;
   severity: "success" | "error" | "warning" | "info";
   variant: "filled" | "outlined" | "standard";
@@ -21,46 +24,68 @@ interface AlertProviderProps {
   children: ReactNode;
 }
 
-const Snackbar = lazy(() => import("@mui/material/Snackbar"));
-const Alert = lazy(() => import("@mui/material/Alert"));
-const Slide = lazy(() => import("@mui/material/Slide"));
-
-function SlideTransition(props: SlideProps) {
-  return <Slide {...props} direction="left" />;
-}
-
 export function AlertProvider({ children }: AlertProviderProps) {
-  const [alert, setAlert] = useState<AlertState | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [alerts, setAlerts] = useState<AlertState[]>([]);
 
-  const showAlert = (message: string, severity: AlertState["severity"] = "success", variant: AlertState["variant"] = "filled") => {
-    setAlert({ key: Date.now(), message, severity, variant });
-    setOpenSnackbar(true);
-  };
+  const removeAlert = useCallback((id: number) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+  }, []);
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === "clickaway") return;
-    setOpenSnackbar(false);
-  };
+  const showAlert = useCallback(
+    (message: string, severity: AlertState["severity"] = "success", variant: AlertState["variant"] = "filled") => {
+      const id = Date.now();
+      const newAlert: AlertState = { id, message, severity, variant };
+
+      setAlerts((prev) => {
+        const updatedAlerts = [...prev, newAlert];
+        if (updatedAlerts.length > 5) {
+          return updatedAlerts.slice(updatedAlerts.length - 5);
+        }
+        return updatedAlerts;
+      });
+
+      setTimeout(() => {
+        removeAlert(id);
+      }, 4000);
+    },
+    [removeAlert]
+  );
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-      <Suspense>
-        <Snackbar
-          key={alert?.key}
-          open={openSnackbar}
-          onClose={handleClose}
-          TransitionComponent={SlideTransition}
-          autoHideDuration={4000}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          sx={{ pointerEvents: "none" }}
-        >
-          <Alert severity={alert?.severity || "success"} variant={alert?.variant} sx={{ fontSize: "1.05rem", pointerEvents: "auto" }}>
-            {alert?.message}
-          </Alert>
-        </Snackbar>
-      </Suspense>
+
+      <Box
+        sx={{
+          position: "fixed",
+          top: 24,
+          right: 24,
+          zIndex: 2000,
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "400px",
+          width: "100%",
+        }}
+      >
+        <TransitionGroup>
+          {alerts.map((alert) => (
+            <Slide key={alert.id} direction="left">
+              <Box sx={{ marginBottom: 1 }}>
+                <Alert
+                  severity={alert.severity}
+                  variant={alert.variant}
+                  sx={{
+                    fontSize: "1.05rem",
+                    boxShadow: 3,
+                  }}
+                >
+                  {alert.message}
+                </Alert>
+              </Box>
+            </Slide>
+          ))}
+        </TransitionGroup>
+      </Box>
     </AlertContext.Provider>
   );
 }

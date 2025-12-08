@@ -4,22 +4,20 @@ import React, { Suspense } from "react";
 
 import { cookies } from "next/headers";
 
-import { handleError } from "@/functions/handleError";
+import { backendUrl } from "@/constants/app-config";
 
 import Loading from "../loading";
 import Profile from "./Profile";
 
-const webUrl = process.env.NEXT_PUBLIC_WEB_URL;
-
 async function fetchUserData(token: string) {
   try {
-    const userResponse = await Axios.get(`${webUrl}/user/details`, {
+    const userResponse = await Axios.get(`${backendUrl}/user/details`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     return userResponse.data;
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    console.error("Profile page: ", error.response?.data || error.message);
     return {};
   }
 }

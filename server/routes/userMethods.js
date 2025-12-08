@@ -211,7 +211,7 @@ router.get("/refresh", async (req, res) => {
       return res.status(401).send("Термін дії токена закінчився. Будь ласка, залогуйтесь знову");
     }
 
-    const newAccessToken = generateAccess();
+    const newAccessToken = generateAccess(user.id);
 
     return res.json({ token: newAccessToken });
   });
@@ -228,6 +228,8 @@ router.delete("/delete", async (req, res) => {
 
 router.get("/details", verifyToken, async (req, res) => {
   try {
+    console.log(req.userId);
+
     const user = await userModel.findById(req.userId).select("-password");
     const { team } = user;
 
@@ -246,6 +248,8 @@ router.get("/details", verifyToken, async (req, res) => {
     }
     return res.json(user);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).send("Error retrieving user profile");
   }
 });
