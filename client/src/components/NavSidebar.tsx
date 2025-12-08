@@ -25,6 +25,7 @@ import ListIcon from "../../public/icons/list.svg";
 import DashboardIcon from "../../public/icons/star.svg";
 import MyDayIcon from "../../public/icons/sun.svg";
 import NavigationButton from "./NavSidebar/NavigationButton";
+import { Task } from "@/interfaces/TaskInterface";
 
 export default function NavSidebar({ userData }: { userData: User }) {
   const [category, setCategory] = useState("");
