@@ -73,7 +73,7 @@ export default function StatusEditor({ userData }: { userData: User }) {
         <div className='flex items-center space-x-2'>
           <p>Відредагувати стани завдань</p>
           <button onClick={() => setChangingStatuses(!isChangingStatuses)}>
-            <Pencil className='fill-svg' />
+            <Pencil />
           </button>
         </div>
 
