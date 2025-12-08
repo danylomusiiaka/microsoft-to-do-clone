@@ -27,6 +27,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserDetailsProvider = ({ children }: { children: ReactNode }) => {
   const [profileDetails, setProfileDetails] = useState<User>({
+    _id: "",
     name: "",
     email: "",
     picture: "",
