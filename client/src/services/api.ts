@@ -45,6 +45,7 @@ class ApiService {
             Cookies.set("token", newToken, {
               sameSite: "None",
               secure: true,
+              path: '/',
               expires: 30,
             });
 

@@ -49,6 +49,7 @@ export default function Register() {
         Cookies.set("token", token, {
           sameSite: "None",
           secure: true,
+          path: "/",
           expires: 30,
         });
         window.location.href = "/profile";

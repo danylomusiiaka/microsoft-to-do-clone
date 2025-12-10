@@ -40,6 +40,7 @@ export async function middleware(req: NextRequest) {
             response.cookies.set("token", data.token, {
               sameSite: "none",
               secure: true,
+              path: "/",
               expires: date,
             });
           } else {
