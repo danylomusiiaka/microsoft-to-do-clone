@@ -43,7 +43,7 @@ class ApiService {
             const { token: newToken } = refreshResponse.data;
 
             Cookies.set("token", newToken, {
-              sameSite: "Lax",
+              sameSite: "None",
               secure: true,
               expires: 30,
             });

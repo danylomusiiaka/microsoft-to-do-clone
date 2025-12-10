@@ -38,7 +38,7 @@ export async function middleware(req: NextRequest) {
           if (newTokenResponse.status === 200) {
             const data = newTokenResponse.data;
             response.cookies.set("token", data.token, {
-              sameSite: "lax",
+              sameSite: "none",
               secure: true,
               expires: date,
             });
