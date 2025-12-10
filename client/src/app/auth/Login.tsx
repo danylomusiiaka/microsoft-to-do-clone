@@ -2,6 +2,7 @@ import Axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
 import { useRef, useState } from "react";
+
 import { backendUrl } from "@/constants/app-config";
 
 export default function Login() {
@@ -24,8 +25,9 @@ export default function Login() {
       if (response.status === 200) {
         const { token } = response.data;
         Cookies.set("token", token, {
-          sameSite: "None",
+          sameSite: "Lax",
           secure: true,
+          expires: 30,
         });
 
         window.location.href = "/";

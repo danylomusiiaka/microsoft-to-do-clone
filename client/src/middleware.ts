@@ -2,8 +2,8 @@ import Axios from "axios";
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { backendUrl } from "./constants/app-config";
 
+import { backendUrl } from "./constants/app-config";
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -27,6 +27,8 @@ export async function middleware(req: NextRequest) {
         },
       });
 
+      const date = new Date();
+      date.setTime(date.getTime() + 30 * 24 * 60 * 60 * 1000);
       if ([401, 500].includes(result.status)) {
         const response = NextResponse.next();
         try {
@@ -36,8 +38,9 @@ export async function middleware(req: NextRequest) {
           if (newTokenResponse.status === 200) {
             const data = newTokenResponse.data;
             response.cookies.set("token", data.token, {
-              sameSite: "none",
+              sameSite: "lax",
               secure: true,
+              expires: date,
             });
           } else {
             response.cookies.delete("token");

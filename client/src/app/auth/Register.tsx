@@ -2,6 +2,7 @@ import Axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
 import { useState } from "react";
+
 import { backendUrl } from "@/constants/app-config";
 
 export default function Register() {
@@ -46,8 +47,9 @@ export default function Register() {
       if (response.status === 200) {
         const { token } = response.data;
         Cookies.set("token", token, {
-          sameSite: "None",
+          sameSite: "Lax",
           secure: true,
+          expires: 30,
         });
         window.location.href = "/profile";
       }
@@ -81,19 +83,37 @@ export default function Register() {
 
   return !isVerification ? (
     <>
-      <div className='input-wrap'>
-        <input type='text' id='name' value={registerForm.name} onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })} placeholder=' ' />
-        <label htmlFor='name'>Ім'я користувача</label>
+      <div className="input-wrap">
+        <input
+          type="text"
+          id="name"
+          value={registerForm.name}
+          onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
+          placeholder=" "
+        />
+        <label htmlFor="name">Ім'я користувача</label>
       </div>
 
-      <div className='input-wrap'>
-        <input type='email' id='email' onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })} value={registerForm.email} placeholder=' ' />
-        <label htmlFor='email'>Пошта</label>
+      <div className="input-wrap">
+        <input
+          type="email"
+          id="email"
+          onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+          value={registerForm.email}
+          placeholder=" "
+        />
+        <label htmlFor="email">Пошта</label>
       </div>
 
-      <div className='input-wrap'>
-        <input type='password' id='password' onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })} value={registerForm.password} placeholder=' ' />
-        <label htmlFor='password'>Пароль</label>
+      <div className="input-wrap">
+        <input
+          type="password"
+          id="password"
+          onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+          value={registerForm.password}
+          placeholder=" "
+        />
+        <label htmlFor="password">Пароль</label>
       </div>
 
       <button className="sign-btn" onClick={handleSubmit} disabled={isLoading}>
@@ -104,9 +124,9 @@ export default function Register() {
   ) : (
     <>
       <div>
-        <div className='input-wrap'>
-          <input type='password' id='verification' onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })} placeholder=' ' />
-          <label htmlFor='verification'>Верифікаційний код</label>
+        <div className="input-wrap">
+          <input type="password" id="verification" onChange={(e) => setRegisterForm({ ...registerForm, userKey: e.target.value })} placeholder=" " />
+          <label htmlFor="verification">Верифікаційний код</label>
         </div>
         <button className="sign-btn" onClick={handleSubmit} disabled={isLoading}>
           {isLoading ? <span className="spinner"></span> : "Підтвердити"}
@@ -119,7 +139,7 @@ export default function Register() {
       </div>
       <div className="mt-4 text-sm" style={{ color: "var(--secondary-text-color)" }}>
         Ввели не ту пошту?{" "}
-        <button className='toggle' style={{ fontSize: "14px" }} onClick={() => setIsVerification(false)}>
+        <button className="toggle" style={{ fontSize: "14px" }} onClick={() => setIsVerification(false)}>
           Повернутись назад
         </button>
       </div>
