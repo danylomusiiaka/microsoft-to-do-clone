@@ -1,9 +1,22 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  MinLength,
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class AuthRegisterLoginDto {
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsNotEmpty()
+  hash: string;
+
   @ApiProperty({ example: 'test1@example.com', type: String })
   @Transform(lowerCaseTransformer)
   @IsEmail()
@@ -15,9 +28,29 @@ export class AuthRegisterLoginDto {
 
   @ApiProperty({ example: 'John' })
   @IsNotEmpty()
-  firstName: string;
+  name: string;
 
-  @ApiProperty({ example: 'Doe' })
-  @IsNotEmpty()
-  lastName: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  picture?: string | null;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  photo: string | null;
+
+  @ApiPropertyOptional({ type: Array })
+  @IsOptional()
+  @IsArray()
+  statuses: string[];
+
+  @ApiProperty({ type: Boolean })
+  @IsBoolean()
+  isUserQuestDone: boolean;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  team?: string | null;
 }

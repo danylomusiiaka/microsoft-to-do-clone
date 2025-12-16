@@ -1,21 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Role } from '../../roles/domain/role';
-import { Status } from '../../statuses/domain/status';
-import { ApiProperty } from '@nestjs/swagger';
-import databaseConfig from '../../database/config/database.config';
-import { DatabaseConfig } from '../../database/config/database-config.type';
-
-// <database-block>
-const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
-  ? String
-  : Number;
-// </database-block>
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class User {
-  @ApiProperty({
-    type: idType,
-  })
-  id: number | string;
+  @ApiProperty({ type: String, format: 'uuid' })
+  id: string;
 
   @ApiProperty({
     type: String,
@@ -43,32 +31,39 @@ export class User {
 
   @ApiProperty({
     type: String,
-    example: 'John',
+    example: 'John Doe',
   })
-  firstName: string | null;
+  name: string;
 
   @ApiProperty({
     type: String,
-    example: 'Doe',
   })
-  lastName: string | null;
+  role: string;
+
+  @ApiPropertyOptional({
+    type: String,
+  })
+  team?: string | null;
+
+  @ApiPropertyOptional({
+    type: Array,
+  })
+  statuses?: string[];
+
+  @ApiPropertyOptional({
+    type: String,
+  })
+  picture?: string | null;
 
   @ApiProperty({
-    type: () => Role,
+    type: String,
   })
-  role?: Role | null;
-
-  @ApiProperty({
-    type: () => Status,
-  })
-  status?: Status;
+  @Expose({ groups: ['me', 'admin'] })
+  refreshToken?: string;
 
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
-
-  @ApiProperty()
-  deletedAt: Date;
 }

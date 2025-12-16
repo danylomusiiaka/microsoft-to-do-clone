@@ -1,10 +1,8 @@
-import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
+import { PartialType, ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
 import { Transform, Type } from 'class-transformer';
-import { IsEmail, IsOptional, MinLength } from 'class-validator';
-import { RoleDto } from '../../roles/dto/role.dto';
-import { StatusDto } from '../../statuses/dto/status.dto';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -24,20 +22,17 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   socialId?: string | null;
 
   @ApiPropertyOptional({ example: 'John', type: String })
-  @IsOptional()
-  firstName?: string | null;
+  name?: string;
 
-  @ApiPropertyOptional({ example: 'Doe', type: String })
+  @ApiPropertyOptional({ type: () => String })
   @IsOptional()
-  lastName?: string | null;
+  @Type(() => String)
+  role?: string;
 
-  @ApiPropertyOptional({ type: () => RoleDto })
-  @IsOptional()
-  @Type(() => RoleDto)
-  role?: RoleDto | null;
+  @ApiProperty({ type: String })
+  @IsNotEmpty()
+  team?: string | null;
 
-  @ApiPropertyOptional({ type: () => StatusDto })
-  @IsOptional()
-  @Type(() => StatusDto)
-  status?: StatusDto;
+  @ApiPropertyOptional({ type: String })
+  refreshToken?: string;
 }

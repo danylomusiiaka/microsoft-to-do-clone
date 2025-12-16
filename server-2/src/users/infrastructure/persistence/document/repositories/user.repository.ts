@@ -36,7 +36,7 @@ export class UsersDocumentRepository implements UserRepository {
     const where: FilterQuery<UserSchemaClass> = {};
     if (filterOptions?.roles?.length) {
       where['role._id'] = {
-        $in: filterOptions.roles.map((role) => role.id.toString()),
+        $in: filterOptions.roles,
       };
     }
 

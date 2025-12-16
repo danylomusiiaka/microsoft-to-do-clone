@@ -7,12 +7,7 @@ export class AuthUpdateDto {
   @ApiPropertyOptional({ example: 'John' })
   @IsOptional()
   @IsNotEmpty({ message: 'mustBeNotEmpty' })
-  firstName?: string;
-
-  @ApiPropertyOptional({ example: 'Doe' })
-  @IsOptional()
-  @IsNotEmpty({ message: 'mustBeNotEmpty' })
-  lastName?: string;
+  name: string;
 
   @ApiPropertyOptional({ example: 'new.email@example.com' })
   @IsOptional()
@@ -31,4 +26,8 @@ export class AuthUpdateDto {
   @IsOptional()
   @IsNotEmpty({ message: 'mustBeNotEmpty' })
   oldPassword?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  refreshToken?: string;
 }

@@ -24,6 +24,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { NullableType } from '@/utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { AuthSendVerificationDto } from './dto/auth-send-verification.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -46,17 +47,15 @@ export class AuthController {
   }
 
   @Post('email/register')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
+  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<User> {
     return this.service.register(createUserDto);
   }
 
   @Post('email/confirm')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async confirmEmail(
-    @Body() confirmEmailDto: AuthConfirmEmailDto,
-  ): Promise<void> {
-    return this.service.confirmEmail(confirmEmailDto.hash);
+    @Body() confirmEmailDto: AuthSendVerificationDto,
+  ): Promise<{ message: string }> {
+    return this.service.sendVerification(confirmEmailDto);
   }
 
   @Post('email/confirm/new')
@@ -109,10 +108,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
   public refresh(@Request() request): Promise<RefreshResponseDto> {
-    return this.service.refreshToken({
-      sessionId: request.user.sessionId,
-      hash: request.user.hash,
-    });
+    return this.service.refreshToken(request.userId);
   }
 
   @ApiBearerAuth()
@@ -120,9 +116,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   public async logout(@Request() request): Promise<void> {
-    await this.service.logout({
-      sessionId: request.user.sessionId,
-    });
+    await this.service.logOut(request.userId);
   }
 
   @ApiBearerAuth()

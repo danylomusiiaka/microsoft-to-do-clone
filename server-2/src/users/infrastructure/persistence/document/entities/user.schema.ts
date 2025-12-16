@@ -1,10 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 
-import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
-import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
-import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
+import { AuthProvidersEnum } from '@/auth/auth-providers.enum';
+import { EntityDocumentHelper } from '@/utils/document-entity-helper';
+import { RoleEnum } from '@/roles/roles.enum';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
 
@@ -35,38 +34,57 @@ export class UserSchemaClass extends EntityDocumentHelper {
     type: String,
     default: null,
   })
+  picture?: string | null;
+
+  @Prop({
+    type: String,
+    default: null,
+  })
   socialId?: string | null;
 
   @Prop({
     type: String,
   })
-  firstName: string | null;
+  name: string;
+
+  @Prop({
+    type: Array,
+    default: [],
+  })
+  categories: string[];
 
   @Prop({
     type: String,
   })
-  lastName: string | null;
+  refreshToken: string;
 
   @Prop({
-    type: RoleSchema,
+    type: String,
+    default: RoleEnum.user,
   })
-  role?: RoleSchema | null;
+  role: string;
 
   @Prop({
-    type: StatusSchema,
+    type: Array,
+    default: [],
   })
-  status?: StatusSchema;
+  statuses: string[];
+
+  @Prop({
+    type: Boolean,
+  })
+  isUserQuestDone: boolean;
+
+  @Prop({
+    type: String,
+  })
+  team?: string | null;
 
   @Prop({ default: now })
   createdAt: Date;
 
   @Prop({ default: now })
   updatedAt: Date;
-
-  @Prop()
-  deletedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaClass);
-
-UserSchema.index({ 'role._id': 1 });
