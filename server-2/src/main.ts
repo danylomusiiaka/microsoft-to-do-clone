@@ -37,7 +37,7 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .setTitle('AP')
+    .setTitle('API')
     .setDescription('API docs')
     .setVersion('1.0')
     .addBearerAuth()
