@@ -13,7 +13,7 @@ import NavSidebar from "@/components/NavSidebar";
 import { backendUrl } from "@/constants/app-config";
 
 export const metadata = {
-  title: "Microsoft To Do Clone",
+  title: "Microsoft To Do Clone ",
   description: "Моя кастомна веб версія Microsoft To Do запущена в тестовому режимі",
   icons: {
     icon: "/microsoft-todo.ico",
